@@ -8,3 +8,6 @@
 2014-06-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Routing' class in 'syd/routing.cpp' and
 	'syd/routing.h'.
+2014-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented an LWRP server in 'syd/lwpr.cpp' and
+	'syd/lwrp.h'.

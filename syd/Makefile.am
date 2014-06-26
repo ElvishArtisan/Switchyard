@@ -20,13 +20,20 @@ moc_%.cpp:	%.h
 
 sbin_PROGRAMS = syd
 
-dist_syd_SOURCES = cmdswitch.cpp cmdswitch.h\
+dist_syd_SOURCES = astring.cpp astring.h\
+                   clientconnection.cpp clientconnection.h\
+                   cmdswitch.cpp cmdswitch.h\
                    config.h\
+                   lwpacket.cpp lwpacket.h\
+                   lwsource.cpp lwsource.h\
+                   lwrp.cpp lwrp.h\
+                   lwtag.cpp lwtag.h\
                    profile.cpp profile.h\
                    routing.cpp routing.h\
                    syd.cpp syd.h
 
-nodist_syd_SOURCES = moc_syd.cpp
+nodist_syd_SOURCES = moc_lwrp.cpp\
+                     moc_syd.cpp
 
 syd_LDADD = -lQtCore -lQtNetwork
 

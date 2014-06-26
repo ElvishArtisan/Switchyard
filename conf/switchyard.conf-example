@@ -3,4 +3,7 @@ NicAddress=192.168.10.30
 
 [Slot1]
 SourceAddress=239.192.0.1
+SourceName=Source 1
+SourceEnabled=0
 DestinationAddress=239.192.1.1
+DestinationName=Destination 1

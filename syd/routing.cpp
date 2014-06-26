@@ -25,12 +25,6 @@
 
 Routing::Routing()
 {
-  sy_shm_block=NULL;
-  if(!InitShmSegment(&sy_shm_block)) {
-    fprintf(stderr,"unable to allocate shared memory\n");
-    exit(256);
-  }
-  memset(sy_shm_block,0,sizeof(ShmBlock));
   LoadInterfaces();
   load();
 }
@@ -38,43 +32,105 @@ Routing::Routing()
 
 QHostAddress Routing::nicAddress() const
 {
-  return QHostAddress(ntohl(sy_shm_block->nic_addr));
+  return QHostAddress(ntohl(nic_addr));
 }
 
 
 void Routing::setNicAddress(const QHostAddress &addr)
 {
-  sy_shm_block->nic_addr=htonl(addr.toIPv4Address());
+  nic_addr=htonl(addr.toIPv4Address());
+}
+
+
+QHostAddress Routing::clkAddress() const
+{
+  return QHostAddress(ntohl(clk_addr));
+}
+
+
+void Routing::setClkAddress(const QHostAddress &addr)
+{
+  clk_addr=htonl(addr.toIPv4Address());
+}
+
+
+int Routing::srcNumber(int slot) const
+{
+  return 0xFFFF&srcAddress(slot).toIPv4Address();
 }
 
 
 QHostAddress Routing::srcAddress(int slot) const
 {
-  return QHostAddress(ntohl(sy_shm_block->src_addr[slot]));
+  return QHostAddress(ntohl(src_addr[slot]));
 }
 
 
 void Routing::setSrcAddress(int slot,const QHostAddress &addr)
 {
-  sy_shm_block->src_addr[slot]=htonl(addr.toIPv4Address());
+  src_addr[slot]=htonl(addr.toIPv4Address());
+}
+
+
+void Routing::setSrcAddress(int slot,const QString &addr)
+{
+  QHostAddress a(addr);
+  setSrcAddress(slot,a);
+}
+
+
+QString Routing::srcName(int slot) const
+{
+  return sy_src_names[slot];
+}
+
+
+void Routing::setSrcName(int slot,const QString &str)
+{
+  sy_src_names[slot]=str;
+}
+
+
+bool Routing::srcEnabled(int slot) const
+{
+  return sy_src_enableds[slot];
+}
+
+
+void Routing::setSrcEnabled(int slot,bool state)
+{
+  sy_src_enableds[slot]=state;
 }
 
 
 QHostAddress Routing::dstAddress(int slot) const
 {
-  return QHostAddress(ntohl(sy_shm_block->dst_addr[slot]));
+  return QHostAddress(ntohl(dst_addr[slot]));
 }
 
 
 void Routing::setDstAddress(int slot,const QHostAddress &addr)
 {
-  sy_shm_block->dst_addr[slot]=htonl(addr.toIPv4Address());
+  dst_addr[slot]=htonl(addr.toIPv4Address());
 }
 
 
-struct ShmBlock *Routing::shmBlock() const
+void Routing::setDstAddress(int slot,const QString &addr)
 {
-  return sy_shm_block;
+  QHostAddress a(addr);
+  setDstAddress(slot,a);
+}
+
+
+QString Routing::dstName(int slot) const
+{
+  return sy_dst_names[slot];
+}
+
+
+void Routing::setDstName(int slot,const QString &str)
+{
+  sy_dst_names[slot]=str;
 }
 
 
@@ -96,8 +152,33 @@ QString Routing::nicDevice(unsigned n)
 }
 
 
+void Routing::subscribe(const QHostAddress &addr)
+{
+  struct ip_mreqn mreq;
+
+  memset(&mreq,0,sizeof(mreq));
+  mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
+  mreq.imr_address.s_addr=nic_addr;
+  mreq.imr_ifindex=0;
+  setsockopt(sy_fd,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq));
+}
+
+
+void Routing::unsubscribe(const QHostAddress &addr)
+{
+  struct ip_mreqn mreq;
+
+  memset(&mreq,0,sizeof(mreq));
+  mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
+  mreq.imr_address.s_addr=nic_addr;
+  mreq.imr_ifindex=0;
+  setsockopt(sy_fd,SOL_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
+}
+
+
 void Routing::load()
 {
+  QString section;
   Profile *p=new Profile();
   p->setSource(SWITCHYARD_ROUTING_FILE);
   QHostAddress default_nic;
@@ -107,10 +188,12 @@ void Routing::load()
 
   setNicAddress(p->addressValue("Global","NicAddress",default_nic));
   for(int i=0;i<SWITCHYARD_SLOTS;i++) {
-    setSrcAddress(i,p->addressValue(QString().sprintf("Slot%u",i+1),
-				    "SourceAddress",""));
-    setDstAddress(i,p->addressValue(QString().sprintf("Slot%u",i+1),
-				    "DestinationAddress",""));
+    section=QString().sprintf("Slot%u",i+1);
+    setSrcAddress(i,p->addressValue(section,"SourceAddress",""));
+    setSrcName(i,p->stringValue(section,"SourceName",QString().sprintf("Source %u",i+1)));
+    setSrcEnabled(i,p->boolValue(section,"SourceEnabled"));
+    setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
+    setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
   }
 
   delete p;
@@ -134,8 +217,11 @@ void Routing::save() const
     fprintf(f,"[Slot%u]\n",i+1);
     fprintf(f,"SourceAddress=%s\n",
 	    (const char *)srcAddress(i).toString().toAscii());
+    fprintf(f,"SourceName=%s\n",(const char *)srcName(i).toAscii());
+    fprintf(f,"SourceEnabled=%d\n",srcEnabled(i));
     fprintf(f,"DestinationAddress=%s\n",
 	    (const char *)dstAddress(i).toString().toAscii());
+    fprintf(f,"DestinationName=%s\n",(const char *)dstName(i).toAscii());
     fprintf(f,"\n");
   }
 
@@ -144,57 +230,21 @@ void Routing::save() const
 }
 
 
-bool Routing::InitShmSegment(struct ShmBlock **sy_shm)
-{
-  struct shmid_ds shmid_ds;
-
-  /*
-   * First try to create a new shared memory segment.
-   */
-  if((sy_shm_id=
-      shmget(SWITCHYARD_SHM_KEY,sizeof(struct ShmBlock),
-	     IPC_CREAT|IPC_EXCL|S_IRUSR|S_IWUSR|
-	     S_IRGRP|S_IWUSR|S_IROTH|S_IWOTH))<0) {
-    if(errno!=EEXIST) {
-      return false;
-    }
-    /*
-     * The shmget() error was due to an existing segment, so try to get it,
-     *  release it, and re-get it.
-     */
-    sy_shm_id = shmget(SWITCHYARD_SHM_KEY,sizeof(struct ShmBlock),0);
-    shmctl(sy_shm_id,IPC_RMID,NULL);
-    if((sy_shm_id=shmget(SWITCHYARD_SHM_KEY,sizeof(struct ShmBlock),
-			 IPC_CREAT|IPC_EXCL|S_IRUSR|S_IWUSR|
-			 S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH))<0) {
-      return false;
-    }
-  }
-  shmctl(sy_shm_id,IPC_STAT,&shmid_ds);
-  shmid_ds.shm_perm.uid=getuid();
-  shmctl(sy_shm_id,IPC_SET,&shmid_ds);
-  *sy_shm=(struct ShmBlock *)shmat(sy_shm_id,NULL,0);
-
-  return true;
-}
-
-
 void Routing::LoadInterfaces()
 {
-  int fd;
   struct ifreq ifr;
   int index=0;
   uint64_t mac;
 
-  if((fd=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
+  if((sy_fd=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
     return;
   }
 
   memset(&ifr,0,sizeof(ifr));
   index=1;
   ifr.ifr_ifindex=index;
-  while(ioctl(fd,SIOCGIFNAME,&ifr)==0) {
-    if(ioctl(fd,SIOCGIFHWADDR,&ifr)==0) {
+  while(ioctl(sy_fd,SIOCGIFNAME,&ifr)==0) {
+    if(ioctl(sy_fd,SIOCGIFHWADDR,&ifr)==0) {
       mac=
 	((0xff&(uint64_t)ifr.ifr_ifru.ifru_hwaddr.sa_data[0])<<40)+
 	((0xff&(uint64_t)ifr.ifr_ifru.ifru_hwaddr.sa_data[1])<<32)+
@@ -214,7 +264,7 @@ void Routing::LoadInterfaces()
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[4],
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[5]));
 	sy_nic_addresses.push_back(QHostAddress());
-	if(ioctl(fd,SIOCGIFADDR,&ifr)==0) {
+	if(ioctl(sy_fd,SIOCGIFADDR,&ifr)==0) {
 	  struct sockaddr_in sa=*(sockaddr_in *)(&ifr.ifr_addr);
 	  sy_nic_addresses.back().setAddress(ntohl(sa.sin_addr.s_addr));
 	}
@@ -222,6 +272,4 @@ void Routing::LoadInterfaces()
     }
     ifr.ifr_ifindex=++index;
   }
-  close(fd);
-
 }

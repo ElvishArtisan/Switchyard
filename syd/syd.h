@@ -6,11 +6,15 @@
 //     All Rights Reserved.
 //
 
+#ifndef SYD_H
+#define SYD_H
+
 #include <stdint.h>
 
 #include <QtCore/QObject>
 
 #include "config.h"
+#include "lwrp.h"
 #include "routing.h"
 
 #define SYD_USAGE "-d\n"
@@ -23,4 +27,8 @@ class MainObject : public QObject
 
  private:
   Routing *syd_routing;
+  LWRPServer *syd_lwrp;
 };
+
+
+#endif  // SYD_H

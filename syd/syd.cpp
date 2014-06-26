@@ -45,6 +45,11 @@ MainObject::MainObject(QObject *parent)
   // Load Routing Rules
   //
   syd_routing=new Routing();
+
+  //
+  // Start LWRP Server
+  //
+  syd_lwrp=new LWRPServer(syd_routing);
 }
 
 
