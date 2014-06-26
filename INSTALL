@@ -1,0 +1,15 @@
+This is the installation file for the Switchyard package.
+
+Configure script invocation:
+
+./configure --prefix=/usr
+
+Environment for building on CentOS 5 i386:
+export CPPFLAGS=-I/usr/lib/qt4/include
+export LDFLAGS=-L/usr/lib/qt4/lib
+export PATH=/usr/lib/qt4/bin:$PATH
+
+Environment for building on CentOS 5 x86_64:
+export CPPFLAGS=-I/usr/lib64/qt4/include
+export LDFLAGS=-L/usr/lib64/qt4/lib64
+export PATH=/usr/lib64/qt4/bin:$PATH
