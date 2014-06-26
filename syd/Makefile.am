@@ -20,7 +20,9 @@ moc_%.cpp:	%.h
 
 sbin_PROGRAMS = syd
 
-dist_syd_SOURCES = syd.cpp syd.h
+dist_syd_SOURCES = cmdswitch.cpp cmdswitch.h\
+                   profile.cpp profile.h\
+                   syd.cpp syd.h
 
 nodist_syd_SOURCES = moc_syd.cpp
 
