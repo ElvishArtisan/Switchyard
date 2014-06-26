@@ -1,0 +1,6 @@
+[Global]
+NicAddress=192.168.10.30
+
+[Slot1]
+SourceAddress=239.192.0.1
+DestinationAddress=239.192.1.1

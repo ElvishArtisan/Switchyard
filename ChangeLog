@@ -5,3 +5,6 @@
 	and 'syd/cmdswitch.h'.
 	* Added a 'Profile' class in 'syd/profile.cpp'
 	and 'syd/profile.h'.
+2014-06-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Routing' class in 'syd/routing.cpp' and
+	'syd/routing.h'.

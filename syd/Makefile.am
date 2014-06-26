@@ -21,7 +21,9 @@ moc_%.cpp:	%.h
 sbin_PROGRAMS = syd
 
 dist_syd_SOURCES = cmdswitch.cpp cmdswitch.h\
+                   config.h\
                    profile.cpp profile.h\
+                   routing.cpp routing.h\
                    syd.cpp syd.h
 
 nodist_syd_SOURCES = moc_syd.cpp
