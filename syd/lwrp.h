@@ -41,6 +41,7 @@ class LWRPServer : public QObject
   void advertSendData();
   void clockReadData();
   void clockStartData();
+  void saveSourcesData();
   void closedData(int id);
 
  private:
@@ -61,6 +62,7 @@ class LWRPServer : public QObject
   void GenerateAdvertPacket(LwPacket *p,AdvertType type) const;
   int GetAdvertInterval() const;
   double GetTimestamp() const;
+  void ScheduleSourceSave();
   std::vector<ClientConnection *>ctrl_client_connections;
   std::vector<LwSource *>ctrl_sources;
   QTcpServer *ctrl_server;
@@ -71,6 +73,7 @@ class LWRPServer : public QObject
   Routing *ctrl_routing;
   QTimer *ctrl_expire_timer;
   QTimer *ctrl_advert_timer;
+  QTimer *ctrl_savesources_timer;
   uint32_t ctrl_advert_seqno;
   double ctrl_advert_timestamp;
   AdvertType ctrl_advert_type;

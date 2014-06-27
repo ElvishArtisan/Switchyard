@@ -108,7 +108,7 @@ int Routing::activeSources() const
   int ret=0;
 
   for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
-    if(srcEnabled(i)) {
+    if((!srcAddress(i).isNull())&&srcEnabled(i)) {
       ret++;
     }
   }

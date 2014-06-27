@@ -17,6 +17,7 @@ LwSource::LwSource()
   src_source_number=0;
   src_hardware_type=TypeUnknown;
   src_stream_type=StreamUnknown;
+  src_is_changed=false;
 }
 
 
@@ -28,7 +29,28 @@ QHostAddress LwSource::nodeAddress() const
 
 void LwSource::setNodeAddress(const QHostAddress &addr)
 {
-  src_node_address=addr;
+  if(addr!=src_node_address) {
+    src_node_address=addr;
+    if(nodeName().isEmpty()) {
+      setNodeName(addr.toString());
+    }
+    src_is_changed=true;
+  }
+}
+
+
+QString LwSource::nodeName() const
+{
+  return src_node_name;
+}
+
+
+void LwSource::setNodeName(const QString &str)
+{
+  if(str!=src_node_name) {
+    src_node_name=str;
+    src_is_changed=true;
+  }
 }
 
 
@@ -40,7 +62,10 @@ unsigned LwSource::slot() const
 
 void LwSource::setSlot(unsigned slot)
 {
-  src_slot=slot;
+  if(slot!=src_slot) {
+    src_slot=slot;
+    src_is_changed=true;
+  }
 }
 
 
@@ -52,7 +77,10 @@ unsigned LwSource::sourceNumber() const
 
 void LwSource::setSourceNumber(unsigned streamno)
 {
-  src_source_number=streamno;
+  if(streamno!=src_source_number) {
+    src_source_number=streamno;
+    src_is_changed=true;
+  }
 }
 
 
@@ -64,7 +92,25 @@ QHostAddress LwSource::streamAddress() const
 
 void LwSource::setStreamAddress(const QHostAddress &addr)
 {
-  src_stream_address=addr;
+  if(addr!=src_stream_address) {
+    src_stream_address=addr;
+    src_is_changed=true;
+  }
+}
+
+
+QString LwSource::sourceName() const
+{
+  return src_source_name;
+}
+
+
+void LwSource::setSourceName(const QString &str)
+{
+  if(str!=src_source_name) {
+    src_source_name=str;
+    src_is_changed=true;
+  }
 }
 
 
@@ -76,7 +122,10 @@ LwSource::HardwareType LwSource::hardwareType() const
 
 void LwSource::setHardwareType(HardwareType type)
 {
-  src_hardware_type=type;
+  if(type!=src_hardware_type) {
+    src_hardware_type=type;
+    src_is_changed=true;
+  }
 }
 
 
@@ -88,7 +137,10 @@ LwSource::StreamType LwSource::streamType() const
 
 void LwSource::setStreamType(StreamType type)
 {
-  src_stream_type=type;
+  if(type!=src_stream_type) {
+    src_stream_type=type;
+    src_is_changed=true;
+  }
 }
 
 
@@ -113,6 +165,18 @@ void LwSource::touch()
 void LwSource::touch(const QDateTime &datetime)
 {
   src_datetime=datetime;
+}
+
+
+bool LwSource::isChanged() const
+{
+  return src_is_changed;
+}
+
+
+void LwSource::setSaved()
+{
+  src_is_changed=false;
 }
 
 

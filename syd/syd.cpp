@@ -81,7 +81,8 @@ MainObject::MainObject(QObject *parent)
 
 void MainObject::exitData()
 {
-  printf("exitData()\n");
+  syslog(LOG_DEBUG,"calling exit handler");
+  unlink(SWITCHYARD_SOURCES_FILE);
   exit(0);
 }
 

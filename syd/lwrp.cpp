@@ -119,6 +119,11 @@ LWRPServer::LWRPServer(Routing *routing)
   connect(ctrl_expire_timer,SIGNAL(timeout()),this,SLOT(advertExpireData()));
   ctrl_expire_timer->start(30000);
 
+  ctrl_savesources_timer=new QTimer(this);
+  ctrl_savesources_timer->setSingleShot(true);
+  connect(ctrl_savesources_timer,SIGNAL(timeout()),
+	  this,SLOT(saveSourcesData()));
+
   //
   // Start Advertising
   //
@@ -194,28 +199,57 @@ void LWRPServer::advertReadData()
   LwSource *src=NULL;
   int slot;
   LwSource::HardwareType hwid=LwSource::TypeUnknown;
+  QString nodename;
 
   while((n=ctrl_advert_socket->readDatagram((char *)data,1500,&addr,&port))>0) {
     p.readPacket(data,n);
+    /*
+    printf("************************************************************\n");
+    printf("processing from %s: %s\n",
+	   (const char *)addr.toString().toAscii(),
+	   (const char *)p.dump().toAscii());
+    */
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
 	hwid=(LwSource::HardwareType)p.tag(i)->tagValue().toUInt();
       }
+      if(p.tag(i)->tagName()=="ATRN") {  // Node Name
+	nodename=p.tag(i)->tagValue().toString();
+      }
+      /*
+      printf("  examining[%u]: %s\n",i,
+	     (const char *)p.tag(i)->tagName().toAscii());
+      */
       if((slot=TagIsSource(p.tag(i)))>=0) {
 	src=GetSource(addr,slot);
 	src->setHardwareType(hwid);
 	while((++i<p.tags())&&(TagIsSource(p.tag(i))<0)) {
 	  if(p.tag(i)->tagName()=="PSID") {  // Source Number
 	    src->setSourceNumber(p.tag(i)->tagValue().toUInt());
-	    if(src->streamAddress().isNull()) {
-	      src->setStreamAddress(QHostAddress(4022337536|
-						 src->sourceNumber()));
-	    }
 	  }
 	  if(p.tag(i)->tagName()=="FSID") {  // Stream Address
 	    src->setStreamAddress(QHostAddress(p.tag(i)->tagValue().toUInt()));
 	  }
+	  if(p.tag(i)->tagName()=="PSNM") {  // Stream Name
+	    src->setSourceName(p.tag(i)->tagValue().toString());
+	  }
 	  src->touch();
+	}
+	i--;
+	if(src->isChanged()) {
+	  ScheduleSourceSave();
+	}
+      }
+    }
+    if(!nodename.isEmpty()) {
+      for(unsigned i=0;i<ctrl_sources.size();i++) {
+	if((src=ctrl_sources[i])!=NULL) {
+	  if(addr==src->nodeAddress()) {
+	    src->setNodeName(nodename);
+	    if(src->isChanged()) {
+	      ScheduleSourceSave();
+	    }
+	  }
 	}
       }
     }
@@ -231,6 +265,7 @@ void LWRPServer::advertExpireData()
       if(ctrl_sources[i]->lastTouched(now)>30) {
 	delete ctrl_sources[i];
 	ctrl_sources[i]=NULL;
+	ScheduleSourceSave();
       }
     }
   }
@@ -253,7 +288,7 @@ void LWRPServer::advertSendData()
 		  SWITCHYARD_ADVERTS_PORT);
   }
   else {
-    fprintf(stderr,"lwcd: invalid LWCP packet generated\n");
+    syslog(LOG_WARNING,"lwcd: invalid LWCP packet generated");
   }
   delete p;
   ctrl_advert_type=(LWRPServer::AdvertType)(ctrl_advert_type+1);
@@ -295,6 +330,42 @@ void LWRPServer::clockStartData()
 	  (const char *)LwSource::hardwareString(src->hardwareType()).toAscii(),
 	  (const char *)src->nodeAddress().toString().toAscii());
   */
+}
+
+
+void LWRPServer::saveSourcesData()
+{
+  QString tempfile=QString(SWITCHYARD_SOURCES_FILE)+"-temp";
+  FILE *f=NULL;
+  unsigned num=0;
+
+  if((f=fopen(tempfile.toAscii(),"w"))==NULL) {
+    syslog(LOG_WARNING,"unable to update sources database [%s]",
+	   strerror(errno));
+    return;
+  }
+
+  for(unsigned i=0;i<ctrl_sources.size();i++) {
+    LwSource *src=ctrl_sources[i];
+    if(src!=NULL) {
+      if(!src->streamAddress().isNull()) {
+	fprintf(f,"[Source %u]\n",++num);
+	fprintf(f,"Slot=%u\n",src->slot());
+	fprintf(f,"NodeAddress=%s\n",
+		(const char *)src->nodeAddress().toString().toAscii());
+	fprintf(f,"NodeName=%s\n",(const char *)src->nodeName().toUtf8());
+	fprintf(f,"StreamAddress=%s\n",
+		(const char *)src->streamAddress().toString().toAscii());
+	fprintf(f,"SourceName=%s\n",(const char *)src->sourceName().toUtf8());
+	fprintf(f,"\n");
+      }
+    }
+    src->setSaved();
+  }
+
+  fclose(f);
+  rename(tempfile.toAscii(),SWITCHYARD_SOURCES_FILE);
+  syslog(LOG_DEBUG,"saved sources list to \"%s\"",SWITCHYARD_SOURCES_FILE);
 }
 
 
@@ -677,7 +748,9 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
     tag.setTagValue(LwTag::TagType8,SWITCHYARD_HWID);
     p->addTag(tag);
     for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
-      if(ctrl_routing->srcEnabled(i)) {
+      if((!ctrl_routing->srcAddress(i).isNull())&&
+	 (ctrl_routing->srcAddress(i).toString()!="0.0.0.0")&&
+	 ctrl_routing->srcEnabled(i)) {
 	tag.setTagName(QString().sprintf("S%03u",i+1));
 	tag.setTagValue(LwTag::TagType6,0x1C);    // number of bytes describing source
 	p->addTag(tag);
@@ -767,45 +840,49 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
     // One for each source
     //
     for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
-      tag.setTagName(QString().sprintf("S%03u",i+1));
-      tag.setTagValue(LwTag::TagType6,0x65);  // bytes in source record
-      p->addTag(tag);
-      tag.setTagName("INDI");
-      tag.setTagValue(LwTag::TagType0,0x0B);
-      p->addTag(tag);
-      tag.setTagName("PSID");
-      tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
-      p->addTag(tag);
-      tag.setTagName("SHAB");
-      tag.setTagValue(LwTag::TagType7,0);
-      p->addTag(tag);
-      tag.setTagName("FSID");
-      tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(i));
-      p->addTag(tag);
-      tag.setTagName("FAST");
-      tag.setTagValue(LwTag::TagType7,2);
-      p->addTag(tag);
-      tag.setTagName("FASM");
-      tag.setTagValue(LwTag::TagType7,1);
-      p->addTag(tag);
-      tag.setTagName("BSID");
-      tag.setTagValue(LwTag::TagType1,0);
-      p->addTag(tag);
-      tag.setTagName("BAST");
-      tag.setTagValue(LwTag::TagType7,1);
-      p->addTag(tag);
-      tag.setTagName("BASM");
-      tag.setTagValue(LwTag::TagType7,0);
-      p->addTag(tag);
-      tag.setTagName("LPID");
-      tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
-      p->addTag(tag);
-      tag.setTagName("STPL");
-      tag.setTagValue(LwTag::TagType7,0);
-      p->addTag(tag);
-      tag.setTagName("PSNM");  // 16 characters, null padded
-      tag.setTagValue(LwTag::TagString,ctrl_routing->srcName(i),16);
-      p->addTag(tag);
+      if((!ctrl_routing->srcAddress(i).isNull())&&
+	 (ctrl_routing->srcAddress(i).toString()!="0.0.0.0")&&
+	 ctrl_routing->srcEnabled(i)) {
+	tag.setTagName(QString().sprintf("S%03u",i+1));
+	tag.setTagValue(LwTag::TagType6,0x65);  // bytes in source record
+	p->addTag(tag);
+	tag.setTagName("INDI");
+	tag.setTagValue(LwTag::TagType0,0x0B);
+	p->addTag(tag);
+	tag.setTagName("PSID");
+	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
+	p->addTag(tag);
+	tag.setTagName("SHAB");
+	tag.setTagValue(LwTag::TagType7,0);
+	p->addTag(tag);
+	tag.setTagName("FSID");
+	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(i));
+	p->addTag(tag);
+	tag.setTagName("FAST");
+	tag.setTagValue(LwTag::TagType7,2);
+	p->addTag(tag);
+	tag.setTagName("FASM");
+	tag.setTagValue(LwTag::TagType7,1);
+	p->addTag(tag);
+	tag.setTagName("BSID");
+	tag.setTagValue(LwTag::TagType1,0);
+	p->addTag(tag);
+	tag.setTagName("BAST");
+	tag.setTagValue(LwTag::TagType7,1);
+	p->addTag(tag);
+	tag.setTagName("BASM");
+	tag.setTagValue(LwTag::TagType7,0);
+	p->addTag(tag);
+	tag.setTagName("LPID");
+	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
+	p->addTag(tag);
+	tag.setTagName("STPL");
+	tag.setTagValue(LwTag::TagType7,0);
+	p->addTag(tag);
+	tag.setTagName("PSNM");  // 16 characters, null padded
+	tag.setTagValue(LwTag::TagString,ctrl_routing->srcName(i),16);
+	p->addTag(tag);
+      }
     }
     break;
 
@@ -828,4 +905,11 @@ double LWRPServer::GetTimestamp() const
   memset(&tv,0,sizeof(tv));
   gettimeofday(&tv,NULL);
   return (double)tv.tv_sec+(double)tv.tv_usec/1000000.0;
+}
+
+
+void LWRPServer::ScheduleSourceSave()
+{
+  ctrl_savesources_timer->stop();
+  ctrl_savesources_timer->start(SWITCHYARD_SAVESOURCES_INTERVAL);
 }

@@ -25,3 +25,6 @@
 2014-06-27 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed warning in 'syd/lwsource.cpp'.
 	* Disabled strict aliasing warning in 'syd/Makefile.am'.
+2014-06-27 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented stream collation in 'syd/lwrp.cpp' and
+	'syd/lwrp.h'.
