@@ -51,12 +51,13 @@ class Routing
   uint32_t nic_addr;
   uint32_t clk_addr;
   uint32_t src_addr[SWITCHYARD_SLOTS];
+  bool src_enabled[SWITCHYARD_SLOTS];
   uint32_t dst_addr[SWITCHYARD_SLOTS];
+  static QString dumpAddress(uint32_t addr);
 
  private:
   void LoadInterfaces();
   QString sy_src_names[SWITCHYARD_SLOTS];
-  bool sy_src_enableds[SWITCHYARD_SLOTS];
   QString sy_dst_names[SWITCHYARD_SLOTS];
   std::vector<QHostAddress> sy_nic_addresses;
   std::vector<QString> sy_nic_devices;

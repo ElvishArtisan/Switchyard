@@ -18,8 +18,11 @@
 #define SWITCHYARD_LWRP_PORT 93
 #define SWITCHYARD_PROTOCOL_VERSION "1.1"
 #define SWITCHYARD_ROUTING_FILE "/var/lib/switchyard/routing.conf"
+#define SWITCHYARD_RTP_PORT 5004
 #define SWITCHYARD_SLOTS 1
 #define SWITCHYARD_SHM_KEY 0x59D2B831
+
+extern bool global_exiting;
 
 
 #endif  // CONFIG_H

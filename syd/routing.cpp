@@ -93,13 +93,13 @@ void Routing::setSrcName(int slot,const QString &str)
 
 bool Routing::srcEnabled(int slot) const
 {
-  return sy_src_enableds[slot];
+  return src_enabled[slot];
 }
 
 
 void Routing::setSrcEnabled(int slot,bool state)
 {
-  sy_src_enableds[slot]=state;
+  src_enabled[slot]=state;
 }
 
 
@@ -191,7 +191,7 @@ void Routing::load()
     section=QString().sprintf("Slot%u",i+1);
     setSrcAddress(i,p->addressValue(section,"SourceAddress",""));
     setSrcName(i,p->stringValue(section,"SourceName",QString().sprintf("Source %u",i+1)));
-    setSrcEnabled(i,p->boolValue(section,"SourceEnabled"));
+    setSrcEnabled(i,p->intValue(section,"SourceEnabled"));
     setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
     setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
   }
@@ -227,6 +227,13 @@ void Routing::save() const
 
   fclose(f);
   rename(tempfile.toAscii(),SWITCHYARD_ROUTING_FILE);
+}
+
+
+QString Routing::dumpAddress(uint32_t addr)
+{
+  QHostAddress a(ntohl(addr));
+  return a.toString();
 }
 
 

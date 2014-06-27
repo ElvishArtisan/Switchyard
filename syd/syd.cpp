@@ -6,6 +6,7 @@
 //     All Rights Reserved.
 //
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -15,6 +16,19 @@
 #include "cmdswitch.h"
 
 #include "syd.h"
+
+bool global_exiting=false;
+
+void SignalHandler(int signo)
+{
+  switch(signo) {
+  case SIGTERM:
+  case SIGINT:
+    global_exiting=true;
+    break;
+  }
+}
+
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -50,6 +64,25 @@ MainObject::MainObject(QObject *parent)
   // Start LWRP Server
   //
   syd_lwrp=new LWRPServer(syd_routing);
+
+  //
+  // Start RTP
+  //
+  syd_rtp=new RTPServer(syd_routing,this);
+  connect(syd_rtp,SIGNAL(exiting()),this,SLOT(exitData()));
+
+  //
+  // Set Signals
+  //
+  signal(SIGINT,SignalHandler);
+  signal(SIGTERM,SignalHandler);
+}
+
+
+void MainObject::exitData()
+{
+  printf("exitData()\n");
+  exit(0);
 }
 
 

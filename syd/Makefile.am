@@ -8,7 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\"
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread
 INCLUDES = -I$(top_srcdir)/common
 LIBS = -L$(top_srcdir)/common
 MOC = @MOC@
@@ -30,12 +30,15 @@ dist_syd_SOURCES = astring.cpp astring.h\
                    lwtag.cpp lwtag.h\
                    profile.cpp profile.h\
                    routing.cpp routing.h\
+                   rtp.cpp rtp.h\
                    syd.cpp syd.h
 
 nodist_syd_SOURCES = moc_lwrp.cpp\
+                     moc_rtp.cpp\
                      moc_syd.cpp
 
 syd_LDADD = -lQtCore -lQtNetwork
+syd_LDFLAGS = -pthread
 
 CLEANFILES = *~\
              *.idb\

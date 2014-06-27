@@ -16,6 +16,7 @@
 #include "config.h"
 #include "lwrp.h"
 #include "routing.h"
+#include "rtp.h"
 
 #define SYD_USAGE "-d\n"
 
@@ -25,9 +26,13 @@ class MainObject : public QObject
  public:
   MainObject(QObject *parent=0);
 
+ private slots:
+  void exitData();
+
  private:
   Routing *syd_routing;
   LWRPServer *syd_lwrp;
+  RTPServer *syd_rtp;
 };
 
 
