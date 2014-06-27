@@ -103,6 +103,20 @@ void Routing::setSrcEnabled(int slot,bool state)
 }
 
 
+int Routing::activeSources() const
+{
+  int ret=0;
+
+  for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+    if(srcEnabled(i)) {
+      ret++;
+    }
+  }
+
+  return ret;
+}
+
+
 QHostAddress Routing::dstAddress(int slot) const
 {
   return QHostAddress(ntohl(dst_addr[slot]));

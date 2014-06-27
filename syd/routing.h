@@ -36,6 +36,7 @@ class Routing
   void setSrcName(int slot,const QString &str);
   bool srcEnabled(int slot) const;
   void setSrcEnabled(int slot,bool state);
+  int activeSources() const;
   QHostAddress dstAddress(int slot) const;
   void setDstAddress(int slot,const QHostAddress &addr);
   void setDstAddress(int slot,const QString &addr);

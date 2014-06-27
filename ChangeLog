@@ -16,3 +16,6 @@
 2014-06-27 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'syd/lwtag.cpp' where type 8 tags were not
 	initialized properly.
+2014-06-27 Fred Gleason <fredg@paravelsystems.com>
+	* Modified advertising generation routines in 'lwrp.cpp' to
+	support multiple sources.

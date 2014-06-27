@@ -196,12 +196,6 @@ void LWRPServer::advertReadData()
   LwSource::HardwareType hwid=LwSource::TypeUnknown;
 
   while((n=ctrl_advert_socket->readDatagram((char *)data,1500,&addr,&port))>0) {
-    if(addr.toString()=="192.168.10.30") {
-      printf("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X\n",
-	     0xFF&data[0],0xFF&data[1],0xFF&data[2],0xFF&data[3],
-	     0xFF&data[4],0xFF&data[5],0xFF&data[6],0xFF&data[7]);
-    }
-
     p.readPacket(data,n);
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
@@ -656,13 +650,16 @@ int LWRPServer::TagIsSource(const LwTag *tag) const
 
 void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
 {
+  //
+  // FIXME: This breaks when used with more than eight active sources!
+  //
   LwTag tag;
   char hostname[33];
 
   switch(type) {
   case LWRPServer::Type0:
     tag.setTagName("NEST");
-    tag.setTagValue(LwTag::TagType0,6);  // 5 + number of sources
+    tag.setTagValue(LwTag::TagType0,5+ctrl_routing->activeSources());
     p->addTag(tag);
     tag.setTagName("PVER");
     tag.setTagValue(LwTag::TagType8,2);
@@ -679,18 +676,22 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
     tag.setTagName("HWID");
     tag.setTagValue(LwTag::TagType8,SWITCHYARD_HWID);
     p->addTag(tag);
-    tag.setTagName("S001");
-    tag.setTagValue(LwTag::TagType6,0x1C);    // number of bytes describing source
-    p->addTag(tag);
-    tag.setTagName("INDI");
-    tag.setTagValue(LwTag::TagType0,2);
-    p->addTag(tag);
-    tag.setTagName("PSID");
-    tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(0).toIPv4Address()&0xFFFF);
-    p->addTag(tag);
-    tag.setTagName("BUSY");
-    tag.setTagValue(LwTag::TagType9,0);
-    p->addTag(tag);
+    for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+      if(ctrl_routing->srcEnabled(i)) {
+	tag.setTagName(QString().sprintf("S%03u",i+1));
+	tag.setTagValue(LwTag::TagType6,0x1C);    // number of bytes describing source
+	p->addTag(tag);
+	tag.setTagName("INDI");
+	tag.setTagValue(LwTag::TagType0,2);
+	p->addTag(tag);
+	tag.setTagName("PSID");
+	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(i).toIPv4Address()&0xFFFF);
+	p->addTag(tag);
+	tag.setTagName("BUSY");
+	tag.setTagValue(LwTag::TagType9,0);
+	p->addTag(tag);
+      }
+    }
     break;
 
   case LWRPServer::Type1:
@@ -728,7 +729,7 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
 
   case LWRPServer::Type2:
     tag.setTagName("NEST");
-    tag.setTagValue(LwTag::TagType0,4); // 3 + number of sources
+    tag.setTagValue(LwTag::TagType0,3+ctrl_routing->activeSources());
     p->addTag(tag);
     tag.setTagName("PVER");
     tag.setTagValue(LwTag::TagType8,2);
@@ -755,7 +756,7 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
     tag.setTagValue(LwTag::TagType8,4000);
     p->addTag(tag);
     tag.setTagName("NUMS");
-    tag.setTagValue(LwTag::TagType8,1);  // number of sources
+    tag.setTagValue(LwTag::TagType8,ctrl_routing->activeSources());
     p->addTag(tag);
     gethostname(hostname,32);
     tag.setTagName("ATRN");
@@ -765,45 +766,47 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
     //
     // One for each source
     //
-    tag.setTagName("S001");
-    tag.setTagValue(LwTag::TagType6,0x65);  // bytes in source record
-    p->addTag(tag);
-    tag.setTagName("INDI");
-    tag.setTagValue(LwTag::TagType0,0x0B);
-    p->addTag(tag);
-    tag.setTagName("PSID");
-    tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(0));
-    p->addTag(tag);
-    tag.setTagName("SHAB");
-    tag.setTagValue(LwTag::TagType7,0);
-    p->addTag(tag);
-    tag.setTagName("FSID");
-    tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(0));
-    p->addTag(tag);
-    tag.setTagName("FAST");
-    tag.setTagValue(LwTag::TagType7,2);
-    p->addTag(tag);
-    tag.setTagName("FASM");
-    tag.setTagValue(LwTag::TagType7,1);
-    p->addTag(tag);
-    tag.setTagName("BSID");
-    tag.setTagValue(LwTag::TagType1,0);
-    p->addTag(tag);
-    tag.setTagName("BAST");
-    tag.setTagValue(LwTag::TagType7,1);
-    p->addTag(tag);
-    tag.setTagName("BASM");
-    tag.setTagValue(LwTag::TagType7,0);
-    p->addTag(tag);
-    tag.setTagName("LPID");
-    tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(0));
-    p->addTag(tag);
-    tag.setTagName("STPL");
-    tag.setTagValue(LwTag::TagType7,0);
-    p->addTag(tag);
-    tag.setTagName("PSNM");  // 16 characters, null padded
-    tag.setTagValue(LwTag::TagString,ctrl_routing->srcName(0),16);
-    p->addTag(tag);
+    for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+      tag.setTagName(QString().sprintf("S%03u",i+1));
+      tag.setTagValue(LwTag::TagType6,0x65);  // bytes in source record
+      p->addTag(tag);
+      tag.setTagName("INDI");
+      tag.setTagValue(LwTag::TagType0,0x0B);
+      p->addTag(tag);
+      tag.setTagName("PSID");
+      tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
+      p->addTag(tag);
+      tag.setTagName("SHAB");
+      tag.setTagValue(LwTag::TagType7,0);
+      p->addTag(tag);
+      tag.setTagName("FSID");
+      tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(i));
+      p->addTag(tag);
+      tag.setTagName("FAST");
+      tag.setTagValue(LwTag::TagType7,2);
+      p->addTag(tag);
+      tag.setTagName("FASM");
+      tag.setTagValue(LwTag::TagType7,1);
+      p->addTag(tag);
+      tag.setTagName("BSID");
+      tag.setTagValue(LwTag::TagType1,0);
+      p->addTag(tag);
+      tag.setTagName("BAST");
+      tag.setTagValue(LwTag::TagType7,1);
+      p->addTag(tag);
+      tag.setTagName("BASM");
+      tag.setTagValue(LwTag::TagType7,0);
+      p->addTag(tag);
+      tag.setTagName("LPID");
+      tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
+      p->addTag(tag);
+      tag.setTagName("STPL");
+      tag.setTagValue(LwTag::TagType7,0);
+      p->addTag(tag);
+      tag.setTagName("PSNM");  // 16 characters, null padded
+      tag.setTagValue(LwTag::TagString,ctrl_routing->srcName(i),16);
+      p->addTag(tag);
+    }
     break;
 
   case LWRPServer::TypeLast:
