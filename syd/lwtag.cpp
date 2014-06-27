@@ -52,6 +52,11 @@ void LwTag::setTagValue(TagType type,const QVariant &value,int taglen)
 {
   lw_tag_type=type;
   if(taglen>0) {
+    QString str=value.toString().left(taglen);
+    for(int i=str.length();i<taglen;i++) {
+      str+=" ";
+    }
+    lw_tag_value=str;
   }
   else {
     lw_tag_value=value;
@@ -72,7 +77,7 @@ QString LwTag::normalizeName(const QString &str)
   if((0xff&str.toAscii()[0])>176) {
     QString ret;
     ret="{";
-    for(unsigned i=0;i<str.length();i++) {
+    for(int i=0;i<str.length();i++) {
       ret+=QString().sprintf("%02X ",0xff&str.toAscii()[i]);
     }
     ret=ret.left(ret.length()-1)+"}";
