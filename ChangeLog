@@ -19,3 +19,6 @@
 2014-06-27 Fred Gleason <fredg@paravelsystems.com>
 	* Modified advertising generation routines in 'lwrp.cpp' to
 	support multiple sources.
+2014-06-27 Fred Gleason <fredg@paravelsystems.com>
+	* Changed SWITCHYARD_ROUTING_FILE to
+	'/var/cache/aoip/routing.db' in 'syd/config.h'.
