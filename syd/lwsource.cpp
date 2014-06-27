@@ -135,6 +135,9 @@ QString LwSource::hardwareString(HardwareType type)
   case LwSource::TypeElement:
     ret="Element";
     break;
+
+  case LwSource::TypeUnknown:
+    break;
   }
   return ret;
 }

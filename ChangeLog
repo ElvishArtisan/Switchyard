@@ -22,3 +22,6 @@
 2014-06-27 Fred Gleason <fredg@paravelsystems.com>
 	* Changed SWITCHYARD_ROUTING_FILE to
 	'/var/cache/aoip/routing.db' in 'syd/config.h'.
+2014-06-27 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed warning in 'syd/lwsource.cpp'.
+	* Disabled strict aliasing warning in 'syd/Makefile.am'.

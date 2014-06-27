@@ -8,7 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -Wno-strict-aliasing
 INCLUDES = -I$(top_srcdir)/common
 LIBS = -L$(top_srcdir)/common
 MOC = @MOC@
