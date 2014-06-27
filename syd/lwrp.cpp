@@ -196,6 +196,12 @@ void LWRPServer::advertReadData()
   LwSource::HardwareType hwid=LwSource::TypeUnknown;
 
   while((n=ctrl_advert_socket->readDatagram((char *)data,1500,&addr,&port))>0) {
+    if(addr.toString()=="192.168.10.30") {
+      printf("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X\n",
+	     0xFF&data[0],0xFF&data[1],0xFF&data[2],0xFF&data[3],
+	     0xFF&data[4],0xFF&data[5],0xFF&data[6],0xFF&data[7]);
+    }
+
     p.readPacket(data,n);
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
@@ -651,7 +657,7 @@ int LWRPServer::TagIsSource(const LwTag *tag) const
 void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
 {
   LwTag tag;
-  char hostname[21];
+  char hostname[33];
 
   switch(type) {
   case LWRPServer::Type0:
@@ -749,11 +755,11 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
     tag.setTagValue(LwTag::TagType8,4000);
     p->addTag(tag);
     tag.setTagName("NUMS");
-    tag.setTagValue(LwTag::TagType1,1);  // number of sources
+    tag.setTagValue(LwTag::TagType8,1);  // number of sources
     p->addTag(tag);
-    gethostname(hostname,20);
+    gethostname(hostname,32);
     tag.setTagName("ATRN");
-    tag.setTagValue(LwTag::TagString,hostname,32); // 32 characters, zero padded
+    tag.setTagValue(LwTag::TagString,QString(hostname).split(".")[0],32); // 32 characters, zero padded
     p->addTag(tag);
 
     //

@@ -52,11 +52,11 @@ void LwTag::setTagValue(TagType type,const QVariant &value,int taglen)
 {
   lw_tag_type=type;
   if(taglen>0) {
-    QString str=value.toString().left(taglen);
-    for(int i=str.length();i<taglen;i++) {
-      str+=" ";
+    QByteArray data((const char *)value.toString().left(taglen).toAscii());
+    while(data.size()<taglen) {
+      data.append((char)0);
     }
-    lw_tag_value=str;
+    lw_tag_value=data;
   }
   else {
     lw_tag_value=value;
