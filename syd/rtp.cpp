@@ -34,6 +34,7 @@ void *RTPCallback(void *p)
   struct cmsghdr *chdr=NULL;
   struct pollfd fds;
   unsigned i;
+  uint32_t dst;
 
   //
   // Initialize Transmit Headers
@@ -98,7 +99,7 @@ void *RTPCallback(void *p)
 
     default:
       n=recvmsg(sock,&hdr,0);
-      uint32_t dst=0;
+      dst=0;
       chdr=CMSG_FIRSTHDR(&hdr);
       while(chdr!=NULL) {
 	if(chdr->cmsg_type==IP_PKTINFO) {
