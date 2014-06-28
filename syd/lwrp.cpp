@@ -276,21 +276,8 @@ void LWRPServer::advertSendData()
 {
   int base=GetAdvertInterval();
   double stamp=GetTimestamp();
-  uint8_t data[1500];
-  int n;
 
-  LwPacket *p=new LwPacket();
-  p->setSequenceNumber(ctrl_advert_seqno++);
-  GenerateAdvertPacket(p,ctrl_advert_type);
-  if((n=p->writePacket(data,1500))>0) {
-  ctrl_advert_socket->
-    writeDatagram((const char *)data,n,QHostAddress(SWITCHYARD_ADVERTS_ADDRESS),
-		  SWITCHYARD_ADVERTS_PORT);
-  }
-  else {
-    syslog(LOG_WARNING,"lwcd: invalid LWCP packet generated");
-  }
-  delete p;
+  SendSourceUpdate(ctrl_advert_type);
   ctrl_advert_type=(LWRPServer::AdvertType)(ctrl_advert_type+1);
   if(ctrl_advert_type==LWRPServer::TypeLast) {
     ctrl_advert_type=LWRPServer::Type0;
@@ -716,6 +703,26 @@ int LWRPServer::TagIsSource(const LwTag *tag) const
     }
   }
   return -1;
+}
+
+
+void LWRPServer::SendSourceUpdate(AdvertType type)
+{
+  uint8_t data[1500];
+  int n;
+
+  LwPacket *p=new LwPacket();
+  p->setSequenceNumber(ctrl_advert_seqno++);
+  GenerateAdvertPacket(p,type);
+  if((n=p->writePacket(data,1500))>0) {
+    ctrl_advert_socket->writeDatagram((const char *)data,n,
+				      QHostAddress(SWITCHYARD_ADVERTS_ADDRESS),
+				      SWITCHYARD_ADVERTS_PORT);
+  }
+  else {
+    syslog(LOG_WARNING,"invalid LWCP packet generated");
+  }
+  delete p;
 }
 
 

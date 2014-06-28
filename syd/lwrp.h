@@ -59,6 +59,7 @@ class LWRPServer : public QObject
   void UnsubscribeStream(int slot);
   LwSource *GetSource(const QHostAddress &node_addr,unsigned slot);
   int TagIsSource(const LwTag *tag) const;
+  void SendSourceUpdate(AdvertType type);
   void GenerateAdvertPacket(LwPacket *p,AdvertType type) const;
   int GetAdvertInterval() const;
   double GetTimestamp() const;

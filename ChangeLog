@@ -28,3 +28,6 @@
 2014-06-27 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented stream collation in 'syd/lwrp.cpp' and
 	'syd/lwrp.h'.
+2014-06-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to send immediate advertising updates when
+	stream parameters are changed in 'syd/lwrp.cpp'.
