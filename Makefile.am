@@ -13,13 +13,6 @@ SUBDIRS = common\
           conf\
           syd
 
-install-exec-local:	
-	mkdir -p /etc/init.d
-	cp rc.syd /etc/init.d/syd
-
-uninstall-exec:
-	rm -f /etc/init.d/syd
-
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
              get_target.sh\

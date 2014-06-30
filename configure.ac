@@ -70,6 +70,7 @@ AC_CONFIG_FILES([\
     common/Makefile \
     conf/Makefile \
     syd/Makefile \
+    syd/rc.syd \
     ])
 helpers/link_common.sh syd
 

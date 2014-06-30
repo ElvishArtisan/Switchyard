@@ -34,6 +34,7 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   bool debug=false;
+  FILE *f=NULL;
 
   //
   // Process Command Line
@@ -71,6 +72,17 @@ MainObject::MainObject(QObject *parent)
   syd_adv=new AdvServer(syd_routing,true,this);
 
   //
+  // Detach and write PID file
+  //
+  if(!debug) {
+    daemon(0,0);
+    if((f=fopen(SYD_PID_FILE,"w"))!=NULL) {
+      fprintf(f,"%u",getpid());
+      fclose(f);
+    }
+  }
+
+  //
   // Start RTP
   //
   syd_rtp=new RTPServer(syd_routing,NULL,this);
@@ -88,6 +100,7 @@ void MainObject::exitData()
 {
   syslog(LOG_DEBUG,"calling exit handler");
   unlink(SWITCHYARD_SOURCES_FILE);
+  unlink(SYD_PID_FILE);
   exit(0);
 }
 

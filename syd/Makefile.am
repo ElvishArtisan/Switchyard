@@ -13,6 +13,14 @@ INCLUDES = -I$(top_srcdir)/common
 LIBS = -L$(top_srcdir)/common
 MOC = @MOC@
 
+install-exec-local:	
+	mkdir -p ${DESTDIR}/etc/init.d
+	cp rc.syd ${DESTDIR}/etc/init.d/syd
+	chmod 755 ${DESTDIR}/etc/init.d/syd
+
+uninstall-local:
+	rm -f ${DESTDIR}/etc/init.d/syd
+
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
 	$(MOC) $< -o $@
@@ -49,6 +57,9 @@ CLEANFILES = *~\
              *.obj\
              *.pdb\
              moc_*
+
+DISTCLEANFILES = rc.syd
+
 MAINTAINERCLEANFILES = *~\
                        Makefile.in\
                        adv_astring.cpp adv_astring.h\

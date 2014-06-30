@@ -20,6 +20,7 @@
 #include "rtp.h"
 
 #define SYD_USAGE "-d\n"
+#define SYD_PID_FILE "/var/run/syd.pid"
 
 class MainObject : public QObject
 {
