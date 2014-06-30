@@ -23,10 +23,6 @@
 LWRPServer::LWRPServer(Routing *routing)
   : QObject()
 {
-  struct ip_mreqn mreq;
-  struct sockaddr_in sa;
-  long sockopt;
-  int sock;
   QHostAddress addr;
 
   ctrl_routing=routing;
@@ -44,35 +40,6 @@ LWRPServer::LWRPServer(Routing *routing)
     syslog(LOG_ERR,"unable to bind port %d",SWITCHYARD_LWRP_PORT);
     exit(256);
   }
-
-  //
-  // Initialize Clock Socket
-  //
-  if((sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    syslog(LOG_ERR,"unable to create clock socket [%s]",strerror(errno));
-    exit(256);
-  }
-  sockopt=O_NONBLOCK;
-  fcntl(sock,F_SETFL,sockopt);
-  memset(&mreq,0,sizeof(mreq));
-  mreq.imr_multiaddr.s_addr=htonl(QHostAddress(SWITCHYARD_CLOCK_ADDRESS).toIPv4Address());
-  mreq.imr_address.s_addr=htonl(ctrl_routing->nicAddress().toIPv4Address());
-  mreq.imr_ifindex=0;
-  if(setsockopt(sock,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-    syslog(LOG_ERR,"unable to subscribe to clock stream [%s]",strerror(errno));
-    exit(256);
-  }
-  memset(&sa,0,sizeof(sa));
-  sa.sin_family=AF_INET;
-  sa.sin_port=htons(SWITCHYARD_CLOCK_PORT);
-  sa.sin_addr.s_addr=htonl(INADDR_ANY);
-  if(bind(sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    syslog(LOG_ERR,"unable to bind clock port [%s]",strerror(errno));
-    exit(256);
-  }
-  ctrl_clock_socket=new QUdpSocket(this);
-  ctrl_clock_socket->setSocketDescriptor(sock,QAbstractSocket::BoundState);
-  connect(ctrl_clock_socket,SIGNAL(readyRead()),this,SLOT(clockReadData()));
 
   //
   // Initialize slots
@@ -131,37 +98,6 @@ void LWRPServer::readData(int id)
       }
     }
   }
-}
-
-
-void LWRPServer::clockReadData()
-{
-  uint8_t data[1500];
-  QHostAddress addr;
-  uint16_t port;
-
-  while(ctrl_clock_socket->readDatagram((char *)data,1500,&addr,&port)>0) {
-    ctrl_routing->setClkAddress(addr);
-  }
-}
-
-
-void LWRPServer::clockStartData()
-{
-  /*
-  Source *src=GetClockSource();
-  if(src==NULL) {
-    fprintf(stderr,"no suitable clock stream found\n");
-    exit(256);
-  }
-  lw_shm->shm_clock_addr=htonl(src->streamAddress().toIPv4Address());
-  Subscribe(ctrl_advert_socket->socketDescriptor(),lw_shm->shm_clock_addr,
-	      htonl(ctrl_routing->nicAddress().toIPv4Address()));
-  fprintf(stderr,"using %s from %s node at %s for clock\n",
-	  (const char *)src->streamAddress().toString().toAscii(),
-	  (const char *)Source::hardwareString(src->hardwareType()).toAscii(),
-	  (const char *)src->nodeAddress().toString().toAscii());
-  */
 }
 
 

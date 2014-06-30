@@ -33,8 +33,6 @@ class LWRPServer : public QObject
  private slots:
   void newConnectionData();
   void readData(int id);
-  void clockReadData();
-  void clockStartData();
   void closedData(int id);
 
  private:
@@ -54,7 +52,6 @@ class LWRPServer : public QObject
   QTcpServer *ctrl_server;
   QSignalMapper *ctrl_read_mapper;
   QSignalMapper *ctrl_closed_mapper;
-  QUdpSocket *ctrl_clock_socket;
   Routing *ctrl_routing;
 };
 

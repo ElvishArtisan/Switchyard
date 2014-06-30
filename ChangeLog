@@ -38,3 +38,6 @@
 	* Split advertising code from 'common/lwrp_server.cpp' and
 	'common/lwrp_server.h' into 'common/adv_server.cpp' and
 	'common/adv_server.h'.
+2014-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Removed clock code from 'common/lwrp_server.cpp' and
+	'common/lwrp_server.h'.
