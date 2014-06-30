@@ -23,10 +23,11 @@ sbin_PROGRAMS = syd
 dist_syd_SOURCES = rtp_callback.cpp\
                    syd.cpp syd.h
 
-nodist_syd_SOURCES = adv_astring.cpp adv_astring.h\
-                     adv_packet.cpp adv_packet.h\
+nodist_syd_SOURCES = adv_packet.cpp adv_packet.h\
+                     adv_server.cpp adv_server.h\
                      adv_source.cpp adv_source.h\
                      adv_tag.cpp adv_tag.h\
+                     astring.cpp astring.h\
                      cmdswitch.cpp cmdswitch.h\
                      config.h\
                      lwrp_clientconnection.cpp lwrp_clientconnection.h\
@@ -34,6 +35,7 @@ nodist_syd_SOURCES = adv_astring.cpp adv_astring.h\
                      profile.cpp profile.h\
                      routing.cpp routing.h\
                      rtp.cpp rtp.h\
+                     moc_adv_server.cpp\
                      moc_lwrp_server.cpp\
                      moc_rtp.cpp\
                      moc_syd.cpp
@@ -51,6 +53,7 @@ MAINTAINERCLEANFILES = *~\
                        Makefile.in\
                        adv_astring.cpp adv_astring.h\
                        adv_packet.cpp adv_packet.h\
+                       adv_server.cpp adv_server.h\
                        adv_source.cpp adv_source.h\
                        adv_tag.cpp adv_tag.h\
                        cmdswitch.cpp cmdswitch.h\

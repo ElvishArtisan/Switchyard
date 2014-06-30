@@ -9,14 +9,14 @@
 #
 # USAGE: link_common.sh <target-dir>
 
-rm -f $1/adv_astring.cpp
-ln -s ../common/adv_astring.cpp $1/adv_astring.cpp
-rm -f $1/adv_astring.h
-ln -s ../common/adv_astring.h $1/adv_astring.h
 rm -f $1/adv_packet.cpp
 ln -s ../common/adv_packet.cpp $1/adv_packet.cpp
 rm -f $1/adv_packet.h
 ln -s ../common/adv_packet.h $1/adv_packet.h
+rm -f $1/adv_server.cpp
+ln -s ../common/adv_server.cpp $1/adv_server.cpp
+rm -f $1/adv_server.h
+ln -s ../common/adv_server.h $1/adv_server.h
 rm -f $1/adv_source.cp
 ln -s ../common/adv_source.cpp $1/adv_source.cpp
 rm -f $1/adv_source.
@@ -25,6 +25,10 @@ rm -f $1/adv_tag.cpp
 ln -s ../common/adv_tag.cpp $1/adv_tag.cpp
 rm -f $1/adv_tag.h
 ln -s ../common/adv_tag.h $1/adv_tag.h
+rm -f $1/astring.cpp
+ln -s ../common/astring.cpp $1/astring.cpp
+rm -f $1/astring.h
+ln -s ../common/astring.h $1/astring.h
 rm -f $1/cmdswitch.cp
 ln -s ../common/cmdswitch.cpp $1/cmdswitch.cpp
 rm -f $1/cmdswitch.h

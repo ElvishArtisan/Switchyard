@@ -27,7 +27,6 @@ void RTPCallback(int sock,Routing *r,void *priv)
   uint32_t dst;
   ssize_t n;
 
-  printf("enabled: %d\n",r->src_enabled[0]);
   //
   // Initialize Transmit Headers
   //

@@ -66,6 +66,11 @@ MainObject::MainObject(QObject *parent)
   syd_lwrp=new LWRPServer(syd_routing);
 
   //
+  // Start Advertisements
+  //
+  syd_adv=new AdvServer(syd_routing,true,this);
+
+  //
   // Start RTP
   //
   syd_rtp=new RTPServer(syd_routing,NULL,this);

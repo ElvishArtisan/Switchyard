@@ -10,6 +10,7 @@
 
 EXTRA_DISTS = adv_astring.cpp adv_astring.h\
               adv_packet.cpp adv_packet.h\
+              adv_server.cpp adv_server.h\
               adv_source.cpp adv_source.h\
               adv_tag.cpp adv_tag.h\
               cmdswitch.cpp cmdswitch.h\

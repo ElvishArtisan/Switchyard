@@ -13,6 +13,7 @@
 
 #include <QtCore/QObject>
 
+#include "adv_server.h"
 #include "config.h"
 #include "lwrp_server.h"
 #include "routing.h"
@@ -32,6 +33,7 @@ class MainObject : public QObject
  private:
   Routing *syd_routing;
   LWRPServer *syd_lwrp;
+  AdvServer *syd_adv;
   RTPServer *syd_rtp;
 };
 

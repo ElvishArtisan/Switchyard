@@ -34,3 +34,7 @@
 2014-06-30 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored code into AoIP common and application-specific
 	elements.
+2014-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Split advertising code from 'common/lwrp_server.cpp' and
+	'common/lwrp_server.h' into 'common/adv_server.cpp' and
+	'common/adv_server.h'.

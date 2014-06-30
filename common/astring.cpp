@@ -11,7 +11,7 @@
 
 #include <QtCore/QStringList>
 
-#include "adv_astring.h"
+#include "astring.h"
 
 
 AString::AString()
