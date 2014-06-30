@@ -24,8 +24,11 @@ class Routing
 {
  public:
   Routing();
+  QString hostName() const;
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
+  QHostAddress nicNetmask() const;
+  void setNicNetmask(const QHostAddress &addr);
   QHostAddress clkAddress() const;
   void setClkAddress(const QHostAddress &addr);
   int srcNumber(int slot) const;
@@ -44,12 +47,14 @@ class Routing
   void setDstName(int slot,const QString &str);
   unsigned nicQuantity() const;
   QHostAddress nicAddress(unsigned n);
+  QHostAddress nicNetmask(unsigned n);
   QString nicDevice(unsigned n);
   void subscribe(const QHostAddress &addr);
   void unsubscribe(const QHostAddress &addr);
   void load();
   void save() const;
   uint32_t nic_addr;
+  uint32_t nic_mask;
   uint32_t clk_addr;
   uint32_t src_addr[SWITCHYARD_SLOTS];
   bool src_enabled[SWITCHYARD_SLOTS];
@@ -61,6 +66,7 @@ class Routing
   QString sy_src_names[SWITCHYARD_SLOTS];
   QString sy_dst_names[SWITCHYARD_SLOTS];
   std::vector<QHostAddress> sy_nic_addresses;
+  std::vector<QHostAddress> sy_nic_netmasks;
   std::vector<QString> sy_nic_devices;
   int sy_fd;
 };

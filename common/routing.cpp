@@ -20,6 +20,8 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QtCore/QStringList>
+
 #include "profile.h"
 #include "routing.h"
 
@@ -27,6 +29,14 @@ Routing::Routing()
 {
   LoadInterfaces();
   load();
+}
+
+
+QString Routing::hostName() const
+{
+  char hostname[HOST_NAME_MAX];
+  gethostname(hostname,HOST_NAME_MAX);
+  return QString(hostname).split(".")[0];
 }
 
 
@@ -39,6 +49,18 @@ QHostAddress Routing::nicAddress() const
 void Routing::setNicAddress(const QHostAddress &addr)
 {
   nic_addr=htonl(addr.toIPv4Address());
+}
+
+
+QHostAddress Routing::nicNetmask() const
+{
+  return QHostAddress(ntohl(nic_mask));
+}
+
+
+void Routing::setNicNetmask(const QHostAddress &addr)
+{
+  nic_mask=htonl(addr.toIPv4Address());
 }
 
 
@@ -157,6 +179,12 @@ unsigned Routing::nicQuantity() const
 QHostAddress Routing::nicAddress(unsigned n)
 {
   return sy_nic_addresses[n];
+}
+
+
+QHostAddress Routing::nicNetmask(unsigned n)
+{
+  return sy_nic_netmasks[n];
 }
 
 
@@ -285,9 +313,18 @@ void Routing::LoadInterfaces()
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[4],
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[5]));
 	sy_nic_addresses.push_back(QHostAddress());
+	sy_nic_netmasks.push_back(QHostAddress());
 	if(ioctl(sy_fd,SIOCGIFADDR,&ifr)==0) {
 	  struct sockaddr_in sa=*(sockaddr_in *)(&ifr.ifr_addr);
 	  sy_nic_addresses.back().setAddress(ntohl(sa.sin_addr.s_addr));
+	}
+	if(ioctl(sy_fd,SIOCGIFNETMASK,&ifr)==0) {
+	  struct sockaddr_in sa=*(sockaddr_in *)(&ifr.ifr_netmask);
+	  sy_nic_netmasks.back().setAddress(ntohl(sa.sin_addr.s_addr));
+	}
+	if(strcmp(ifr.ifr_name,"eth0")==0) {
+	  nic_addr=htonl(sy_nic_addresses.back().toIPv4Address());
+	  nic_mask=htonl(sy_nic_netmasks.back().toIPv4Address());
 	}
       }
     }

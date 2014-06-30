@@ -126,17 +126,12 @@ bool LWRPServer::ExecuteVer(int id,QStringList &args)
 
 bool LWRPServer::ExecuteIp(int ch,QStringList &args)
 {
-  /*
-  SendCommand93(ch,QString().
-		sprintf("IP address %s netmask %s gateway %s hostname %s",
-			(const char *)ctrl_routing->nicAddress().toString().
-			toAscii(),
-			(const char *)lw_config->ipNetmask().toString().
-			toAscii(),
-			(const char *)lw_config->ipGateway().toString().
-			toAscii(),
-			(const char *)lw_config->hostName().toAscii()));
-  */
+  SendCommand(ch,QString("IP address ")+
+	      ctrl_routing->nicAddress().toString()+" "+
+	      "netmask "+ctrl_routing->nicNetmask().toString()+" "+
+	      "gateway 0.0.0.0 "+
+	      "hostname "+ctrl_routing->hostName());
+
   return true;
 }
 
