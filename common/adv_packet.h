@@ -1,4 +1,4 @@
-// lwpacket.h
+// adv_packet.h
 //
 // Abstract a LiveWire Control Protocol packet.
 //
@@ -9,35 +9,35 @@
 //   All Rights Reserved.
 //
 
-#ifndef LWPACKET_H
-#define LWPACKET_H
+#ifndef PACKET_H
+#define PACKET_H
 
 #include <stdint.h>
 
 #include <vector>
 
-#include <lwtag.h>
+#include "adv_tag.h"
 
-class LwPacket
+class Packet
 {
  public:
-  LwPacket();
-  ~LwPacket();
+  Packet();
+  ~Packet();
   uint32_t sequenceNumber() const;
   void setSequenceNumber(uint32_t num);
   unsigned tags() const;
-  LwTag *tag(unsigned n);
-  void addTag(const LwTag &tag);
+  Tag *tag(unsigned n);
+  void addTag(const Tag &tag);
   bool readPacket(uint8_t *data,uint32_t size);
   int writePacket(uint8_t *data,uint32_t maxsize);
   QString dump() const;
-  LwPacket &operator++();
-  LwPacket operator++(int);
+  Packet &operator++();
+  Packet operator++(int);
 
  private:
   uint32_t lw_sequence_number;
-  std::vector<LwTag *> lw_tags;
+  std::vector<Tag *> lw_tags;
 };
 
 
-#endif  // LWPACKET_H
+#endif  // PACKET_H

@@ -1,29 +1,27 @@
-// lwsource.h
+// adv_source.h
 //
 // Container class for info about a Livewire source
 //
 // (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
 //
-//    $Id: lwsource.h,v 1.1 2010/10/02 22:14:38 pcvs Exp $
-//
 //   All Rights Reserved.
 //
 
-#ifndef LWSOURCE_H
-#define LWSOURCE_H
+#ifndef SOURCE_H
+#define SOURCE_H
 
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 #include <QtNetwork/QHostAddress>
 
-class LwSource
+class Source
 {
  public:
   enum HardwareType {TypeUnknown=0,TypeAnalogNode=0x1404,TypeMicNode=0x1403,
 		     TypeMixEngine=0x1406,TypeElement=0x1407};
   enum StreamType {StreamUnknown=0,StreamFast=1,StreamMedium=2,StreamSlow=3,
 		   StreamSurround=4};
-  LwSource();
+  Source();
   QHostAddress nodeAddress() const;
   void setNodeAddress(const QHostAddress &addr);
   QString nodeName() const;
@@ -62,4 +60,4 @@ class LwSource
 };
 
 
-#endif  // LWTAG_H
+#endif  // SOURCE_H

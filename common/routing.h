@@ -1,6 +1,6 @@
 // routing.h
 //
-// Switchyard stream routing configuration
+// AoIP stream routing configuration
 //
 // (C) 2014 Fred Gleason <fredg@paravelsystems.com>
 //     All Rights Reserved.

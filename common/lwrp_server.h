@@ -1,14 +1,14 @@
-// lwrp.h
+// lwrp_server.h
 //
-// Livewire Control Protocol
+// Livewire Control Protocol Server
 //
 //   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
 //
 //   All Rights Reserved.
 //
 
-#ifndef LWRP_H
-#define LWRP_H
+#ifndef LWRP_SERVER_H
+#define LWRP_SERVER_H
 
 #include <vector>
 
@@ -18,12 +18,13 @@
 #include <QtCore/QTimer>
 #include <QtNetwork/QTcpServer>
 
-#include "astring.h"
-#include "clientconnection.h"
-#include "lwsource.h"
-#include "lwpacket.h"
+#include "adv_astring.h"
+#include "adv_packet.h"
+#include "adv_source.h"
+#include "adv_tag.h"
 
-#include "lwtag.h"
+#include "lwrp_clientconnection.h"
+
 #include "routing.h"
 
 class LWRPServer : public QObject
@@ -57,15 +58,15 @@ class LWRPServer : public QObject
   void BroadcastCommand(const QString &cmd);
   void SendCommand(int ch,const QString &cmd);
   void UnsubscribeStream(int slot);
-  LwSource *GetSource(const QHostAddress &node_addr,unsigned slot);
-  int TagIsSource(const LwTag *tag) const;
+  Source *GetSource(const QHostAddress &node_addr,unsigned slot);
+  int TagIsSource(const Tag *tag) const;
   void SendSourceUpdate(AdvertType type);
-  void GenerateAdvertPacket(LwPacket *p,AdvertType type) const;
+  void GenerateAdvertPacket(Packet *p,AdvertType type) const;
   int GetAdvertInterval() const;
   double GetTimestamp() const;
   void ScheduleSourceSave();
   std::vector<ClientConnection *>ctrl_client_connections;
-  std::vector<LwSource *>ctrl_sources;
+  std::vector<Source *>ctrl_sources;
   QTcpServer *ctrl_server;
   QSignalMapper *ctrl_read_mapper;
   QSignalMapper *ctrl_closed_mapper;
@@ -81,4 +82,4 @@ class LWRPServer : public QObject
 };
 
 
-#endif  // LWRP_H
+#endif  // LWRP_SERVER_H

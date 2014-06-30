@@ -1,4 +1,4 @@
-// lwpacket.cpp
+// packet.cpp
 //
 // Abstract a LiveWire Control Protocol packet.
 //
@@ -14,15 +14,15 @@
 
 #include <QtCore/QString>
 
-#include <lwpacket.h>
+#include <adv_packet.h>
 
-LwPacket::LwPacket()
+Packet::Packet()
 {
   lw_sequence_number=rand();
 }
 
 
-LwPacket::~LwPacket()
+Packet::~Packet()
 {
   for(unsigned i=0;i<lw_tags.size();i++) {
     delete lw_tags[i];
@@ -31,42 +31,42 @@ LwPacket::~LwPacket()
 }
 
 
-uint32_t LwPacket::sequenceNumber() const
+uint32_t Packet::sequenceNumber() const
 {
   return lw_sequence_number;
 }
 
 
-void LwPacket::setSequenceNumber(uint32_t num)
+void Packet::setSequenceNumber(uint32_t num)
 {
   lw_sequence_number=num;
 }
 
 
-unsigned LwPacket::tags() const
+unsigned Packet::tags() const
 {
   return lw_tags.size();
 }
 
 
-LwTag *LwPacket::tag(unsigned n)
+Tag *Packet::tag(unsigned n)
 {
   return lw_tags[n];
 }
 
 
-void LwPacket::addTag(const LwTag &tag)
+void Packet::addTag(const Tag &tag)
 {
-  lw_tags.push_back(new LwTag());
+  lw_tags.push_back(new Tag());
   *(lw_tags.back())=tag;
 }
 
 
-bool LwPacket::readPacket(uint8_t *data,uint32_t size)
+bool Packet::readPacket(uint8_t *data,uint32_t size)
 {
   QString tag;
   QVariant value;
-  LwTag::TagType type=LwTag::TagLast;
+  Tag::TagType type=Tag::TagLast;
   unsigned len=0;
   QByteArray *bytearray;
   unsigned istate=0;
@@ -96,16 +96,16 @@ bool LwPacket::readPacket(uint8_t *data,uint32_t size)
       break;
 
     case 4:
-      type=(LwTag::TagType)(0xff&data[i]);
+      type=(Tag::TagType)(0xff&data[i]);
       switch(type) {
-      case LwTag::TagType0:  // Single Byte
-      case LwTag::TagType7:
+      case Tag::TagType0:  // Single Byte
+      case Tag::TagType7:
 	value=QVariant((uint8_t)(0xff&data[i+1]));
 	i+=1;
 	istate=0;
 	break;
       
-      case LwTag::TagType1:  // IPv4 Address
+      case Tag::TagType1:  // IPv4 Address
 	value.setValue((uint32_t)(((0xff&data[i+1])<<24)|((0xff&data[i+2])<<16)|
 				  ((0xff&data[i+3])<<8)|(0xff&data[i+4])));
 	/*
@@ -116,7 +116,7 @@ bool LwPacket::readPacket(uint8_t *data,uint32_t size)
 	istate=0;
 	break;
       
-      case LwTag::TagString:
+      case Tag::TagString:
 	len=((0xff&data[i+1])<<8)+(0xff&data[i+2]);
 	bytearray=new QByteArray(len,'\0');
 	for(unsigned j=i+3;j<(i+3+len);j++) {
@@ -128,7 +128,7 @@ bool LwPacket::readPacket(uint8_t *data,uint32_t size)
 	istate=0;
 	break;
       
-      case LwTag::TagMeter:
+      case Tag::TagMeter:
 	len=2*(((0xff&data[i+1])<<8)+(0xff&data[i+2]));
 	bytearray=new QByteArray(len,'\0');
 	for(unsigned j=i+3;j<(i+3+len);j++) {
@@ -140,14 +140,14 @@ bool LwPacket::readPacket(uint8_t *data,uint32_t size)
 	istate=0;
 	break;
       
-      case LwTag::TagType6:  // Two Bytes
-      case LwTag::TagType8:
+      case Tag::TagType6:  // Two Bytes
+      case Tag::TagType8:
 	value.setValue((uint)(((0xff&data[i+1])<<8)|(0xff&data[i+2])));
 	i+=2;
 	istate=0;
 	break;
       
-      case LwTag::TagType9:  // Eight Bytes
+      case Tag::TagType9:  // Eight Bytes
 	value=QVariant((qulonglong)(((uint64_t)(0xff&data[i+1])<<56)+
 				    ((uint64_t)(0xff&data[i+2])<<48)+
 				    ((uint64_t)(0xff&data[i+3])<<40)+
@@ -169,12 +169,12 @@ bool LwPacket::readPacket(uint8_t *data,uint32_t size)
 	value=QVariant(*bytearray);
 	delete bytearray;
 	i+=(1+len);
-	fprintf(stderr,"LwPacket: unknown LWCP data type %u\n",type);
+	fprintf(stderr,"Packet: unknown LWCP data type %u\n",type);
 	fprintf(stderr,"packet dump: %s\n",(const char *)dump().toAscii());
 	istate=0;
 	break;
       }
-      lw_tags.push_back(new LwTag());
+      lw_tags.push_back(new Tag());
       lw_tags.back()->setTagName(tag);
       lw_tags.back()->setTagValue(type,value);
       break;
@@ -182,14 +182,14 @@ bool LwPacket::readPacket(uint8_t *data,uint32_t size)
     /*
     tag="";
     value=QVariant();
-    type=LwTag::TagLast;
+    type=Tag::TagLast;
     */
   }
   return true;
 }
 
 
-int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
+int Packet::writePacket(uint8_t *data,uint32_t maxsize)
 {
   //
   // Generate header
@@ -220,8 +220,8 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
       return -1;
     }
     switch(lw_tags[i]->tagType()) {
-    case LwTag::TagType0:  // Single byte
-    case LwTag::TagType7:
+    case Tag::TagType0:  // Single byte
+    case Tag::TagType7:
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c",
 		    0xff&lw_tags[i]->tagValue().toUInt());
       if(ptr>=maxsize) {
@@ -229,7 +229,7 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
       }
       break;
 
-    case LwTag::TagType1:  // Four bytes
+    case Tag::TagType1:  // Four bytes
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c%c%c",
 		    0xff&(lw_tags[i]->tagValue().toUInt()>>24),
 		    0xff&(lw_tags[i]->tagValue().toUInt()>>16),
@@ -240,8 +240,8 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
       }
       break;
 
-    case LwTag::TagType6:  // Two bytes
-    case LwTag::TagType8:
+    case Tag::TagType6:  // Two bytes
+    case Tag::TagType8:
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c",
 		    0xff&(lw_tags[i]->tagValue().toUInt()>>8),
 		    0xff&lw_tags[i]->tagValue().toUInt());
@@ -250,7 +250,7 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
       }
       break;
 
-    case LwTag::TagType9:  // Eight bytes
+    case Tag::TagType9:  // Eight bytes
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c%c%c%c%c%c%c",
 		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>56)),
 		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>48)),
@@ -265,7 +265,7 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
       }
       break;
 
-    case LwTag::TagString:
+    case Tag::TagString:
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c",
 		    0xff&(lw_tags[i]->tagValue().toByteArray().size()>>8),
 		    0xff&lw_tags[i]->tagValue().toByteArray().size());
@@ -290,7 +290,7 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
       */
       break;
 
-    case LwTag::TagMeter:
+    case Tag::TagMeter:
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c",
 		    0xff&((lw_tags[i]->tagValue().toByteArray().size()/2)>>8),
 		    0xff&(lw_tags[i]->tagValue().toByteArray().size()/2));
@@ -315,28 +315,28 @@ int LwPacket::writePacket(uint8_t *data,uint32_t maxsize)
 }
 
 
-QString LwPacket::dump() const
+QString Packet::dump() const
 {
   QString str;
 
   str+="LWCP Packet\n";
   str+=QString().sprintf(" Seq No: %u\n",sequenceNumber());
   for(unsigned i=0;i<lw_tags.size();i++) {
-    str+=LwTag::normalizeName(lw_tags[i]->tagName())+": ";
+    str+=Tag::normalizeName(lw_tags[i]->tagName())+": ";
     switch(lw_tags[i]->tagType()) {
-    case LwTag::TagType0:
-    case LwTag::TagType7:
+    case Tag::TagType0:
+    case Tag::TagType7:
       str+=QString().sprintf("%02X",0xff&lw_tags[i]->tagValue().toUInt());
       break;
 
-    case LwTag::TagType6:
-    case LwTag::TagType8:
+    case Tag::TagType6:
+    case Tag::TagType8:
       str+=QString().sprintf("%02X %02X",
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>8),
 			     0xff&lw_tags[i]->tagValue().toUInt());
       break;
 
-    case LwTag::TagType1:
+    case Tag::TagType1:
       str+=QString().sprintf("%02X %02X %02X %02X",
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>24),
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>16),
@@ -344,7 +344,7 @@ QString LwPacket::dump() const
 			     0xff&lw_tags[i]->tagValue().toUInt());
       break;
 
-    case LwTag::TagType9:
+    case Tag::TagType9:
       str+=QString().
 	sprintf("%02X %02X %02X %02X %02X %02X %02X %02X",
 		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>56)),
@@ -357,7 +357,7 @@ QString LwPacket::dump() const
 		(unsigned)(0xff&lw_tags[i]->tagValue().toULongLong()));
       break;
 
-    case LwTag::TagString:
+    case Tag::TagString:
       str+=QString().sprintf("\"%s\" {",
 			     (const char *)lw_tags[i]->tagValue().toString().
 			     toAscii());
@@ -369,7 +369,7 @@ QString LwPacket::dump() const
       str+="}";
       break;
 
-    case LwTag::TagMeter:
+    case Tag::TagMeter:
       str+="METER UPDATE";
       break;
 
@@ -382,16 +382,16 @@ QString LwPacket::dump() const
 }
 
 
-LwPacket &LwPacket::operator++()
+Packet &Packet::operator++()
 {
   lw_sequence_number++;
   return *this;
 }
 
 
-LwPacket LwPacket::operator++(int)
+Packet Packet::operator++(int)
 {
-  LwPacket ret=*this;
+  Packet ret=*this;
   operator++();
   return ret;
 }

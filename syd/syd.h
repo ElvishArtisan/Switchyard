@@ -14,7 +14,7 @@
 #include <QtCore/QObject>
 
 #include "config.h"
-#include "lwrp.h"
+#include "lwrp_server.h"
 #include "routing.h"
 #include "rtp.h"
 

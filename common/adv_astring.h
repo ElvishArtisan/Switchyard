@@ -1,4 +1,4 @@
-//   astring.h
+//   adv_astring.h
 //
 //   A String with quote mode
 //
@@ -23,4 +23,4 @@ class AString : public QString
 };
 
 
-#endif  // STRING_H
+#endif  // ADV_ASTRING_H

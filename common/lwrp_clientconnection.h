@@ -1,6 +1,6 @@
-// clientconnection.h
+// lwrp_clientconnection.h
 //
-// Container class for TCP client connections.
+// Container class for LWRP client connections.
 //
 //   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
 //

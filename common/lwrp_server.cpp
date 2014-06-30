@@ -1,6 +1,6 @@
-// lwrp.cpp
+// lwrp_server.cpp
 //
-// Livewire Control Protocol
+// Livewire Control Protocol Server
 //
 //   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,7 +18,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
-#include "lwrp.h"
+#include "lwrp_server.h"
 
 LWRPServer::LWRPServer(Routing *routing)
   : QObject()
@@ -195,10 +195,10 @@ void LWRPServer::advertReadData()
   QHostAddress addr;
   uint16_t port;
   int n;
-  LwPacket p;
-  LwSource *src=NULL;
+  Packet p;
+  Source *src=NULL;
   int slot;
-  LwSource::HardwareType hwid=LwSource::TypeUnknown;
+  Source::HardwareType hwid=Source::TypeUnknown;
   QString nodename;
 
   while((n=ctrl_advert_socket->readDatagram((char *)data,1500,&addr,&port))>0) {
@@ -211,7 +211,7 @@ void LWRPServer::advertReadData()
     */
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
-	hwid=(LwSource::HardwareType)p.tag(i)->tagValue().toUInt();
+	hwid=(Source::HardwareType)p.tag(i)->tagValue().toUInt();
       }
       if(p.tag(i)->tagName()=="ATRN") {  // Node Name
 	nodename=p.tag(i)->tagValue().toString();
@@ -304,17 +304,17 @@ void LWRPServer::clockReadData()
 void LWRPServer::clockStartData()
 {
   /*
-  LwSource *src=GetClockSource();
+  Source *src=GetClockSource();
   if(src==NULL) {
     fprintf(stderr,"no suitable clock stream found\n");
     exit(256);
   }
   lw_shm->shm_clock_addr=htonl(src->streamAddress().toIPv4Address());
-  LwSubscribe(ctrl_advert_socket->socketDescriptor(),lw_shm->shm_clock_addr,
+  Subscribe(ctrl_advert_socket->socketDescriptor(),lw_shm->shm_clock_addr,
 	      htonl(ctrl_routing->nicAddress().toIPv4Address()));
   fprintf(stderr,"using %s from %s node at %s for clock\n",
 	  (const char *)src->streamAddress().toString().toAscii(),
-	  (const char *)LwSource::hardwareString(src->hardwareType()).toAscii(),
+	  (const char *)Source::hardwareString(src->hardwareType()).toAscii(),
 	  (const char *)src->nodeAddress().toString().toAscii());
   */
 }
@@ -333,7 +333,7 @@ void LWRPServer::saveSourcesData()
   }
 
   for(unsigned i=0;i<ctrl_sources.size();i++) {
-    LwSource *src=ctrl_sources[i];
+    Source *src=ctrl_sources[i];
     if(src!=NULL) {
       if(!src->streamAddress().isNull()) {
 	fprintf(f,"[Source %u]\n",++num);
@@ -662,10 +662,10 @@ void LWRPServer::UnsubscribeStream(int slot)
 }
 
 
-LwSource *LWRPServer::GetSource(const QHostAddress &node_addr,
+Source *LWRPServer::GetSource(const QHostAddress &node_addr,
 				     unsigned slot)
 {
-  LwSource *src=NULL;
+  Source *src=NULL;
 
   for(unsigned i=0;i<ctrl_sources.size();i++) {
     if(ctrl_sources[i]!=NULL) {
@@ -677,12 +677,12 @@ LwSource *LWRPServer::GetSource(const QHostAddress &node_addr,
   }
   for(unsigned i=0;i<ctrl_sources.size();i++) {
     if(ctrl_sources[i]==NULL) {
-      ctrl_sources[i]=new LwSource();
+      ctrl_sources[i]=new Source();
       src=ctrl_sources[i];
     }
   }
   if(src==NULL) {
-    ctrl_sources.push_back(new LwSource());
+    ctrl_sources.push_back(new Source());
     src=ctrl_sources.back();
   }
   src->setNodeAddress(node_addr);
@@ -691,7 +691,7 @@ LwSource *LWRPServer::GetSource(const QHostAddress &node_addr,
 }
 
 
-int LWRPServer::TagIsSource(const LwTag *tag) const
+int LWRPServer::TagIsSource(const Tag *tag) const
 {
   int slot;
   bool ok;
@@ -711,7 +711,7 @@ void LWRPServer::SendSourceUpdate(AdvertType type)
   uint8_t data[1500];
   int n;
 
-  LwPacket *p=new LwPacket();
+  Packet *p=new Packet();
   p->setSequenceNumber(ctrl_advert_seqno++);
   GenerateAdvertPacket(p,type);
   if((n=p->writePacket(data,1500))>0) {
@@ -726,49 +726,49 @@ void LWRPServer::SendSourceUpdate(AdvertType type)
 }
 
 
-void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
+void LWRPServer::GenerateAdvertPacket(Packet *p,AdvertType type) const
 {
   //
   // FIXME: This breaks when used with more than eight active sources!
   //
-  LwTag tag;
+  Tag tag;
   char hostname[33];
 
   switch(type) {
   case LWRPServer::Type0:
     tag.setTagName("NEST");
-    tag.setTagValue(LwTag::TagType0,5+ctrl_routing->activeSources());
+    tag.setTagValue(Tag::TagType0,5+ctrl_routing->activeSources());
     p->addTag(tag);
     tag.setTagName("PVER");
-    tag.setTagValue(LwTag::TagType8,2);
+    tag.setTagValue(Tag::TagType8,2);
     p->addTag(tag);
     tag.setTagName("ADVT");
-    tag.setTagValue(LwTag::TagType7,3);
+    tag.setTagValue(Tag::TagType7,3);
     p->addTag(tag);
     tag.setTagName("TERM");
-    tag.setTagValue(LwTag::TagType6,0x0D);  // number of bytes in following two tags
+    tag.setTagValue(Tag::TagType6,0x0D);  // number of bytes in following two tags
     p->addTag(tag);
     tag.setTagName("INDI");
-    tag.setTagValue(LwTag::TagType0,1);
+    tag.setTagValue(Tag::TagType0,1);
     p->addTag(tag);
     tag.setTagName("HWID");
-    tag.setTagValue(LwTag::TagType8,SWITCHYARD_HWID);
+    tag.setTagValue(Tag::TagType8,SWITCHYARD_HWID);
     p->addTag(tag);
     for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
       if((!ctrl_routing->srcAddress(i).isNull())&&
 	 (ctrl_routing->srcAddress(i).toString()!="0.0.0.0")&&
 	 ctrl_routing->srcEnabled(i)) {
 	tag.setTagName(QString().sprintf("S%03u",i+1));
-	tag.setTagValue(LwTag::TagType6,0x1C);    // number of bytes describing source
+	tag.setTagValue(Tag::TagType6,0x1C);    // number of bytes describing source
 	p->addTag(tag);
 	tag.setTagName("INDI");
-	tag.setTagValue(LwTag::TagType0,2);
+	tag.setTagValue(Tag::TagType0,2);
 	p->addTag(tag);
 	tag.setTagName("PSID");
-	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(i).toIPv4Address()&0xFFFF);
+	tag.setTagValue(Tag::TagType1,ctrl_routing->srcAddress(i).toIPv4Address()&0xFFFF);
 	p->addTag(tag);
 	tag.setTagName("BUSY");
-	tag.setTagValue(LwTag::TagType9,0);
+	tag.setTagValue(Tag::TagType9,0);
 	p->addTag(tag);
       }
     }
@@ -776,71 +776,71 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
 
   case LWRPServer::Type1:
     tag.setTagName("NEST");
-    tag.setTagValue(LwTag::TagType0,3);
+    tag.setTagValue(Tag::TagType0,3);
     p->addTag(tag);
     tag.setTagName("PVER");
-    tag.setTagValue(LwTag::TagType8,2);
+    tag.setTagValue(Tag::TagType8,2);
     p->addTag(tag);
     tag.setTagName("ADVT");
-    tag.setTagValue(LwTag::TagType7,2);
+    tag.setTagValue(Tag::TagType7,2);
     p->addTag(tag);
     tag.setTagName("TERM");
-    tag.setTagValue(LwTag::TagType6,0x2D);  // Length!
+    tag.setTagValue(Tag::TagType6,0x2D);  // Length!
     p->addTag(tag);
     tag.setTagName("INDI");
-    tag.setTagValue(LwTag::TagType0,5);
+    tag.setTagValue(Tag::TagType0,5);
     p->addTag(tag);
     tag.setTagName("ADVV");
-    tag.setTagValue(LwTag::TagType1,0x0A);
+    tag.setTagValue(Tag::TagType1,0x0A);
     p->addTag(tag);
     tag.setTagName("HWID");
-    tag.setTagValue(LwTag::TagType8,SWITCHYARD_HWID);
+    tag.setTagValue(Tag::TagType8,SWITCHYARD_HWID);
     p->addTag(tag);
     tag.setTagName("INIP");
-    tag.setTagValue(LwTag::TagType1,ctrl_routing->nicAddress());
+    tag.setTagValue(Tag::TagType1,ctrl_routing->nicAddress());
     p->addTag(tag);
     tag.setTagName("UDPC");
-    tag.setTagValue(LwTag::TagType8,4000);
+    tag.setTagValue(Tag::TagType8,4000);
     p->addTag(tag);
     tag.setTagName("NUMS");
-    tag.setTagValue(LwTag::TagType8,1);
+    tag.setTagValue(Tag::TagType8,1);
     p->addTag(tag);
     break;
 
   case LWRPServer::Type2:
     tag.setTagName("NEST");
-    tag.setTagValue(LwTag::TagType0,3+ctrl_routing->activeSources());
+    tag.setTagValue(Tag::TagType0,3+ctrl_routing->activeSources());
     p->addTag(tag);
     tag.setTagName("PVER");
-    tag.setTagValue(LwTag::TagType8,2);
+    tag.setTagValue(Tag::TagType8,2);
     p->addTag(tag);
     tag.setTagName("ADVT");
-    tag.setTagValue(LwTag::TagType7,1);
+    tag.setTagValue(Tag::TagType7,1);
     p->addTag(tag);
     tag.setTagName("TERM");
-    tag.setTagValue(LwTag::TagType6,0x54);  // number of bytes to first source tag
+    tag.setTagValue(Tag::TagType6,0x54);  // number of bytes to first source tag
     p->addTag(tag);
     tag.setTagName("INDI");
-    tag.setTagValue(LwTag::TagType0,6);
+    tag.setTagValue(Tag::TagType0,6);
     p->addTag(tag);
     tag.setTagName("ADVV");  // ???
-    tag.setTagValue(LwTag::TagType1,0x0A);
+    tag.setTagValue(Tag::TagType1,0x0A);
     p->addTag(tag);
     tag.setTagName("HWID");
-    tag.setTagValue(LwTag::TagType8,SWITCHYARD_HWID);
+    tag.setTagValue(Tag::TagType8,SWITCHYARD_HWID);
     p->addTag(tag);
     tag.setTagName("INIP");
-    tag.setTagValue(LwTag::TagType1,ctrl_routing->nicAddress());
+    tag.setTagValue(Tag::TagType1,ctrl_routing->nicAddress());
     p->addTag(tag);
     tag.setTagName("UDPC");
-    tag.setTagValue(LwTag::TagType8,4000);
+    tag.setTagValue(Tag::TagType8,4000);
     p->addTag(tag);
     tag.setTagName("NUMS");
-    tag.setTagValue(LwTag::TagType8,ctrl_routing->activeSources());
+    tag.setTagValue(Tag::TagType8,ctrl_routing->activeSources());
     p->addTag(tag);
     gethostname(hostname,32);
     tag.setTagName("ATRN");
-    tag.setTagValue(LwTag::TagString,QString(hostname).split(".")[0],32); // 32 characters, zero padded
+    tag.setTagValue(Tag::TagString,QString(hostname).split(".")[0],32); // 32 characters, zero padded
     p->addTag(tag);
 
     //
@@ -851,43 +851,43 @@ void LWRPServer::GenerateAdvertPacket(LwPacket *p,AdvertType type) const
 	 (ctrl_routing->srcAddress(i).toString()!="0.0.0.0")&&
 	 ctrl_routing->srcEnabled(i)) {
 	tag.setTagName(QString().sprintf("S%03u",i+1));
-	tag.setTagValue(LwTag::TagType6,0x65);  // bytes in source record
+	tag.setTagValue(Tag::TagType6,0x65);  // bytes in source record
 	p->addTag(tag);
 	tag.setTagName("INDI");
-	tag.setTagValue(LwTag::TagType0,0x0B);
+	tag.setTagValue(Tag::TagType0,0x0B);
 	p->addTag(tag);
 	tag.setTagName("PSID");
-	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
+	tag.setTagValue(Tag::TagType1,ctrl_routing->srcNumber(i));
 	p->addTag(tag);
 	tag.setTagName("SHAB");
-	tag.setTagValue(LwTag::TagType7,0);
+	tag.setTagValue(Tag::TagType7,0);
 	p->addTag(tag);
 	tag.setTagName("FSID");
-	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcAddress(i));
+	tag.setTagValue(Tag::TagType1,ctrl_routing->srcAddress(i));
 	p->addTag(tag);
 	tag.setTagName("FAST");
-	tag.setTagValue(LwTag::TagType7,2);
+	tag.setTagValue(Tag::TagType7,2);
 	p->addTag(tag);
 	tag.setTagName("FASM");
-	tag.setTagValue(LwTag::TagType7,1);
+	tag.setTagValue(Tag::TagType7,1);
 	p->addTag(tag);
 	tag.setTagName("BSID");
-	tag.setTagValue(LwTag::TagType1,0);
+	tag.setTagValue(Tag::TagType1,0);
 	p->addTag(tag);
 	tag.setTagName("BAST");
-	tag.setTagValue(LwTag::TagType7,1);
+	tag.setTagValue(Tag::TagType7,1);
 	p->addTag(tag);
 	tag.setTagName("BASM");
-	tag.setTagValue(LwTag::TagType7,0);
+	tag.setTagValue(Tag::TagType7,0);
 	p->addTag(tag);
 	tag.setTagName("LPID");
-	tag.setTagValue(LwTag::TagType1,ctrl_routing->srcNumber(i));
+	tag.setTagValue(Tag::TagType1,ctrl_routing->srcNumber(i));
 	p->addTag(tag);
 	tag.setTagName("STPL");
-	tag.setTagValue(LwTag::TagType7,0);
+	tag.setTagValue(Tag::TagType7,0);
 	p->addTag(tag);
 	tag.setTagName("PSNM");  // 16 characters, null padded
-	tag.setTagValue(LwTag::TagString,ctrl_routing->srcName(i),16);
+	tag.setTagValue(Tag::TagString,ctrl_routing->srcName(i),16);
 	p->addTag(tag);
       }
     }

@@ -1,17 +1,15 @@
-// lwsource.cpp
+// source.cpp
 //
 // Container class for info about a Livewire source
 //
 // (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
 //
-//    $Id: lwsource.cpp,v 1.1 2010/10/02 22:14:38 pcvs Exp $
-//
 //   All Rights Reserved.
 //
 
-#include <lwsource.h>
+#include "adv_source.h"
 
-LwSource::LwSource()
+Source::Source()
 {
   src_slot=0;
   src_source_number=0;
@@ -21,13 +19,13 @@ LwSource::LwSource()
 }
 
 
-QHostAddress LwSource::nodeAddress() const
+QHostAddress Source::nodeAddress() const
 {
   return src_node_address;
 }
 
 
-void LwSource::setNodeAddress(const QHostAddress &addr)
+void Source::setNodeAddress(const QHostAddress &addr)
 {
   if(addr!=src_node_address) {
     src_node_address=addr;
@@ -39,13 +37,13 @@ void LwSource::setNodeAddress(const QHostAddress &addr)
 }
 
 
-QString LwSource::nodeName() const
+QString Source::nodeName() const
 {
   return src_node_name;
 }
 
 
-void LwSource::setNodeName(const QString &str)
+void Source::setNodeName(const QString &str)
 {
   if(str!=src_node_name) {
     src_node_name=str;
@@ -54,13 +52,13 @@ void LwSource::setNodeName(const QString &str)
 }
 
 
-unsigned LwSource::slot() const
+unsigned Source::slot() const
 {
   return src_slot;
 }
 
 
-void LwSource::setSlot(unsigned slot)
+void Source::setSlot(unsigned slot)
 {
   if(slot!=src_slot) {
     src_slot=slot;
@@ -69,13 +67,13 @@ void LwSource::setSlot(unsigned slot)
 }
 
 
-unsigned LwSource::sourceNumber() const
+unsigned Source::sourceNumber() const
 {
   return src_source_number;
 }
 
 
-void LwSource::setSourceNumber(unsigned streamno)
+void Source::setSourceNumber(unsigned streamno)
 {
   if(streamno!=src_source_number) {
     src_source_number=streamno;
@@ -84,13 +82,13 @@ void LwSource::setSourceNumber(unsigned streamno)
 }
 
 
-QHostAddress LwSource::streamAddress() const
+QHostAddress Source::streamAddress() const
 {
   return src_stream_address;
 }
 
 
-void LwSource::setStreamAddress(const QHostAddress &addr)
+void Source::setStreamAddress(const QHostAddress &addr)
 {
   if(addr!=src_stream_address) {
     src_stream_address=addr;
@@ -99,13 +97,13 @@ void LwSource::setStreamAddress(const QHostAddress &addr)
 }
 
 
-QString LwSource::sourceName() const
+QString Source::sourceName() const
 {
   return src_source_name;
 }
 
 
-void LwSource::setSourceName(const QString &str)
+void Source::setSourceName(const QString &str)
 {
   if(str!=src_source_name) {
     src_source_name=str;
@@ -114,13 +112,13 @@ void LwSource::setSourceName(const QString &str)
 }
 
 
-LwSource::HardwareType LwSource::hardwareType() const
+Source::HardwareType Source::hardwareType() const
 {
   return src_hardware_type;
 }
 
 
-void LwSource::setHardwareType(HardwareType type)
+void Source::setHardwareType(HardwareType type)
 {
   if(type!=src_hardware_type) {
     src_hardware_type=type;
@@ -129,13 +127,13 @@ void LwSource::setHardwareType(HardwareType type)
 }
 
 
-LwSource::StreamType LwSource::streamType() const
+Source::StreamType Source::streamType() const
 {
   return src_stream_type;
 }
 
 
-void LwSource::setStreamType(StreamType type)
+void Source::setStreamType(StreamType type)
 {
   if(type!=src_stream_type) {
     src_stream_type=type;
@@ -144,63 +142,63 @@ void LwSource::setStreamType(StreamType type)
 }
 
 
-int LwSource::lastTouched() const
+int Source::lastTouched() const
 {
   return lastTouched(QDateTime(QDate::currentDate(),QTime::currentTime()));
 }
 
 
-int LwSource::lastTouched(const QDateTime &datetime) const
+int Source::lastTouched(const QDateTime &datetime) const
 {
   return datetime.secsTo(src_datetime);
 }
 
 
-void LwSource::touch()
+void Source::touch()
 {
   src_datetime=QDateTime(QDate::currentDate(),QTime::currentTime());
 }
 
 
-void LwSource::touch(const QDateTime &datetime)
+void Source::touch(const QDateTime &datetime)
 {
   src_datetime=datetime;
 }
 
 
-bool LwSource::isChanged() const
+bool Source::isChanged() const
 {
   return src_is_changed;
 }
 
 
-void LwSource::setSaved()
+void Source::setSaved()
 {
   src_is_changed=false;
 }
 
 
-QString LwSource::hardwareString(HardwareType type)
+QString Source::hardwareString(HardwareType type)
 {
   QString ret=QString().sprintf("Unknown (0x%04X)",type);
   switch(type) {
-  case LwSource::TypeAnalogNode:
+  case Source::TypeAnalogNode:
     ret="Analog Node";
     break;
 
-  case LwSource::TypeMicNode:
+  case Source::TypeMicNode:
     ret="Mic Node";
     break;
 
-  case LwSource::TypeMixEngine:
+  case Source::TypeMixEngine:
     ret="Mix Engine";
     break;
 
-  case LwSource::TypeElement:
+  case Source::TypeElement:
     ret="Element";
     break;
 
-  case LwSource::TypeUnknown:
+  case Source::TypeUnknown:
     break;
   }
   return ret;

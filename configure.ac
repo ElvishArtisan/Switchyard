@@ -67,9 +67,12 @@ fi
 
 AC_CONFIG_FILES([\
     Makefile \
+    common/Makefile \
     conf/Makefile \
     syd/Makefile \
     ])
+helpers/link_common.sh syd
+
 AC_OUTPUT()
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)

@@ -1,28 +1,26 @@
-// lwtag.h
+// tag.h
 //
 // Abstract a LiveWire Control Protocol tag.
 //
 // (C) Copyright 2009 Fred Gleason <fredg@paravelsystems.com>
 //
-//    $Id: lwtag.h,v 1.5 2010/10/21 10:44:28 pcvs Exp $
-//
 //   All Rights Reserved.
 //
 
-#ifndef LWTAG_H
-#define LWTAG_H
+#ifndef TAG_H
+#define TAG_H
 
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtNetwork/QHostAddress>
 
-class LwTag
+class Tag
 {
  public:
   enum TagType {TagType0=0,TagType1=1,TagString=3,TagMeter=4,
 		TagType6=6,TagType7=7,TagType8=8,TagType9=9,
 		TagLast=10};
-  LwTag();
+  Tag();
   QString tagName() const;
   void setTagName(const QString &name);
   TagType tagType() const;
@@ -40,4 +38,4 @@ class LwTag
 };
 
 
-#endif  // LWTAG_H
+#endif  // TAG_H

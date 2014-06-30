@@ -1,54 +1,52 @@
-// lwtag.cpp
+// tag.cpp
 //
 // Abstract a LiveWire Control Protocol tag.
 //
 // (C) Copyright 2009 Fred Gleason <fredg@paravelsystems.com>
 //
-//    $Id: lwtag.cpp,v 1.5 2010/10/21 10:44:28 pcvs Exp $
-//
 //   All Rights Reserved.
 //
 
-#include <lwtag.h>
+#include "adv_tag.h"
 
-LwTag::LwTag()
+Tag::Tag()
 {
-  lw_tag_type=LwTag::TagLast;
+  lw_tag_type=Tag::TagLast;
   lw_tag_length=-1;
 }
 
 
-QString LwTag::tagName() const
+QString Tag::tagName() const
 {
   return lw_tag_name;
 }
 
 
-void LwTag::setTagName(const QString &name)
+void Tag::setTagName(const QString &name)
 {
   lw_tag_name=name;
 }
 
 
-LwTag::TagType LwTag::tagType() const
+Tag::TagType Tag::tagType() const
 {
   return lw_tag_type;
 }
 
 
-QVariant LwTag::tagValue() const
+QVariant Tag::tagValue() const
 {
   return lw_tag_value;
 }
 
 
-int LwTag::tagLength() const
+int Tag::tagLength() const
 {
   return lw_tag_length;
 }
 
 
-void LwTag::setTagValue(TagType type,const QVariant &value,int taglen)
+void Tag::setTagValue(TagType type,const QVariant &value,int taglen)
 {
   lw_tag_type=type;
   if(taglen>0) {
@@ -65,14 +63,14 @@ void LwTag::setTagValue(TagType type,const QVariant &value,int taglen)
 }
 
 
-void LwTag::setTagValue(TagType type,const QHostAddress &addr)
+void Tag::setTagValue(TagType type,const QHostAddress &addr)
 {
   lw_tag_type=type;
   lw_tag_value.setValue(addr.toIPv4Address());
 }
 
 
-QString LwTag::normalizeName(const QString &str)
+QString Tag::normalizeName(const QString &str)
 {
   if((0xff&str.toAscii()[0])>176) {
     QString ret;

@@ -1,6 +1,6 @@
 // config.h
 //
-// Configuration values for Switchyard
+// Configuration values for AoIP routines
 //
 // (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
 //     All Rights Reserved

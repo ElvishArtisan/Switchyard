@@ -1,4 +1,4 @@
-//   string.cpp
+//   adv_astring.cpp
 //
 //   A String with quote mode
 //
@@ -11,7 +11,7 @@
 
 #include <QtCore/QStringList>
 
-#include <astring.h>
+#include "adv_astring.h"
 
 
 AString::AString()

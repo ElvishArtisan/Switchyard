@@ -20,20 +20,21 @@ moc_%.cpp:	%.h
 
 sbin_PROGRAMS = syd
 
-dist_syd_SOURCES = astring.cpp astring.h\
-                   clientconnection.cpp clientconnection.h\
-                   cmdswitch.cpp cmdswitch.h\
-                   config.h\
-                   lwpacket.cpp lwpacket.h\
-                   lwsource.cpp lwsource.h\
-                   lwrp.cpp lwrp.h\
-                   lwtag.cpp lwtag.h\
-                   profile.cpp profile.h\
-                   routing.cpp routing.h\
-                   rtp.cpp rtp.h\
+dist_syd_SOURCES = rtp_callback.cpp\
                    syd.cpp syd.h
 
-nodist_syd_SOURCES = moc_lwrp.cpp\
+nodist_syd_SOURCES = adv_astring.cpp adv_astring.h\
+                     adv_packet.cpp adv_packet.h\
+                     adv_source.cpp adv_source.h\
+                     adv_tag.cpp adv_tag.h\
+                     cmdswitch.cpp cmdswitch.h\
+                     config.h\
+                     lwrp_clientconnection.cpp lwrp_clientconnection.h\
+                     lwrp_server.cpp lwrp_server.h\
+                     profile.cpp profile.h\
+                     routing.cpp routing.h\
+                     rtp.cpp rtp.h\
+                     moc_lwrp_server.cpp\
                      moc_rtp.cpp\
                      moc_syd.cpp
 
@@ -47,4 +48,15 @@ CLEANFILES = *~\
              *.pdb\
              moc_*
 MAINTAINERCLEANFILES = *~\
-                       Makefile.in
+                       Makefile.in\
+                       adv_astring.cpp adv_astring.h\
+                       adv_packet.cpp adv_packet.h\
+                       adv_source.cpp adv_source.h\
+                       adv_tag.cpp adv_tag.h\
+                       cmdswitch.cpp cmdswitch.h\
+                       config.h\
+                       lwrp_clientconnection.cpp lwrp_clientconnection.h\
+                       lwrp_server.cpp lwrp_server.h\
+                       profile.cpp profile.h\
+                       routing.cpp routing.h\
+                       rtp.cpp rtp.h

@@ -68,7 +68,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Start RTP
   //
-  syd_rtp=new RTPServer(syd_routing,this);
+  syd_rtp=new RTPServer(syd_routing,NULL,this);
   connect(syd_rtp,SIGNAL(exiting()),this,SLOT(exitData()));
 
   //

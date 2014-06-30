@@ -9,7 +9,9 @@
 ##   All Rights Reserved.
 ##
 
-SUBDIRS = conf syd
+SUBDIRS = common\
+          conf\
+          syd
 
 install-exec-local:	
 	mkdir -p /etc/init.d

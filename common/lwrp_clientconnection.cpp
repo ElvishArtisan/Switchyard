@@ -1,15 +1,13 @@
-// clientconnection.cpp
+// lwrp_clientconnection.cpp
 //
-// Container class for TCP client connections.
+// Container class for LWRP client connections.
 //
 //   (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
-//
-//      $Id: clientconnection.cpp,v 1.1 2010/09/28 23:03:27 pcvs Exp $
 //
 //   All Rights Reserved.
 //
 
-#include <clientconnection.h>
+#include "lwrp_clientconnection.h"
 
 ClientConnection::ClientConnection()
 {

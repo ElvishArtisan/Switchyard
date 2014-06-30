@@ -20,11 +20,13 @@
 
 #include "routing.h"
 
+extern void RTPCallback(int sock,Routing *r,void *priv);
+
 class RTPServer : public QObject
 {
   Q_OBJECT;
  public:
-  RTPServer(Routing *routing,QObject *parent=0);
+  RTPServer(Routing *routing,void *priv,QObject *parent=0);
 
  signals:
   void exiting();
