@@ -53,3 +53,6 @@
 	target in 'syd/Makefile.am'.
 2014-07-01 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SWITCHYARD_VERSION' define in 'common/config.h'.
+2014-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'read_only' parameter for AdvServer in
+	'common/adv_server.cpp'.

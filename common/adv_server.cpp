@@ -68,11 +68,12 @@ AdvServer::AdvServer(Routing *r,bool read_only,QObject *parent)
   srandom(time(NULL));
   ctrl_advert_seqno=random();
   ctrl_advert_timestamp=GetTimestamp();
-  //lw_name_next32=false;
   ctrl_advert_timer=new QTimer(this);
   ctrl_advert_timer->setSingleShot(true);
-  connect(ctrl_advert_timer,SIGNAL(timeout()),this,SLOT(sendData()));
-  ctrl_advert_timer->start(GetAdvertInterval());
+  if(!read_only) {
+    connect(ctrl_advert_timer,SIGNAL(timeout()),this,SLOT(sendData()));
+    ctrl_advert_timer->start(GetAdvertInterval());
+  }
 
   //
   // Start Timers
