@@ -51,6 +51,8 @@ nodist_syd_SOURCES = adv_packet.cpp adv_packet.h\
 syd_LDADD = -lQtCore -lQtNetwork
 syd_LDFLAGS = -pthread
 
+EXTRA_DIST = rc.syd.in
+
 CLEANFILES = *~\
              *.idb\
              *ilk\

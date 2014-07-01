@@ -69,6 +69,7 @@ AC_CONFIG_FILES([\
     Makefile \
     common/Makefile \
     conf/Makefile \
+    helpers/Makefile \
     syd/Makefile \
     syd/rc.syd \
     ])

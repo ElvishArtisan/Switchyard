@@ -8,18 +8,18 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DISTS = adv_astring.cpp adv_astring.h\
-              adv_packet.cpp adv_packet.h\
-              adv_server.cpp adv_server.h\
-              adv_source.cpp adv_source.h\
-              adv_tag.cpp adv_tag.h\
-              cmdswitch.cpp cmdswitch.h\
-              config.h\
-              lwrp_clientconnection.cpp lwrp_clientconnection.h\
-              lwrp_server.cpp lwrp_server.h\
-              profile.cpp profile.h\
-              routing.cpp routing.h\
-              rtp.cpp rtp.h
+EXTRA_DIST = adv_packet.cpp adv_packet.h\
+             adv_server.cpp adv_server.h\
+             adv_source.cpp adv_source.h\
+             adv_tag.cpp adv_tag.h\
+             astring.cpp astring.h\
+             cmdswitch.cpp cmdswitch.h\
+             config.h\
+             lwrp_clientconnection.cpp lwrp_clientconnection.h\
+             lwrp_server.cpp lwrp_server.h\
+             profile.cpp profile.h\
+             routing.cpp routing.h\
+             rtp.cpp rtp.h
 
 CLEANFILES = *~\
              *.idb\

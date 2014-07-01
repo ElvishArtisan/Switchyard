@@ -11,13 +11,13 @@
 
 SUBDIRS = common\
           conf\
+          helpers\
           syd
 
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
              get_target.sh\
-             PACKAGE_VERSION\
-             rc.syd.in
+             PACKAGE_VERSION
 
 CLEANFILES = *~\
              *.tar.gz\
