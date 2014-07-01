@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <poll.h>
 #include <syslog.h>
+#include <unistd.h>
 
 #include "routing.h"
 #include "rtp.h"
