@@ -45,3 +45,6 @@
 	* Implemented the 'IP' command in 'common/lwrp_server.cpp'.
 2014-06-30 Fred Gleason <fredg@paravelsystems.com>
 	* Added an init script in 'syd/rc.syd.in'.
+2014-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'astring.cpp' and 'astring.h' to the 'distclean'
+	target in 'syd/Makefile.am'.

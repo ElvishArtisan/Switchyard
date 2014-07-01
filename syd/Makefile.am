@@ -67,6 +67,7 @@ MAINTAINERCLEANFILES = *~\
                        adv_server.cpp adv_server.h\
                        adv_source.cpp adv_source.h\
                        adv_tag.cpp adv_tag.h\
+                       astring.cpp astring.h\
                        cmdswitch.cpp cmdswitch.h\
                        config.h\
                        lwrp_clientconnection.cpp lwrp_clientconnection.h\
