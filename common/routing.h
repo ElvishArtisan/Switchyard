@@ -23,7 +23,9 @@
 class Routing
 {
  public:
-  Routing();
+  Routing(unsigned d_slots,unsigned s_slots);
+  unsigned dstSlots() const;
+  unsigned srcSlots() const;
   QString hostName() const;
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
@@ -56,15 +58,17 @@ class Routing
   uint32_t nic_addr;
   uint32_t nic_mask;
   uint32_t clk_addr;
-  uint32_t src_addr[SWITCHYARD_SLOTS];
-  bool src_enabled[SWITCHYARD_SLOTS];
-  uint32_t dst_addr[SWITCHYARD_SLOTS];
+  uint32_t src_slots;
+  uint32_t dst_slots;
+  uint32_t src_addr[SWITCHYARD_MAX_SLOTS];
+  bool src_enabled[SWITCHYARD_MAX_SLOTS];
+  uint32_t dst_addr[SWITCHYARD_MAX_SLOTS];
   static QString dumpAddress(uint32_t addr);
 
  private:
   void LoadInterfaces();
-  QString sy_src_names[SWITCHYARD_SLOTS];
-  QString sy_dst_names[SWITCHYARD_SLOTS];
+  QString sy_src_names[SWITCHYARD_MAX_SLOTS];
+  QString sy_dst_names[SWITCHYARD_MAX_SLOTS];
   std::vector<QHostAddress> sy_nic_addresses;
   std::vector<QHostAddress> sy_nic_netmasks;
   std::vector<QString> sy_nic_devices;

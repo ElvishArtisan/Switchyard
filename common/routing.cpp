@@ -25,10 +25,28 @@
 #include "profile.h"
 #include "routing.h"
 
-Routing::Routing()
+Routing::Routing(unsigned d_slots,unsigned s_slots)
 {
+  if((d_slots>=SWITCHYARD_MAX_SLOTS)||(s_slots>=SWITCHYARD_MAX_SLOTS)) {
+    syslog(LOG_ERR,"maximum slot count exceeded");
+    exit(256);
+  }
+  dst_slots=d_slots;
+  src_slots=s_slots;
   LoadInterfaces();
   load();
+}
+
+
+unsigned Routing::dstSlots() const
+{
+  return dst_slots;
+}
+
+
+unsigned Routing::srcSlots() const
+{
+  return src_slots;
 }
 
 
@@ -129,7 +147,7 @@ int Routing::activeSources() const
 {
   int ret=0;
 
-  for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+  for(unsigned i=0;i<srcSlots();i++) {
     if((!srcAddress(i).isNull())&&srcEnabled(i)) {
       ret++;
     }
@@ -229,11 +247,13 @@ void Routing::load()
   }
 
   setNicAddress(p->addressValue("Global","NicAddress",default_nic));
-  for(int i=0;i<SWITCHYARD_SLOTS;i++) {
+  for(unsigned i=0;i<srcSlots();i++) {
     section=QString().sprintf("Slot%u",i+1);
     setSrcAddress(i,p->addressValue(section,"SourceAddress",""));
     setSrcName(i,p->stringValue(section,"SourceName",QString().sprintf("Source %u",i+1)));
     setSrcEnabled(i,p->intValue(section,"SourceEnabled"));
+  }
+  for(unsigned i=0;i<dstSlots();i++) {
     setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
     setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
   }
@@ -255,15 +275,19 @@ void Routing::save() const
   fprintf(f,"[Global]\n");
   fprintf(f,"NicAddress=%s\n",(const char *)nicAddress().toString().toAscii());
   fprintf(f,"\n");
-  for(int i=0;i<SWITCHYARD_SLOTS;i++) {
+  for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
     fprintf(f,"[Slot%u]\n",i+1);
-    fprintf(f,"SourceAddress=%s\n",
-	    (const char *)srcAddress(i).toString().toAscii());
-    fprintf(f,"SourceName=%s\n",(const char *)srcName(i).toAscii());
-    fprintf(f,"SourceEnabled=%d\n",srcEnabled(i));
-    fprintf(f,"DestinationAddress=%s\n",
-	    (const char *)dstAddress(i).toString().toAscii());
-    fprintf(f,"DestinationName=%s\n",(const char *)dstName(i).toAscii());
+    if(i<(int)srcSlots()) {
+      fprintf(f,"SourceAddress=%s\n",
+	      (const char *)srcAddress(i).toString().toAscii());
+      fprintf(f,"SourceName=%s\n",(const char *)srcName(i).toAscii());
+      fprintf(f,"SourceEnabled=%d\n",srcEnabled(i));
+    }
+    if(i<(int)dstSlots()) {
+      fprintf(f,"DestinationAddress=%s\n",
+	      (const char *)dstAddress(i).toString().toAscii());
+      fprintf(f,"DestinationName=%s\n",(const char *)dstName(i).toAscii());
+    }
     fprintf(f,"\n");
   }
 

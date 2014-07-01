@@ -273,7 +273,7 @@ void AdvServer::GenerateAdvertPacket(Packet *p,AdvertType type) const
     tag.setTagName("HWID");
     tag.setTagValue(Tag::TagType8,SWITCHYARD_HWID);
     p->addTag(tag);
-    for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+    for(unsigned i=0;i<adv_routing->srcSlots();i++) {
       if((!adv_routing->srcAddress(i).isNull())&&
 	 (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
 	 adv_routing->srcEnabled(i)) {
@@ -365,7 +365,7 @@ void AdvServer::GenerateAdvertPacket(Packet *p,AdvertType type) const
     //
     // One for each source
     //
-    for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+    for(unsigned i=0;i<adv_routing->srcSlots();i++) {
       if((!adv_routing->srcAddress(i).isNull())&&
 	 (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
 	 adv_routing->srcEnabled(i)) {

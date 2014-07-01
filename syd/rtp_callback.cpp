@@ -82,7 +82,7 @@ void RTPCallback(int sock,Routing *r,void *priv)
       if(dst>0) {
 	//printf("received %ld bytes from %s.\n",n,
 	//       (const char *)Routing::dumpAddress(dst).toAscii());
-	for(i=0;i<SWITCHYARD_SLOTS;i++) {
+	for(i=0;i<r->src_slots;i++) {
 	  if(r->src_enabled[i]&&(r->src_addr[i]!=0)&&(dst==r->dst_addr[i])) {
 	    play_sa.sin_addr.s_addr=r->src_addr[i];
 	    sendto(sock,buffer,n,0,(struct sockaddr *)(&play_sa),

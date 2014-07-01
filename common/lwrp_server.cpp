@@ -44,7 +44,7 @@ LWRPServer::LWRPServer(Routing *routing)
   //
   // Initialize slots
   //
-  for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+  for(unsigned i=0;i<ctrl_routing->srcSlots();i++) {
     ctrl_routing->subscribe(ctrl_routing->srcAddress(i));
   }
 }
@@ -119,7 +119,8 @@ bool LWRPServer::ExecuteVer(int id,QStringList &args)
   SendCommand(id,QString().
      sprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:0 NGPO:0",
 	     SWITCHYARD_PROTOCOL_VERSION,SWITCHYARD_DEVICE_NAME,
-	     SWITCHYARD_VERSION,SWITCHYARD_SLOTS,SWITCHYARD_SLOTS));
+	     SWITCHYARD_VERSION,ctrl_routing->srcSlots(),
+	     ctrl_routing->dstSlots()));
   return true;
 }
 
@@ -149,14 +150,14 @@ bool LWRPServer::ExecuteSrc(int id,QStringList &args)
 
   if(args.size()==1) {
     SendCommand(id,"BEGIN");
-    for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+    for(unsigned i=0;i<ctrl_routing->srcSlots();i++) {
       SendCommand(id,SrcLine(i));
     }
     SendCommand(id,"END");
   }
   else {
     slot=args[1].toInt(&ok)-1;
-    if((!ok)|(slot<0)||(slot>=SWITCHYARD_SLOTS)) {
+    if((!ok)|(slot<0)||(slot>=(int)ctrl_routing->srcSlots())) {
       return false;
     }
     for(int i=2;i<args.size();i++) {
@@ -226,14 +227,14 @@ bool LWRPServer::ExecuteDst(int id,QStringList &args)
 
   if(args.size()==1) {
     SendCommand(id,"BEGIN");
-    for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+    for(unsigned i=0;i<ctrl_routing->dstSlots();i++) {
       SendCommand(id,DstLine(i));
     }
     SendCommand(id,"END");
   }
   else {
     slot=args[1].toInt(&ok)-1;
-    if((!ok)|(slot<0)||(slot>=SWITCHYARD_SLOTS)) {
+    if((!ok)|(slot<0)||(slot>=(int)ctrl_routing->dstSlots())) {
       return false;
     }
     for(int i=2;i<args.size();i++) {
@@ -392,9 +393,9 @@ void LWRPServer::UnsubscribeStream(int slot)
   if(ctrl_routing->clkAddress()==ctrl_routing->dstAddress(slot)) {
     return;
   }
-  for(int i=0;i<SWITCHYARD_SLOTS;i++) {
+  for(unsigned i=0;i<ctrl_routing->srcSlots();i++) {
     if((ctrl_routing->dstAddress(i)==ctrl_routing->dstAddress(slot))&&
-       (i!=slot)) {
+       ((int)i!=slot)) {
       return;
     }
   }

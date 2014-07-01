@@ -64,7 +64,7 @@ RTPServer::RTPServer(Routing *routing,void *priv,QObject *parent)
   //
   // Initilialize Subscriptions
   //
-  for(unsigned i=0;i<SWITCHYARD_SLOTS;i++) {
+  for(unsigned i=0;i<routing->srcSlots();i++) {
     if(!routing->dstAddress(i).isNull()) {
       routing->subscribe(routing->dstAddress(i));
     }

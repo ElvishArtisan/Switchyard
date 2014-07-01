@@ -21,6 +21,7 @@
 
 #define SYD_USAGE "-d\n"
 #define SYD_PID_FILE "/var/run/syd.pid"
+#define SYD_SLOTS 1
 
 class MainObject : public QObject
 {

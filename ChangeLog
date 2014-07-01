@@ -56,3 +56,5 @@
 2014-07-01 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'read_only' parameter for AdvServer in
 	'common/adv_server.cpp'.
+2014-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'SWITCHARD_SLOTS' define from 'common/config.h'.
