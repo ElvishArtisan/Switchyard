@@ -23,6 +23,7 @@
 #define SWITCHYARD_SLOTS 2
 #define SWITCHYARD_SHM_KEY 0x59D2B831
 #define SWITCHYARD_SAVESOURCES_INTERVAL 5000
+#define SWITCHYARD_VERSION "0.0.0"
 
 extern bool global_exiting;
 

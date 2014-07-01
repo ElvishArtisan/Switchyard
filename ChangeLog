@@ -51,3 +51,5 @@
 2014-07-01 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'astring.cpp' and 'astring.h' to the 'distclean'
 	target in 'syd/Makefile.am'.
+2014-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SWITCHYARD_VERSION' define in 'common/config.h'.
