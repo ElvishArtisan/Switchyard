@@ -71,3 +71,5 @@
 	methods in 'common/routing.cpp' and 'common/routing.h'.
 	* Added an 'AdvReader' class in 'common/adv_reader.cpp' and
 	'common/adv_reader.h'.
+2014-07-03 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.6.0.
