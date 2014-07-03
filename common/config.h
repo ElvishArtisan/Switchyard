@@ -17,6 +17,7 @@
 #define SWITCHYARD_HWID 0xFFFF
 #define SWITCHYARD_LWRP_PORT 93
 #define SWITCHYARD_MAX_SLOTS 8
+#define SWITCHYARD_MAX_CHANNELS 2
 #define SWITCHYARD_PROTOCOL_VERSION "1.1"
 #define SWITCHYARD_ROUTING_FILE "/var/cache/aoip/routing.db"
 #define SWITCHYARD_SOURCES_FILE "/var/cache/aoip/sources.db"

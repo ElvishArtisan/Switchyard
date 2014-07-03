@@ -13,6 +13,10 @@ rm -f $1/adv_packet.cpp
 ln -s ../common/adv_packet.cpp $1/adv_packet.cpp
 rm -f $1/adv_packet.h
 ln -s ../common/adv_packet.h $1/adv_packet.h
+rm -f $1/adv_reader.cpp
+ln -s ../common/adv_reader.cpp $1/adv_reader.cpp
+rm -f $1/adv_reader.h
+ln -s ../common/adv_reader.h $1/adv_reader.h
 rm -f $1/adv_server.cpp
 ln -s ../common/adv_server.cpp $1/adv_server.cpp
 rm -f $1/adv_server.h

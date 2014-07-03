@@ -11,7 +11,6 @@
 
 SUBDIRS = common\
           conf\
-          helpers\
           syd
 
 EXTRA_DIST = autogen.sh\

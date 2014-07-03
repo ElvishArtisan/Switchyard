@@ -64,3 +64,10 @@
 	* Fixed varioous build system issues.
 2014-07-01 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.5.1.
+2014-07-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'src_meter' and 'dst_meter' public members to
+	'Routing' in 'common/routing.cpp' and 'common/routing.h'.
+	* Added 'Routing::srcMeterLevel()' and 'Routing::dstMeterLevel()'
+	methods in 'common/routing.cpp' and 'common/routing.h'.
+	* Added an 'AdvReader' class in 'common/adv_reader.cpp' and
+	'common/adv_reader.h'.

@@ -32,6 +32,7 @@ dist_syd_SOURCES = rtp_callback.cpp\
                    syd.cpp syd.h
 
 nodist_syd_SOURCES = adv_packet.cpp adv_packet.h\
+                     adv_reader.cpp adv_reader.h\
                      adv_server.cpp adv_server.h\
                      adv_source.cpp adv_source.h\
                      adv_tag.cpp adv_tag.h\
@@ -66,6 +67,7 @@ MAINTAINERCLEANFILES = *~\
                        Makefile.in\
                        adv_astring.cpp adv_astring.h\
                        adv_packet.cpp adv_packet.h\
+                       adv_reader.cpp adv_reader.h\
                        adv_server.cpp adv_server.h\
                        adv_source.cpp adv_source.h\
                        adv_tag.cpp adv_tag.h\

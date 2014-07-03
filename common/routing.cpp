@@ -143,6 +143,12 @@ void Routing::setSrcEnabled(int slot,bool state)
 }
 
 
+int Routing::srcMeterLevel(int slot,int chan) const
+{
+  return (int)(2000.0*log10f(src_meter[slot][chan]));
+}
+
+
 int Routing::activeSources() const
 {
   int ret=0;
@@ -185,6 +191,12 @@ QString Routing::dstName(int slot) const
 void Routing::setDstName(int slot,const QString &str)
 {
   sy_dst_names[slot]=str;
+}
+
+
+int Routing::dstMeterLevel(int slot,int chan) const
+{
+  return (int)(2000.0*log10f(dst_meter[slot][chan]));
 }
 
 

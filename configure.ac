@@ -28,18 +28,6 @@ fi
 AC_PROG_CXX
 AC_LANG(C++)
 
-# to avoid rpath usage :
-# http://wiki.debian.net/index.cgi?RpathIssue
-#case ${host} in
-#  *-pc-linux-gnu)
-#    AC_MSG_RESULT([Fixing libtool for -rpath problems.])
-#    sed < libtool > libtool-2 \
-#    's/^hardcode_libdir_flag_spec.*$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
-#    mv libtool-2 libtool
-#    chmod 755 libtool
-#  ;;
-#esac
-
 #
 # Determine the target architecture
 #
@@ -69,11 +57,10 @@ AC_CONFIG_FILES([\
     Makefile \
     common/Makefile \
     conf/Makefile \
-    helpers/Makefile \
     syd/Makefile \
     syd/rc.syd \
     ])
-helpers/link_common.sh syd
+common/link_common.sh syd
 
 AC_OUTPUT()
 AC_MSG_NOTICE()
