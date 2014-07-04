@@ -26,32 +26,53 @@ void *ThreadCallback(void *p)
 {
   struct rtp_cb_data *cb_data=(struct rtp_cb_data *)p;
   struct sockaddr_in sa;
-  int sock;
+  int read_sock;
+  int write_sock;
   long sockopt;
   QHostAddress addr;
 
   //
-  // Open the socket
+  // Open the read socket
   //
-  if((sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
+  if((read_sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
     syslog(LOG_ERR,"unable to create RTP socket [%s]",strerror(errno));
     exit(256);
   }
   sockopt=1;
-  setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&sockopt,sizeof(sockopt));
-  setsockopt(sock,IPPROTO_IP,IP_PKTINFO,&sockopt,sizeof(sockopt));
+  setsockopt(read_sock,SOL_SOCKET,SO_REUSEADDR,&sockopt,sizeof(sockopt));
+  setsockopt(read_sock,IPPROTO_IP,IP_PKTINFO,&sockopt,sizeof(sockopt));
   memset(&sa,0,sizeof(sa));
   sa.sin_family=AF_INET;
   sa.sin_port=htons(SWITCHYARD_RTP_PORT);
   sa.sin_addr.s_addr=htonl(INADDR_ANY);
-  if(bind(sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
+  if(bind(read_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
     syslog(LOG_ERR,"unable to bind RTP socket [%s]",strerror(errno));
     global_exiting=true;
     return NULL;
   }
 
-  RTPCallback(sock,cb_data->routing,cb_data->priv);
-  close(sock);
+  //
+  // Open the write socket
+  //
+  if((write_sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
+    syslog(LOG_ERR,"unable to create RTP socket [%s]",strerror(errno));
+    exit(256);
+  }
+  sockopt=1;
+  setsockopt(write_sock,SOL_SOCKET,SO_REUSEADDR,&sockopt,sizeof(sockopt));
+  setsockopt(write_sock,IPPROTO_IP,IP_PKTINFO,&sockopt,sizeof(sockopt));
+  memset(&sa,0,sizeof(sa));
+  sa.sin_family=AF_INET;
+  sa.sin_port=htons(SWITCHYARD_RTP_PORT);
+  sa.sin_addr.s_addr=cb_data->routing->nic_addr;
+  if(bind(write_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
+    syslog(LOG_ERR,"unable to bind RTP socket [%s]",strerror(errno));
+    global_exiting=true;
+    return NULL;
+  }
+
+  RTPCallback(read_sock,write_sock,cb_data->routing,cb_data->priv);
+  close(read_sock);
   return NULL;
 }
 

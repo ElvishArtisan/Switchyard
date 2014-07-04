@@ -14,7 +14,7 @@
 #include "routing.h"
 #include "rtp.h"
 
-void RTPCallback(int sock,Routing *r,void *priv)
+void RTPCallback(int read_sock,int write_sock,Routing *r,void *priv)
 {
   struct sockaddr_in sa;
   struct sockaddr_in play_sa;
@@ -50,7 +50,7 @@ void RTPCallback(int sock,Routing *r,void *priv)
   hdr.msg_controllen=sizeof(mc);
   hdr.msg_flags=0;
   memset(&fds,0,sizeof(fds));
-  fds.fd=sock;
+  fds.fd=read_sock;
   fds.events=POLLIN;
 
   //
@@ -64,13 +64,13 @@ void RTPCallback(int sock,Routing *r,void *priv)
 
     case 0:
       if(global_exiting) {
-	close(sock);
+	close(read_sock);
 	return;
       }
       break;
 
     default:
-      n=recvmsg(sock,&hdr,0);
+      n=recvmsg(read_sock,&hdr,0);
       dst=0;
       chdr=CMSG_FIRSTHDR(&hdr);
       while(chdr!=NULL) {
@@ -85,7 +85,7 @@ void RTPCallback(int sock,Routing *r,void *priv)
 	for(i=0;i<r->src_slots;i++) {
 	  if(r->src_enabled[i]&&(r->src_addr[i]!=0)&&(dst==r->dst_addr[i])) {
 	    play_sa.sin_addr.s_addr=r->src_addr[i];
-	    sendto(sock,buffer,n,0,(struct sockaddr *)(&play_sa),
+	    sendto(write_sock,buffer,n,0,(struct sockaddr *)(&play_sa),
 		   sizeof(play_sa));
 	  }
 	}

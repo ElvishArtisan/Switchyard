@@ -20,7 +20,7 @@
 
 #include "routing.h"
 
-extern void RTPCallback(int sock,Routing *r,void *priv);
+extern void RTPCallback(int read_sock,int write_sock,Routing *r,void *priv);
 
 class RTPServer : public QObject
 {

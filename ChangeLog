@@ -73,3 +73,7 @@
 	'common/adv_reader.h'.
 2014-07-03 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.6.0.
+2014-07-04 Fred Gleason <fredg@paravelsystems.com>
+	* Split the 'int sock' argument in the RTP callback into
+	'int read_sock,int write_sock' in 'common/rtp.cpp' and
+	'common/rtp.h'.
