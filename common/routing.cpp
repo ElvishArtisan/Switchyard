@@ -8,6 +8,7 @@
 
 #include <arpa/inet.h>
 #include <errno.h>
+#include <ifaddrs.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <stdio.h>
@@ -52,8 +53,13 @@ unsigned Routing::srcSlots() const
 
 QString Routing::hostName() const
 {
+#ifdef OSX
+  char hostname[sysconf(_SC_HOST_NAME_MAX)];
+    gethostname(hostname,sysconf(_SC_HOST_NAME_MAX));
+#else
   char hostname[HOST_NAME_MAX];
   gethostname(hostname,HOST_NAME_MAX);
+#endif  // OSX
   return QString(hostname).split(".")[0];
 }
 
@@ -232,7 +238,11 @@ void Routing::subscribe(const QHostAddress &addr)
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=nic_addr;
   mreq.imr_ifindex=0;
+#ifdef OSX
+  setsockopt(sy_fd,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq));
+#else
   setsockopt(sy_fd,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq));
+#endif
 }
 
 
@@ -244,7 +254,11 @@ void Routing::unsubscribe(const QHostAddress &addr)
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=nic_addr;
   mreq.imr_ifindex=0;
+#ifdef OSX
+  setsockopt(sy_fd,IPPROTO_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
+#else
   setsockopt(sy_fd,SOL_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
+#endif  // OSX
 }
 
 
@@ -317,6 +331,41 @@ QString Routing::dumpAddress(uint32_t addr)
 
 void Routing::LoadInterfaces()
 {
+#ifdef OSX
+  struct ifaddrs *ifap=NULL;
+  struct ifaddrs *ifa=NULL;
+  struct sockaddr_in *sa_in=NULL;
+
+  if(getifaddrs(&ifap)<0) {
+    syslog(LOG_ERR,"unalbe to get interface information [%s]",strerror(errno));
+    exit(256);
+  }
+  ifa=ifap;
+  do {
+    switch(ifa->ifa_addr->sa_family) {
+    case AF_INET:
+      sa_in=(struct sockaddr_in *)ifa->ifa_addr;
+      if(sa_in->sin_addr.s_addr!=0) {
+	sy_nic_addresses.push_back(QHostAddress(ntohl(sa_in->sin_addr.s_addr)));
+	sa_in=(struct sockaddr_in *)ifa->ifa_netmask;
+	sy_nic_netmasks.push_back(QHostAddress(ntohl(sa_in->sin_addr.s_addr)));
+	//
+	// FIXME: How do we read MAC addresses on OS X?
+	//
+	sy_nic_devices.push_back(QString(ifa->ifa_name)+": 00:00:00:00:00:00");
+      }
+      break;
+    }
+  } while((ifa=ifa->ifa_next)!=NULL);
+  freeifaddrs(ifap);
+
+  for(unsigned i=0;i<sy_nic_addresses.size();i++) {
+    printf("%s: %s  %s\n",(const char *)sy_nic_devices[i].toAscii(),
+	   (const char *)sy_nic_addresses[i].toString().toAscii(),
+	   (const char *)sy_nic_netmasks[i].toString().toAscii());
+  }
+
+#else
   struct ifreq ifr;
   int index=0;
   uint64_t mac;
@@ -366,4 +415,5 @@ void Routing::LoadInterfaces()
     }
     ifr.ifr_ifindex=++index;
   }
+#endif  // OSX
 }

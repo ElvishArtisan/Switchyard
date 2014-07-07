@@ -46,7 +46,11 @@ AdvServer::AdvServer(Routing *r,bool read_only,QObject *parent)
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=htonl(adv_routing->nicAddress().toIPv4Address());
   mreq.imr_ifindex=0;
+#ifdef OSX
+  if(setsockopt(sock,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
+#else
   if(setsockopt(sock,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
+#endif  // OSX
     syslog(LOG_ERR,"unable to subscribe to advert group [%s]",strerror(errno));
     exit(256);
   }

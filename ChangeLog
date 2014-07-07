@@ -79,3 +79,5 @@
 	'common/rtp.h'.
 2014-07-04 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.6.1.
+2014-07-04 Fred Gleason <fredg@paravelsystems.com>
+	* Got building working under OS X 13.2.0.

@@ -8,8 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -Wno-strict-aliasing
-INCLUDES = -I$(top_srcdir)/common
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -Wno-strict-aliasing -I$(top_srcdir)/common
 LIBS = -L$(top_srcdir)/common
 MOC = @MOC@
 
@@ -49,8 +48,8 @@ nodist_syd_SOURCES = adv_packet.cpp adv_packet.h\
                      moc_rtp.cpp\
                      moc_syd.cpp
 
-syd_LDADD = -lQtCore -lQtNetwork
-syd_LDFLAGS = -pthread
+syd_LDADD = @SWITCHYARDLIBS@
+syd_LDFLAGS = @SWITCHYARDFLAGS@
 
 EXTRA_DIST = rc.syd.in
 

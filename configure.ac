@@ -34,6 +34,13 @@ AC_LANG(C++)
 AR_GCC_TARGET()
 AC_SUBST(VENDOR,$ar_gcc_distro)
 AC_SUBST(ARCH,$ar_gcc_arch)
+if test $ar_gcc_os = "darwin13.2.0" ; then
+   AC_MSG_RESULT([OS X.])
+   AC_DEFINE(OSX)
+else
+   AC_MSG_RESULT([Linux.])
+   AC_DEFINE(LINUX)
+fi
 
 #
 # Check for Qt4 (Mandatory)
@@ -51,6 +58,17 @@ if test $ar_gcc_distro = suse ; then
   AC_SUBST(PACKAGE_DOC_DIR,"/usr/share/doc/packages/$PACKAGE_NAME")
 else
   AC_SUBST(PACKAGE_DOC_DIR,"/usr/share/doc/$PACKAGE_NAME-`cat PACKAGE_VERSION`")
+fi
+
+#
+# Configure Linker Flags
+#
+if test $ar_gcc_os = "darwin13.2.0" ; then
+  AC_SUBST(SWITCHYARDLIBS,"")
+  AC_SUBST(SWITCHYARDFLAGS,"-framework QtCore -framework QtNetwork")
+else
+  AC_SUBST(SWITCHYARDLIBS,"-lQtCore -lQtNetwork")
+  AC_SUBST(SWITCHYARDFLAGS,"-pthread")
 fi
 
 AC_CONFIG_FILES([\
