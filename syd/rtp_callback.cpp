@@ -57,7 +57,7 @@ void RTPCallback(int read_sock,int write_sock,Routing *r,void *priv)
   // Process RTP Data
   //
   while(!global_exiting) {
-    switch(poll(&fds,1,1)) {
+    switch(poll(&fds,1,100)) {
     case -1:
       syslog(LOG_WARNING,"poll() returned error [%s]",strerror(errno));
       break;

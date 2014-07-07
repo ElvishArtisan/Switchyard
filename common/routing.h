@@ -56,6 +56,7 @@ class Routing
   QString nicDevice(unsigned n);
   void subscribe(const QHostAddress &addr);
   void unsubscribe(const QHostAddress &addr);
+  int subscriptionSocket() const;
   void load();
   void save() const;
   uint32_t nic_addr;
@@ -77,7 +78,7 @@ class Routing
   std::vector<QHostAddress> sy_nic_addresses;
   std::vector<QHostAddress> sy_nic_netmasks;
   std::vector<QString> sy_nic_devices;
-  int sy_fd;
+  int sy_subscription_socket;
 };
 
 

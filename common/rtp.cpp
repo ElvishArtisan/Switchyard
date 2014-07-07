@@ -34,10 +34,7 @@ void *ThreadCallback(void *p)
   //
   // Open the read socket
   //
-  if((read_sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    syslog(LOG_ERR,"unable to create RTP socket [%s]",strerror(errno));
-    exit(256);
-  }
+  read_sock=cb_data->routing->subscriptionSocket();
   sockopt=1;
   setsockopt(read_sock,SOL_SOCKET,SO_REUSEADDR,&sockopt,sizeof(sockopt));
   setsockopt(read_sock,IPPROTO_IP,IP_PKTINFO,&sockopt,sizeof(sockopt));

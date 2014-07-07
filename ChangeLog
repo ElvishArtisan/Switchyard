@@ -81,3 +81,10 @@
 	* Incremented the package version to 0.6.1.
 2014-07-04 Fred Gleason <fredg@paravelsystems.com>
 	* Got building working under OS X 13.2.0.
+2014-07-07 Fred Gleason <fredg@paravelsystems.com>
+	* Optimized 'Routing::LoadInterfaces()' to select 'en0' as the
+	default interface under OS X.
+2014-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored socket code in 'common/routing.cpp',
+	'common/routing.h' and 'common/rtp.cpp' so as to handle
+	subscriptions properly under OS X.

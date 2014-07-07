@@ -45,7 +45,7 @@ LWRPServer::LWRPServer(Routing *routing)
   // Initialize slots
   //
   for(unsigned i=0;i<ctrl_routing->srcSlots();i++) {
-    ctrl_routing->subscribe(ctrl_routing->srcAddress(i));
+    ctrl_routing->subscribe(ctrl_routing->dstAddress(i));
   }
 }
 

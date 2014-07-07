@@ -239,9 +239,11 @@ void Routing::subscribe(const QHostAddress &addr)
   mreq.imr_address.s_addr=nic_addr;
   mreq.imr_ifindex=0;
 #ifdef OSX
-  setsockopt(sy_fd,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq));
+  setsockopt(sy_subscription_socket,IPPROTO_IP,IP_ADD_MEMBERSHIP,
+	     &mreq,sizeof(mreq));
 #else
-  setsockopt(sy_fd,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq));
+  setsockopt(sy_subscription_socket,SOL_IP,IP_ADD_MEMBERSHIP,
+	     &mreq,sizeof(mreq));
 #endif
 }
 
@@ -255,10 +257,16 @@ void Routing::unsubscribe(const QHostAddress &addr)
   mreq.imr_address.s_addr=nic_addr;
   mreq.imr_ifindex=0;
 #ifdef OSX
-  setsockopt(sy_fd,IPPROTO_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
+  setsockopt(sy_subscription_socket,IPPROTO_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
 #else
-  setsockopt(sy_fd,SOL_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
+  setsockopt(sy_subscription_socket,SOL_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
 #endif  // OSX
+}
+
+
+int Routing::subscriptionSocket() const
+{
+  return sy_subscription_socket;
 }
 
 
@@ -331,13 +339,19 @@ QString Routing::dumpAddress(uint32_t addr)
 
 void Routing::LoadInterfaces()
 {
+  if((sy_subscription_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
+    syslog(LOG_ERR,"unable to create RTP subscription socket [%s]",
+	   strerror(errno));
+    exit(256);
+  }
+
 #ifdef OSX
   struct ifaddrs *ifap=NULL;
   struct ifaddrs *ifa=NULL;
   struct sockaddr_in *sa_in=NULL;
 
   if(getifaddrs(&ifap)<0) {
-    syslog(LOG_ERR,"unalbe to get interface information [%s]",strerror(errno));
+    syslog(LOG_ERR,"unable to get interface information [%s]",strerror(errno));
     exit(256);
   }
   ifa=ifap;
@@ -345,7 +359,7 @@ void Routing::LoadInterfaces()
     switch(ifa->ifa_addr->sa_family) {
     case AF_INET:
       sa_in=(struct sockaddr_in *)ifa->ifa_addr;
-      if(sa_in->sin_addr.s_addr!=0) {
+      if((QString(ifa->ifa_name).left(2)=="en")&&(sa_in->sin_addr.s_addr!=0)) {
 	sy_nic_addresses.push_back(QHostAddress(ntohl(sa_in->sin_addr.s_addr)));
 	sa_in=(struct sockaddr_in *)ifa->ifa_netmask;
 	sy_nic_netmasks.push_back(QHostAddress(ntohl(sa_in->sin_addr.s_addr)));
@@ -353,6 +367,10 @@ void Routing::LoadInterfaces()
 	// FIXME: How do we read MAC addresses on OS X?
 	//
 	sy_nic_devices.push_back(QString(ifa->ifa_name)+": 00:00:00:00:00:00");
+      }
+      if(QString(ifa->ifa_name)=="en0") {
+	nic_addr=htonl(sy_nic_addresses.back().toIPv4Address());
+	nic_mask=htonl(sy_nic_netmasks.back().toIPv4Address());
       }
       break;
     }
@@ -370,15 +388,11 @@ void Routing::LoadInterfaces()
   int index=0;
   uint64_t mac;
 
-  if((sy_fd=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    return;
-  }
-
   memset(&ifr,0,sizeof(ifr));
   index=1;
   ifr.ifr_ifindex=index;
-  while(ioctl(sy_fd,SIOCGIFNAME,&ifr)==0) {
-    if(ioctl(sy_fd,SIOCGIFHWADDR,&ifr)==0) {
+  while(ioctl(sy_subscription_socket,SIOCGIFNAME,&ifr)==0) {
+    if(ioctl(sy_subscription_socket,SIOCGIFHWADDR,&ifr)==0) {
       mac=
 	((0xff&(uint64_t)ifr.ifr_ifru.ifru_hwaddr.sa_data[0])<<40)+
 	((0xff&(uint64_t)ifr.ifr_ifru.ifru_hwaddr.sa_data[1])<<32)+
@@ -399,11 +413,11 @@ void Routing::LoadInterfaces()
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[5]));
 	sy_nic_addresses.push_back(QHostAddress());
 	sy_nic_netmasks.push_back(QHostAddress());
-	if(ioctl(sy_fd,SIOCGIFADDR,&ifr)==0) {
+	if(ioctl(sy_subscription_socket,SIOCGIFADDR,&ifr)==0) {
 	  struct sockaddr_in sa=*(sockaddr_in *)(&ifr.ifr_addr);
 	  sy_nic_addresses.back().setAddress(ntohl(sa.sin_addr.s_addr));
 	}
-	if(ioctl(sy_fd,SIOCGIFNETMASK,&ifr)==0) {
+	if(ioctl(sy_subscription_socket,SIOCGIFNETMASK,&ifr)==0) {
 	  struct sockaddr_in sa=*(sockaddr_in *)(&ifr.ifr_netmask);
 	  sy_nic_netmasks.back().setAddress(ntohl(sa.sin_addr.s_addr));
 	}

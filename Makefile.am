@@ -32,6 +32,7 @@ MAINTAINERCLEANFILES = *~\
                        *.tar.gz\
                        *.spec\
                        aclocal.m4\
+                       compile\
                        configure\
                        config.guess\
                        config.status\
