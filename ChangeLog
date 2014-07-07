@@ -88,3 +88,6 @@
 	* Refactored socket code in 'common/routing.cpp',
 	'common/routing.h' and 'common/rtp.cpp' so as to handle
 	subscriptions properly under OS X.
+2014-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'configure.ac' that failed to detect certain
+	versions of OS X.

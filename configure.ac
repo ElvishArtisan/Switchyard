@@ -34,7 +34,7 @@ AC_LANG(C++)
 AR_GCC_TARGET()
 AC_SUBST(VENDOR,$ar_gcc_distro)
 AC_SUBST(ARCH,$ar_gcc_arch)
-if test $ar_gcc_os = "darwin13.2.0" ; then
+if test $ar_gcc_distro = "apple" ; then
    AC_MSG_RESULT([OS X.])
    AC_DEFINE(OSX)
 else
@@ -63,7 +63,7 @@ fi
 #
 # Configure Linker Flags
 #
-if test $ar_gcc_os = "darwin13.2.0" ; then
+if test $ar_gcc_distro = "apple" ; then
   AC_SUBST(SWITCHYARDLIBS,"")
   AC_SUBST(SWITCHYARDFLAGS,"-framework QtCore -framework QtNetwork")
 else
