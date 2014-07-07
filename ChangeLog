@@ -94,3 +94,5 @@
 2014-07-08 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'get_distro.sh' that failed to detect OS X
 	correctly.
+2014-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.6.2.
