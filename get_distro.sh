@@ -38,6 +38,10 @@ case "$1" in
 	  echo -n "RedHat"
 	  exit 0
 	fi
+	if test `uname` = "Darwin" ; then
+          echo -n "OS X"
+          exit 0
+        fi
 	echo -n "unknown"
     ;;
     VERSION)
@@ -51,6 +55,11 @@ case "$1" in
         fi
 	if test -f /etc/redhat-release ; then
 	  awk '/release/ {print $3}' /etc/redhat-release
+          exit 0
+	fi
+	if test `uname` = "Darwin" ; then
+	  echo -n `uname -r`
+          exit 0
 	fi
     ;;
 esac

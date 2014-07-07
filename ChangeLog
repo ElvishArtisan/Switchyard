@@ -91,3 +91,6 @@
 2014-07-08 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'configure.ac' that failed to detect certain
 	versions of OS X.
+2014-07-08 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'get_distro.sh' that failed to detect OS X
+	correctly.
