@@ -382,13 +382,13 @@ void Routing::LoadInterfaces()
     }
   } while((ifa=ifa->ifa_next)!=NULL);
   freeifaddrs(ifap);
-
+  /*
   for(unsigned i=0;i<sy_nic_addresses.size();i++) {
     printf("%s: %s  %s\n",(const char *)sy_nic_devices[i].toAscii(),
 	   (const char *)sy_nic_addresses[i].toString().toAscii(),
 	   (const char *)sy_nic_netmasks[i].toString().toAscii());
   }
-
+  */
 #else
   struct ifreq ifr;
   int index=0;

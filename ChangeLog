@@ -98,3 +98,5 @@
 	* Incremented the package version to 0.6.2.
 2014-07-10 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to create the cache directory automatically.
+2014-07-10 Fred Gleason <fredg@paravelsystems.com>
+	* Commented out debug code in 'routing.cpp'.
