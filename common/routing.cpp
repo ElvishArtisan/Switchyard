@@ -21,6 +21,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QtCore/QDir>
 #include <QtCore/QStringList>
 
 #include "profile.h"
@@ -28,6 +29,11 @@
 
 Routing::Routing(unsigned d_slots,unsigned s_slots)
 {
+  QDir dir(SWITCHYARD_CACHE_DIR);
+  if(!dir.exists(SWITCHYARD_CACHE_DIR)) {
+    dir.mkpath(SWITCHYARD_CACHE_DIR);
+  }
+
   if((d_slots>=SWITCHYARD_MAX_SLOTS)||(s_slots>=SWITCHYARD_MAX_SLOTS)) {
     syslog(LOG_ERR,"maximum slot count exceeded");
     exit(256);
