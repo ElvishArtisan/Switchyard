@@ -41,8 +41,12 @@ class LWRPServer : public QObject
   bool ExecuteIp(int ch,QStringList &args);
   bool ExecuteSrc(int ch,QStringList &args);
   bool ExecuteDst(int ch,QStringList &args);
+  bool ExecuteGpi(int ch,QStringList &args);
+  bool ExecuteGpo(int ch,QStringList &args);
   QString SrcLine(int slot);
   QString DstLine(int slot);
+  QString GpiLine(int slot);
+  QString GpoLine(int slot);
   QStringList ParseField(const AString &field);
   void ParseCommand(int id);
   void BroadcastCommand(const QString &cmd);

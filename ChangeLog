@@ -102,3 +102,8 @@
 	* Commented out debug code in 'routing.cpp'.
 2014-07-10 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.6.3.
+2014-07-20 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'GpioServer' class in 'common/gpio_server.cpp' and
+	'common/gpio_server.h'.
+	* Added code in 'syd/syd.cpp' and 'syd/syd.h' to forward GPI
+	events along with RTP audio.

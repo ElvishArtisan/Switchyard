@@ -16,6 +16,7 @@ EXTRA_DIST = adv_packet.cpp adv_packet.h\
              astring.cpp astring.h\
              cmdswitch.cpp cmdswitch.h\
              config.h\
+             gpio_server.cpp gpio_server.h\
              link_common.sh\
              lwrp_clientconnection.cpp lwrp_clientconnection.h\
              lwrp_server.cpp lwrp_server.h\

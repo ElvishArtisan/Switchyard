@@ -33,12 +33,16 @@ rm -f $1/astring.cpp
 ln -s ../common/astring.cpp $1/astring.cpp
 rm -f $1/astring.h
 ln -s ../common/astring.h $1/astring.h
-rm -f $1/cmdswitch.cp
+rm -f $1/cmdswitch.cpp
 ln -s ../common/cmdswitch.cpp $1/cmdswitch.cpp
 rm -f $1/cmdswitch.h
 ln -s ../common/cmdswitch.h $1/cmdswitch.h
 rm -f $1/config.h
 ln -s ../common/config.h $1/config.h
+rm -f $1/gpio_server.cpp
+ln -s ../common/gpio_server.cpp $1/gpio_server.cpp
+rm -f $1/gpio_server.h
+ln -s ../common/gpio_server.h $1/gpio_server.h
 rm -f $1/lwrp_clientconnection.cp
 ln -s ../common/lwrp_clientconnection.cpp $1/lwrp_clientconnection.cpp
 rm -f $1/lwrp_clientconnection.

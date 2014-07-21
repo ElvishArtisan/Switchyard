@@ -27,11 +27,24 @@
 #include "profile.h"
 #include "routing.h"
 
-Routing::Routing(unsigned d_slots,unsigned s_slots)
+Routing::Routing(unsigned d_slots,unsigned s_slots,unsigned gpis,unsigned gpos)
 {
+  //
+  // Create Database Directory
+  //
   QDir dir(SWITCHYARD_CACHE_DIR);
   if(!dir.exists(SWITCHYARD_CACHE_DIR)) {
     dir.mkpath(SWITCHYARD_CACHE_DIR);
+  }
+
+  //
+  // Initialize GPIO Subsystem
+  //
+  for(unsigned i=0;i<(gpis*SWITCHYARD_GPIO_BUNDLE_SIZE);i++) {
+    sy_gpi_states.push_back(0);
+  }
+  for(unsigned i=0;i<(gpos*SWITCHYARD_GPIO_BUNDLE_SIZE);i++) {
+    sy_gpo_states.push_back(0);
   }
 
   if((d_slots>=SWITCHYARD_MAX_SLOTS)||(s_slots>=SWITCHYARD_MAX_SLOTS)) {
@@ -54,6 +67,18 @@ unsigned Routing::dstSlots() const
 unsigned Routing::srcSlots() const
 {
   return src_slots;
+}
+
+
+unsigned Routing::gpis() const
+{
+  return sy_gpi_states.size()/SWITCHYARD_GPIO_BUNDLE_SIZE;
+}
+
+
+unsigned Routing::gpos() const
+{
+  return sy_gpo_states.size()/SWITCHYARD_GPIO_BUNDLE_SIZE;
 }
 
 
@@ -212,6 +237,62 @@ int Routing::dstMeterLevel(int slot,int chan) const
 }
 
 
+bool Routing::gpiState(int gpi,int line) const
+{
+  int slot=GetSlotByGpio(gpi);
+  bool ret=false;
+
+  if(slot>=0) {
+    ret=sy_gpi_states[slot+line];
+  }
+  return ret;
+}
+
+
+bool Routing::gpiStateBySlot(int slot,int line) const
+{
+  return sy_gpi_states[slot*SWITCHYARD_GPIO_BUNDLE_SIZE+line];
+}
+
+
+void Routing::setGpi(int gpi,int line,bool state,bool pulse)
+{
+  int slot=GetSlotByGpio(gpi);
+
+  if(slot>=0) {
+    sy_gpi_states[slot+line]=state;
+  }
+}
+
+
+bool Routing::gpoState(int gpo,int line) const
+{
+  int slot=GetSlotByGpio(gpo);
+  bool ret=false;
+
+  if(slot>=0) {
+    ret=sy_gpo_states[slot+line];
+  }
+  return ret;
+}
+
+
+bool Routing::gpoStateBySlot(int slot,int line) const
+{
+  return sy_gpo_states[slot*SWITCHYARD_GPIO_BUNDLE_SIZE+line];
+}
+
+
+void Routing::setGpo(int gpo,int line,bool state,bool pulse)
+{
+  int slot=GetSlotByGpio(gpo);
+
+  if(slot>=0) {
+    sy_gpo_states[slot+line]=state;
+  }
+}
+
+
 unsigned Routing::nicQuantity() const
 {
   return sy_nic_devices.size();
@@ -330,9 +411,14 @@ void Routing::save() const
     }
     fprintf(f,"\n");
   }
-
   fclose(f);
   rename(tempfile.toAscii(),SWITCHYARD_ROUTING_FILE);
+}
+
+
+unsigned Routing::livewireNumber(const QHostAddress &addr)
+{
+  return 0xFFFF&addr.toIPv4Address();
 }
 
 
@@ -340,6 +426,18 @@ QString Routing::dumpAddress(uint32_t addr)
 {
   QHostAddress a(ntohl(addr));
   return a.toString();
+}
+
+
+int Routing::GetSlotByGpio(int gpio) const
+{
+  for(unsigned i=0;i<dstSlots();i++) {
+    if(Routing::livewireNumber(dstAddress(i))==(unsigned)gpio) {
+      return i*SWITCHYARD_GPIO_BUNDLE_SIZE;
+    }
+  }
+
+  return -1;
 }
 
 

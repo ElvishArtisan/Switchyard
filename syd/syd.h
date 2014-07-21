@@ -15,6 +15,7 @@
 
 #include "adv_server.h"
 #include "config.h"
+#include "gpio_server.h"
 #include "lwrp_server.h"
 #include "routing.h"
 #include "rtp.h"
@@ -30,10 +31,12 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
+  void gpiReceivedData(int gpi,int line,bool state,bool pulse);
   void exitData();
 
  private:
   Routing *syd_routing;
+  GpioServer *syd_gpio;
   LWRPServer *syd_lwrp;
   AdvServer *syd_adv;
   RTPServer *syd_rtp;

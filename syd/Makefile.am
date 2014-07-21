@@ -38,12 +38,14 @@ nodist_syd_SOURCES = adv_packet.cpp adv_packet.h\
                      astring.cpp astring.h\
                      cmdswitch.cpp cmdswitch.h\
                      config.h\
+                     gpio_server.cpp gpio_server.h\
                      lwrp_clientconnection.cpp lwrp_clientconnection.h\
                      lwrp_server.cpp lwrp_server.h\
                      profile.cpp profile.h\
                      routing.cpp routing.h\
                      rtp.cpp rtp.h\
                      moc_adv_server.cpp\
+                     moc_gpio_server.cpp\
                      moc_lwrp_server.cpp\
                      moc_rtp.cpp\
                      moc_syd.cpp
@@ -73,6 +75,7 @@ MAINTAINERCLEANFILES = *~\
                        astring.cpp astring.h\
                        cmdswitch.cpp cmdswitch.h\
                        config.h\
+                       gpio_server.cpp gpio_server.h\
                        lwrp_clientconnection.cpp lwrp_clientconnection.h\
                        lwrp_server.cpp lwrp_server.h\
                        profile.cpp profile.h\

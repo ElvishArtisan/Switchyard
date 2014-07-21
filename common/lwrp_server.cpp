@@ -117,10 +117,11 @@ bool LWRPServer::ExecuteLogin(int id,QStringList &args)
 bool LWRPServer::ExecuteVer(int id,QStringList &args)
 {
   SendCommand(id,QString().
-     sprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:0 NGPO:0",
+     sprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:%u NGPO:%u",
 	     SWITCHYARD_PROTOCOL_VERSION,SWITCHYARD_DEVICE_NAME,
-	     SWITCHYARD_VERSION,ctrl_routing->srcSlots(),
-	     ctrl_routing->dstSlots()));
+	     SWITCHYARD_VERSION,
+	     ctrl_routing->srcSlots(),ctrl_routing->dstSlots(),
+	     ctrl_routing->gpis(),ctrl_routing->gpos()));
   return true;
 }
 
@@ -299,6 +300,58 @@ bool LWRPServer::ExecuteDst(int id,QStringList &args)
 }
 
 
+bool LWRPServer::ExecuteGpi(int ch,QStringList &args)
+{
+  unsigned slot;
+  bool ok=false;
+
+  switch(args.size()) {
+  case 1:
+    SendCommand(ch,"BEGIN");
+    for(unsigned i=0;i<ctrl_routing->gpis();i++) {
+      SendCommand(ch,GpiLine(i));
+    }
+    SendCommand(ch,"END");
+    return true;
+
+  case 2:
+    slot=args[1].toUInt(&ok);
+    if(ok&&(slot<=ctrl_routing->gpis())) {
+      SendCommand(ch,GpiLine(slot-1));
+      return true;
+    }
+    break;
+  }
+  return false;
+}
+
+
+bool LWRPServer::ExecuteGpo(int ch,QStringList &args)
+{
+  unsigned slot;
+  bool ok=false;
+
+  switch(args.size()) {
+  case 1:
+    SendCommand(ch,"BEGIN");
+    for(unsigned i=0;i<ctrl_routing->gpos();i++) {
+      SendCommand(ch,GpoLine(i));
+    }
+    SendCommand(ch,"END");
+    return true;
+
+  case 2:
+    slot=args[1].toUInt(&ok);
+    if(ok&&(slot<=ctrl_routing->gpos())) {
+      SendCommand(ch,GpoLine(slot-1));
+      return true;
+    }
+    break;
+  }
+  return false;
+}
+
+
 QString LWRPServer::SrcLine(int slot)
 {
   return QString().
@@ -317,6 +370,40 @@ QString LWRPServer::DstLine(int slot)
 	    slot+1,
 	    (const char *)ctrl_routing->dstName(slot).toAscii(),
 	    (const char *)ctrl_routing->dstAddress(slot).toString().toAscii());
+}
+
+
+QString LWRPServer::GpiLine(int slot)
+{
+  QString ret=QString().sprintf("GPI %d ",slot+1);
+
+  for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
+    if(ctrl_routing->gpiStateBySlot(slot,i)) {
+      ret+="l";
+    }
+    else {
+      ret+="h";
+    }
+  }
+
+  return ret;
+}
+
+
+QString LWRPServer::GpoLine(int slot)
+{
+  QString ret=QString().sprintf("GPO %d ",slot+1);
+
+  for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
+    if(ctrl_routing->gpoStateBySlot(slot,i)) {
+      ret+="l";
+    }
+    else {
+      ret+="h";
+    }
+  }
+
+  return ret;
 }
 
 
@@ -364,6 +451,12 @@ void LWRPServer::ParseCommand(int id)
   }
   if(args[0]=="dst") {
     ok=ExecuteDst(id,args);
+  }
+  if(args[0]=="gpi") {
+    ok=ExecuteGpi(id,args);
+  }
+  if(args[0]=="gpo") {
+    ok=ExecuteGpo(id,args);
   }
   if(!ok) {
     SendCommand(id,"ERROR 1000 bad command");

@@ -60,7 +60,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Load Routing Rules
   //
-  syd_routing=new Routing(SYD_SLOTS,SYD_SLOTS);
+  syd_routing=new Routing(SYD_SLOTS,SYD_SLOTS,SYD_SLOTS,SYD_SLOTS);
 
   //
   // Start LWRP Server
@@ -71,6 +71,13 @@ MainObject::MainObject(QObject *parent)
   // Start Advertisements
   //
   syd_adv=new AdvServer(syd_routing,true,this);
+
+  //
+  // Start GPIO Processing
+  //
+  syd_gpio=new GpioServer(syd_routing,this);
+  connect(syd_gpio,SIGNAL(gpiReceived(int,int,bool,bool)),
+	  this,SLOT(gpiReceivedData(int,int,bool,bool)));
 
   //
   // Detach and write PID file
@@ -94,6 +101,20 @@ MainObject::MainObject(QObject *parent)
   //
   signal(SIGINT,SignalHandler);
   signal(SIGTERM,SignalHandler);
+}
+
+
+void MainObject::gpiReceivedData(int gpi,int line,bool state,bool pulse)
+{
+  //  printf("gpiReceivedData(%d,%d,%d,%d)\n",gpi,line,state,pulse);
+
+  for(unsigned i=0;i<syd_routing->dstSlots();i++) {
+    if(gpi==(int)Routing::livewireNumber(syd_routing->dstAddress(i))&&
+       syd_routing->srcEnabled(i)) {
+      syd_gpio->sendGpi(Routing::livewireNumber(syd_routing->srcAddress(i)),
+			line,state,pulse);
+    }
+  }
 }
 
 
