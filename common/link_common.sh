@@ -55,6 +55,10 @@ rm -f $1/profile.cpp
 ln -s ../common/profile.cpp $1/profile.cpp
 rm -f $1/profile.
 ln -s ../common/profile.h $1/profile.h
+rm -f $1/ringbuffer.cpp
+ln -s ../common/ringbuffer.cpp $1/ringbuffer.cpp
+rm -f $1/ringbuffer.h
+ln -s ../common/ringbuffer.h $1/ringbuffer.h
 rm -f $1/routing.cpp
 ln -s ../common/routing.cpp $1/routing.cpp
 rm -f $1/routing.h

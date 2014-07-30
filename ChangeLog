@@ -107,3 +107,6 @@
 	'common/gpio_server.h'.
 	* Added code in 'syd/syd.cpp' and 'syd/syd.h' to forward GPI
 	events along with RTP audio.
+2014-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Ringbuffer' class in 'common/ringbuffer.cpp' and
+	'common/ringbuffer.h'.

@@ -42,6 +42,7 @@ nodist_syd_SOURCES = adv_packet.cpp adv_packet.h\
                      lwrp_clientconnection.cpp lwrp_clientconnection.h\
                      lwrp_server.cpp lwrp_server.h\
                      profile.cpp profile.h\
+                     ringbuffer.cpp ringbuffer.h\
                      routing.cpp routing.h\
                      rtp.cpp rtp.h\
                      moc_adv_server.cpp\
@@ -79,5 +80,6 @@ MAINTAINERCLEANFILES = *~\
                        lwrp_clientconnection.cpp lwrp_clientconnection.h\
                        lwrp_server.cpp lwrp_server.h\
                        profile.cpp profile.h\
+                       ringbuffer.cpp ringbuffer.h\
                        routing.cpp routing.h\
                        rtp.cpp rtp.h
