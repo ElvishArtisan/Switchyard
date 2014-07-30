@@ -110,3 +110,5 @@
 2014-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Ringbuffer' class in 'common/ringbuffer.cpp' and
 	'common/ringbuffer.h'.
+2014-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.6.4.
