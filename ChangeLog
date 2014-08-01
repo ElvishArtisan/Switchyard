@@ -119,3 +119,8 @@
 	* Renamed the 'GpioServer::gpiReceived()' signal to
 	'GpioServer::gpoReceived()' in 'common/gpio_server.cpp' and
 	'common/gpio_server.h'.
+2014-08-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'GpioServer::sendGpi()' method in 'common/gpio_server.cpp'
+	and 'common/gpio_server.h'.
+	* Added a 'GpioServer::gpiReceived()' signal in
+	 'common/gpio_server.cpp' and 'common/gpio_server.h'.

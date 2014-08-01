@@ -76,6 +76,8 @@ MainObject::MainObject(QObject *parent)
   // Start GPIO Processing
   //
   syd_gpio=new GpioServer(syd_routing,this);
+  connect(syd_gpio,SIGNAL(gpiReceived(int,int,bool,bool)),
+	  this,SLOT(gpiReceivedData(int,int,bool,bool)));
   connect(syd_gpio,SIGNAL(gpoReceived(int,int,bool,bool)),
 	  this,SLOT(gpoReceivedData(int,int,bool,bool)));
 
@@ -104,12 +106,26 @@ MainObject::MainObject(QObject *parent)
 }
 
 
-void MainObject::gpoReceivedData(int gpi,int line,bool state,bool pulse)
+void MainObject::gpiReceivedData(int gpi,int line,bool state,bool pulse)
 {
-  //  printf("gpoReceivedData(%d,%d,%d,%d)\n",gpi,line,state,pulse);
+  // printf("gpiReceivedData(%d,%d,%d,%d)\n",gpi,line,state,pulse);
+
+  for(unsigned i=0;i<syd_routing->srcSlots();i++) {
+    if(gpi==(int)Routing::livewireNumber(syd_routing->srcAddress(i))&&
+       syd_routing->srcEnabled(i)) {
+      syd_gpio->sendGpi(Routing::livewireNumber(syd_routing->dstAddress(i)),
+			line,state,pulse);
+    }
+  }
+}
+
+
+void MainObject::gpoReceivedData(int gpo,int line,bool state,bool pulse)
+{
+  // printf("gpoReceivedData(%d,%d,%d,%d)\n",gpo,line,state,pulse);
 
   for(unsigned i=0;i<syd_routing->dstSlots();i++) {
-    if(gpi==(int)Routing::livewireNumber(syd_routing->dstAddress(i))&&
+    if(gpo==(int)Routing::livewireNumber(syd_routing->dstAddress(i))&&
        syd_routing->srcEnabled(i)) {
       syd_gpio->sendGpo(Routing::livewireNumber(syd_routing->srcAddress(i)),
 			line,state,pulse);

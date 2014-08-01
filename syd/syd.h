@@ -31,6 +31,7 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
+  void gpiReceivedData(int gpi,int line,bool state,bool pulse);
   void gpoReceivedData(int gpi,int line,bool state,bool pulse);
   void exitData();
 

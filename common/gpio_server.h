@@ -31,17 +31,24 @@ class GpioServer : public QObject
   ~GpioServer();
 
  public slots:
+  void sendGpi(int gpi,int line,bool state,bool pulse);
   void sendGpo(int gpo,int line,bool state,bool pulse);
 
  signals:
-  void gpoReceived(int gpi,int line,bool state,bool pulse);
+  void gpiReceived(int gpi,int line,bool state,bool pulse);
+  void gpoReceived(int gpo,int line,bool state,bool pulse);
 
  private slots:
-  void readyReadData();
+  void gpiReadyReadData();
+  void gpoReadyReadData();
 
  private:
-  QUdpSocket *gpio_send_socket;
-  QUdpSocket *gpio_recv_socket;
+  QUdpSocket *CreateSendSocket(uint16_t port);
+  QUdpSocket *CreateRecvSocket(uint16_t port);
+  QUdpSocket *gpio_gpi_send_socket;
+  QUdpSocket *gpio_gpi_recv_socket;
+  QUdpSocket *gpio_gpo_send_socket;
+  QUdpSocket *gpio_gpo_recv_socket;
   Routing *gpio_routing;
   uint32_t gpio_serial;
   std::map<uint32_t,uint32_t> gpio_src_addr_serials;
