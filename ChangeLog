@@ -112,3 +112,10 @@
 	'common/ringbuffer.h'.
 2014-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.6.4.
+2014-08-01 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed the 'GpioServer::sendGpi()' method to
+	'GpioServer::sendGpo()' in 'common/gpio_server.cpp' and
+	'common/gpio_server.h'.
+	* Renamed the 'GpioServer::gpiReceived()' signal to
+	'GpioServer::gpoReceived()' in 'common/gpio_server.cpp' and
+	'common/gpio_server.h'.

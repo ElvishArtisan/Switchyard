@@ -77,9 +77,9 @@ GpioServer::~GpioServer()
   delete gpio_recv_socket;
 }
 
-void GpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
+void GpioServer::sendGpo(int gpi,int line,bool state,bool pulse)
 {
-  syslog(LOG_DEBUG,"sending gpi: gpi: %d  line: %d  state: %d  pulse: %d\n",
+  syslog(LOG_DEBUG,"sending gpo: gpi: %d  line: %d  state: %d  pulse: %d\n",
 	 gpi,line,state,pulse);
 
   char data[60]={0x03,0x00,0x02,0x07,0x36,0x0B,0x97,0xA9,
@@ -148,7 +148,7 @@ void GpioServer::readyReadData()
       (0xFF&data[7]);
     if(gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1)) {
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
-      emit gpiReceived(((0xFF&data[23])<<8)+(0xFF&data[24]),
+      emit gpoReceived(((0xFF&data[23])<<8)+(0xFF&data[24]),
 		       0x08-(0xff&data[25]),(data[27]&0x40)!=0,
 		       (data[27]&0x0A)!=0);
       gpio_routing->setGpi(((0xFF&data[23])<<8)+(0xFF&data[24]),

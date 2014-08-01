@@ -31,10 +31,10 @@ class GpioServer : public QObject
   ~GpioServer();
 
  public slots:
-  void sendGpi(int gpo,int line,bool state,bool pulse);
+  void sendGpo(int gpo,int line,bool state,bool pulse);
 
  signals:
-  void gpiReceived(int gpi,int line,bool state,bool pulse);
+  void gpoReceived(int gpi,int line,bool state,bool pulse);
 
  private slots:
   void readyReadData();
