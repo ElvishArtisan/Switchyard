@@ -32,7 +32,5 @@
 #define SWITCHYARD_SHM_KEY 0x59D2B831
 #define SWITCHYARD_SAVESOURCES_INTERVAL 5000
 
-extern bool global_exiting;
-
 
 #endif  // SYCONFIG_H

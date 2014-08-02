@@ -26,6 +26,8 @@ class SyRtpServer : public QObject
  public:
   SyRtpServer(void *(*callback_func)(unsigned,const char *,int,SyRouting *,void *),
 	      void *callback_priv,SyRouting *routing,QObject *parent=0);
+  ~SyRtpServer();
+  void shutdown();
 
  signals:
   void exiting();

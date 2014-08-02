@@ -17,6 +17,8 @@
 #include "syconfig.h"
 #include "syrtp_server.h"
 
+bool __rtp_shutting_down=false;
+
 struct rtp_cb_data
 {
   SyRouting *routing;
@@ -55,7 +57,7 @@ void *__RtpServer_ThreadCallback(void *p)
   sa.sin_addr.s_addr=htonl(INADDR_ANY);
   if(bind(read_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
     syslog(LOG_ERR,"unable to bind RTP socket [%s]",strerror(errno));
-    global_exiting=true;
+    __rtp_shutting_down=true;
     return NULL;
   }
 
@@ -72,7 +74,7 @@ void *__RtpServer_ThreadCallback(void *p)
   sa.sin_addr.s_addr=cb_data->routing->nic_addr;
   if(bind(write_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
     syslog(LOG_ERR,"unable to bind RTP socket [%s]",strerror(errno));
-    global_exiting=true;
+    __rtp_shutting_down=true;
     return NULL;
   }
 
@@ -104,14 +106,14 @@ void *__RtpServer_ThreadCallback(void *p)
   //
   // Process RTP Data
   //
-  while(!global_exiting) {
+  while(!__rtp_shutting_down) {
     switch(poll(&fds,1,100)) {
     case -1:
       syslog(LOG_WARNING,"poll() returned error [%s]",strerror(errno));
       break;
 
     case 0:
-      if(global_exiting) {
+      if(__rtp_shutting_down) {
 	close(read_sock);
 	return NULL;
       }
@@ -167,7 +169,7 @@ SyRtpServer::SyRtpServer(void *(*callback_func)(unsigned,const char *,int,SyRout
   //
   rtp_exit_timer=new QTimer(this);
   connect(rtp_exit_timer,SIGNAL(timeout()),this,SLOT(exitTimerData()));
-  rtp_exit_timer->start(1000);
+  rtp_exit_timer->start(200);
 
   //
   // Start the Realtime Thread
@@ -178,9 +180,21 @@ SyRtpServer::SyRtpServer(void *(*callback_func)(unsigned,const char *,int,SyRout
 }
 
 
+SyRtpServer::~SyRtpServer()
+{
+  shutdown();
+}
+
+
+void SyRtpServer::shutdown()
+{
+  __rtp_shutting_down=true;
+}
+
+
 void SyRtpServer::exitTimerData()
 {
-  if(global_exiting) {
+  if(__rtp_shutting_down) {
     rtp_exit_timer->stop();
     pthread_join(rtp_thread,NULL);
     emit exiting();

@@ -139,3 +139,6 @@
 2014-08-02 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored and simplified the callback system in the 'SyRtpServer'
 	class in 'sy/syrtp_server.cpp' and 'sy/sy_rtpserver.h'.
+2014-08-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyRtpServer::shutdown()' method in 'sy/syrtpserver.cpp'
+	and 'sy/syrtpserver.h'.

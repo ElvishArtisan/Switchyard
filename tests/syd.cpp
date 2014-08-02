@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QTimer>
 
 #include <sy/sycmdswitch.h>
 
@@ -118,6 +119,13 @@ MainObject::MainObject(QObject *parent)
   //
   signal(SIGINT,SignalHandler);
   signal(SIGTERM,SignalHandler);
+
+  //
+  // Exit Timer
+  //
+  QTimer *timer=new QTimer(this);
+  connect(timer,SIGNAL(timeout()),this,SLOT(exitTimerData()));
+  timer->start(200);
 }
 
 
@@ -145,6 +153,14 @@ void MainObject::gpoReceivedData(int gpo,int line,bool state,bool pulse)
       syd_gpio->sendGpo(SyRouting::livewireNumber(syd_routing->srcAddress(i)),
 			line,state,pulse);
     }
+  }
+}
+
+
+void MainObject::exitTimerData()
+{
+  if(global_exiting) {
+    syd_rtp->shutdown();
   }
 }
 
