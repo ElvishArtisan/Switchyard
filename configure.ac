@@ -98,12 +98,29 @@ fi
 # Configure Linker Flags
 #
 if test $ar_gcc_distro = "apple" ; then
-  AC_SUBST(SWITCHYARDLIBS,"-lswitchyard")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard")
   AC_SUBST(SWITCHYARDFLAGS,"-framework QtCore -framework QtNetwork")
 else
-  AC_SUBST(SWITCHYARDLIBS,"-lswitchyard -lQtCore -lQtNetwork")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard -lQtCore -lQtNetwork")
   AC_SUBST(SWITCHYARDFLAGS,"-pthread")
 fi
+
+#
+# Configure RPM Build
+#
+AC_CHECK_PROG(RPMBUILD_FOUND,rpmbuild,[yes],[])
+if test -z $RPMBUILD_FOUND ; then
+  AC_SUBST(RPMBUILD,rpm)
+else
+  AC_SUBST(RPMBUILD,rpmbuild)
+fi
+if test -d /usr/src/redhat ; then
+  AC_SUBST(RPM_ROOT,/usr/src/redhat)
+  AC_SUBST(VENDOR,redhat)
+else
+  AC_SUBST(RPM_ROOT,/usr/src/packages)
+  AC_SUBST(VENDOR,suse)
+fi 
 
 AC_CONFIG_FILES([\
     Makefile \
@@ -111,6 +128,8 @@ AC_CONFIG_FILES([\
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \
+    Switchyard.pc \
+    switchyard.spec \
     ])
 
 AC_OUTPUT()

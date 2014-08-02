@@ -126,3 +126,6 @@
 	 'common/gpio_server.cpp' and 'common/gpio_server.h'.
 2014-08-01 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored classes in 'common' into a 'libswitchyard' library.
+2014-08-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'make rpm' target.
+	* Added a PkgConfig profile in 'Switchyard.pc.in'.

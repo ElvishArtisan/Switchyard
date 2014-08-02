@@ -1,0 +1,72 @@
+Name:		switchyard
+Version:	@VERSION@
+Release:	1%{?dist}
+Summary:	AES67 Control and Conveience Library
+Group:		System Environment/Libraries
+License:	Proprietary
+URL:		http://www.paravelsystems.com/
+Source0:	%{name}-%{version}.tar.gz
+BuildRequires:	qt-devel
+
+
+%package devel
+Summary:        Development components for the Switchyard AES67 Library
+Group:		System Environment/Libraries
+Requires:	switchyard
+
+
+%description
+Switchyard is a control and conveience library for writing applications
+for Audio-over-IP (AoIP) systems using the AES67 and LiveWire standards.
+
+
+%description devel
+These are the library components and headers required to develop application
+for the Switchyard AES67 library.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%post
+ldconfig
+
+
+%postun
+ldconfig
+
+
+%files
+%defattr(-,root,root,-)
+%{_libdir}/libSwitchyard.so
+%{_libdir}/libSwitchyard.so.@INTERFACE_MAJOR@
+%{_libdir}/libSwitchyard.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
+%doc COPYING
+%doc NEWS
+%doc README
+
+
+%files devel
+%{_includedir}/sy/*.h
+%{_libdir}/pkgconfig/Switchyard.pc
+%{_libdir}/libSwitchyard.a
+%{_libdir}/libSwitchyard.la
+
+%changelog
+* Fri Aug  1 2014 Fred Gleason <fredg@paravelsystems.com>
+-- Initial packaging.

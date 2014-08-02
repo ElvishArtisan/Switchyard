@@ -13,10 +13,23 @@ SUBDIRS = conf\
           sy\
           tests
 
+rpm:	dist
+	cp switchyard-$(VERSION).tar.gz $(RPM_ROOT)/SOURCES/
+	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard.spec
+	mv $(RPM_ROOT)/RPMS/$(ARCH)/switchyard-*.rpm $(top_srcdir)/
+	mv $(RPM_ROOT)/SRPMS/switchyard-*.src.rpm $(top_srcdir)/
+	rm $(RPM_ROOT)/SOURCES/switchyard-$(VERSION).tar.gz
+	rm -rf $(RPM_ROOT)/BUILD/switchyard-$(VERSION)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = Switchyard.pc
+
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
              get_target.sh\
-             PACKAGE_VERSION
+             PACKAGE_VERSION\
+             Switchyard.pc.in\
+             switchyard.spec.in
 
 CLEANFILES = *~\
              *.tar.gz\
@@ -29,6 +42,7 @@ DISTCLEANFILES = *.spec\
                  config.sub\
                  rc.syd
 MAINTAINERCLEANFILES = *~\
+                       *.pc\
                        *.tar.gz\
                        *.spec\
                        aclocal.m4\
