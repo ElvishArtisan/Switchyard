@@ -18,9 +18,9 @@
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 #include <QtNetwork/QHostAddress>
-#include <QtNetwork/QUdpSocket>
 #include <QtCore/QTimer>
 
+#include <sy/symcastsocket.h>
 #include <sy/syrouting.h>
 
 class SyGpioServer : public QObject
@@ -43,12 +43,8 @@ class SyGpioServer : public QObject
   void gpoReadyReadData();
 
  private:
-  QUdpSocket *CreateSendSocket(uint16_t port);
-  QUdpSocket *CreateRecvSocket(uint16_t port);
-  QUdpSocket *gpio_gpi_send_socket;
-  QUdpSocket *gpio_gpi_recv_socket;
-  QUdpSocket *gpio_gpo_send_socket;
-  QUdpSocket *gpio_gpo_recv_socket;
+  SyMcastSocket *gpio_gpi_socket;
+  SyMcastSocket *gpio_gpo_socket;
   SyRouting *gpio_routing;
   uint32_t gpio_serial;
   std::map<uint32_t,uint32_t> gpio_src_addr_serials;

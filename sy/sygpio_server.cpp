@@ -7,14 +7,7 @@
 //   All Rights Reserved.
 //
 
-#include <errno.h>
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 #include <syslog.h>
-#include <unistd.h>
 
 #include "sygpio_server.h"
 
@@ -24,29 +17,28 @@ SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   gpio_routing=r;
 
   //
-  // GPI Sockets
+  // GPI Socket
   //
-  gpio_gpi_recv_socket=CreateRecvSocket(SWITCHYARD_GPIO_GPI_PORT);
-  connect(gpio_gpi_recv_socket,SIGNAL(readyRead()),
+  gpio_gpi_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
+  gpio_gpi_socket->bind(r->nicAddress(),SWITCHYARD_GPIO_GPI_PORT);
+  gpio_gpi_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+  connect(gpio_gpi_socket,SIGNAL(readyRead()),
 	  this,SLOT(gpiReadyReadData()));
-  gpio_gpi_send_socket=CreateSendSocket(SWITCHYARD_GPIO_GPI_PORT);
-
   //
-  // GPO Sockets
+  // GPO Socket
   //
-  gpio_gpo_recv_socket=CreateRecvSocket(SWITCHYARD_GPIO_GPO_PORT);
-  connect(gpio_gpo_recv_socket,SIGNAL(readyRead()),
+  gpio_gpo_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
+  gpio_gpo_socket->bind(r->nicAddress(),SWITCHYARD_GPIO_GPO_PORT);
+  gpio_gpo_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+  connect(gpio_gpo_socket,SIGNAL(readyRead()),
 	  this,SLOT(gpoReadyReadData()));
-  gpio_gpo_send_socket=CreateSendSocket(SWITCHYARD_GPIO_GPO_PORT);
 }
 
 
 SyGpioServer::~SyGpioServer()
 {
-  delete gpio_gpi_send_socket;
-  delete gpio_gpi_recv_socket;
-  delete gpio_gpo_send_socket;
-  delete gpio_gpo_recv_socket;
+  delete gpio_gpo_socket;
+  delete gpio_gpi_socket;
 }
 
 
@@ -85,9 +77,8 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
   //
   data[27]=0xFF&state;
 
-  gpio_gpi_send_socket->
-    writeDatagram(data,28,QHostAddress(SWITCHYARD_GPIO_ADDRESS),
-		  SWITCHYARD_GPIO_GPI_PORT);
+  gpio_gpi_socket->writeDatagram(data,28,QHostAddress(SWITCHYARD_GPIO_ADDRESS),
+				 SWITCHYARD_GPIO_GPI_PORT);
 }
 
 
@@ -145,8 +136,7 @@ void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
     data[27]&=~0x0A;
   }
 
-  gpio_gpo_send_socket->
-    writeDatagram(data,60,QHostAddress(SWITCHYARD_GPIO_ADDRESS),
+  gpio_gpo_socket->writeDatagram(data,60,QHostAddress(SWITCHYARD_GPIO_ADDRESS),
 		  SWITCHYARD_GPIO_GPO_PORT);
 }
 
@@ -158,7 +148,7 @@ void SyGpioServer::gpiReadyReadData()
   uint32_t serial;
   QHostAddress addr;
 
-  while((n=gpio_gpi_recv_socket->readDatagram(data,1500,&addr))>0) {
+  while((n=gpio_gpi_socket->readDatagram(data,1500,&addr))>0) {
     //printf("received %d bytes from %s\n",n,
     //   (const char *)addr.toString().toAscii());
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
@@ -190,7 +180,7 @@ void SyGpioServer::gpoReadyReadData()
   uint32_t serial;
   QHostAddress addr;
 
-  while((n=gpio_gpo_recv_socket->readDatagram(data,1500,&addr))>0) {
+  while((n=gpio_gpo_socket->readDatagram(data,1500,&addr))>0) {
     //printf("received %d bytes from %s\n",n,
     //   (const char *)addr.toString().toAscii());
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
@@ -208,59 +198,4 @@ void SyGpioServer::gpoReadyReadData()
 	     0x08-(0xff&data[25]),(data[27]&0x40)!=0,(data[27]&0x0A)!=0);
     }
   }
-}
-
-
-QUdpSocket *SyGpioServer::CreateSendSocket(uint16_t port)
-{
-  QUdpSocket *socket=new QUdpSocket(this);
-  socket->bind(gpio_routing->nicAddress(),port);
-  return socket;
-}
-
-
-QUdpSocket *SyGpioServer::CreateRecvSocket(uint16_t port)
-{
-  int sock=-1;
-  long sockopt;
-  struct sockaddr_in sa;
-  struct ip_mreqn mreq;
-  QHostAddress addr;
-
-  //
-  // GPO Receive Socket
-  //
-  if((sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    syslog(LOG_ERR,"unable to create gpo socket [%s]",strerror(errno));
-    exit(256);
-  }
-  sockopt=fcntl(sock,F_GETFL,NULL);
-  sockopt|=O_NONBLOCK;
-  fcntl(sock,F_SETFL,sockopt);
-  sockopt=1;
-  setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&sockopt,sizeof(sockopt));
-  memset(&mreq,0,sizeof(mreq));
-  addr.setAddress(SWITCHYARD_GPIO_ADDRESS);
-  mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
-  mreq.imr_address.s_addr=htonl(gpio_routing->nicAddress().toIPv4Address());
-  mreq.imr_ifindex=0;
-#ifdef OSX
-  if(setsockopt(sock,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#else
-  if(setsockopt(sock,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#endif  // OSX
-    syslog(LOG_ERR,"unable to subscribe to gpo group [%s]",strerror(errno));
-    exit(256);
-  }
-  memset(&sa,0,sizeof(sa));
-  sa.sin_family=AF_INET;
-  sa.sin_port=htons(port);
-  sa.sin_addr.s_addr=htonl(INADDR_ANY);
-  if(bind(sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    syslog(LOG_ERR,"unable to bind gpo port [%s]",strerror(errno));
-    exit(256);
-  }
-  QUdpSocket *socket=new QUdpSocket(this);
-  socket->setSocketDescriptor(sock,QAbstractSocket::BoundState);
-  return socket;
 }

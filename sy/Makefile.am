@@ -31,6 +31,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 sylwrp_clientconnection.cpp\
                                 sylwrp_clientconnection.h\
                                 sylwrp_server.cpp sylwrp_server.h\
+                                symcastsocket.cpp symcastsocket.h\
                                 syprofile.cpp syprofile.h\
                                 syringbuffer.cpp syringbuffer.h\
                                 syrouting.cpp syrouting.h\
@@ -39,6 +40,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
 nodist_libSwitchyard_la_SOURCES = moc_syadv_server.cpp\
                                   moc_sygpio_server.cpp\
                                   moc_sylwrp_server.cpp\
+                                  moc_symcastsocket.cpp\
                                   moc_syrtp_server.cpp
 
 includedir = $(prefix)/include/sy

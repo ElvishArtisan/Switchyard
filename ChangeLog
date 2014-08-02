@@ -129,3 +129,10 @@
 2014-08-01 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'make rpm' target.
 	* Added a PkgConfig profile in 'Switchyard.pc.in'.
+2014-08-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyMcastSocket' class in 'sy/symcastsocket.cpp' and
+	'sy/symcastsocket.h'.
+	* Refactored the 'SyGpioServer' class to use 'SyMcastSocket' in
+	'sy/sygpio_server.cpp' and 'sy/sygpio_server.h'.
+	* Refactored the 'SyAdvServer' class to use 'SyMcastSocket' in
+	'sy/syadv_server.cpp' and 'sy/syadv_server.h'.

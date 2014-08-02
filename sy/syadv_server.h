@@ -15,13 +15,13 @@
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 #include <QtNetwork/QHostAddress>
-#include <QtNetwork/QUdpSocket>
 #include <QtCore/QTimer>
 
-#include <sy/syastring.h>
 #include <sy/syadv_packet.h>
 #include <sy/syadv_source.h>
 #include <sy/syadv_tag.h>
+#include <sy/syastring.h>
+#include <sy/symcastsocket.h>
 #include <sy/syrouting.h>
 
 class SyAdvServer : public QObject
@@ -45,7 +45,7 @@ class SyAdvServer : public QObject
   int TagIsSource(const SyTag *tag) const;
   void ScheduleSourceSave();
   double GetTimestamp() const;
-  QUdpSocket *ctrl_advert_socket;
+  SyMcastSocket *ctrl_advert_socket;
   QTimer *ctrl_advert_timer;
   uint32_t ctrl_advert_seqno;
   double ctrl_advert_timestamp;

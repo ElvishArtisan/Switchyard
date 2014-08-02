@@ -8,12 +8,7 @@
 //
 
 #include <errno.h>
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <sys/socket.h>
 #include <sys/time.h>
-#include <sys/types.h>
 #include <syslog.h>
 #include <unistd.h>
 
@@ -26,44 +21,19 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
 {
   adv_routing=r;
   ctrl_advert_type=SyAdvServer::Type0;
-  int sock;
-  long sockopt;
-  struct sockaddr_in sa;
-  struct ip_mreqn mreq;
-  QHostAddress addr;
 
   //
   // Initialize Advertisment Socket
   //
-  if((sock=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    syslog(LOG_ERR,"unable to create advertisement socket [%s]",strerror(errno));
-    exit(256);
+  if(read_only) {
+    ctrl_advert_socket=new SyMcastSocket(SyMcastSocket::ReadOnly,this);
+    ctrl_advert_socket->bind(SWITCHYARD_ADVERTS_PORT);
   }
-  sockopt=O_NONBLOCK;
-  fcntl(sock,F_SETFL,sockopt);
-  memset(&mreq,0,sizeof(mreq));
-  addr.setAddress(SWITCHYARD_ADVERTS_ADDRESS);
-  mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
-  mreq.imr_address.s_addr=htonl(adv_routing->nicAddress().toIPv4Address());
-  mreq.imr_ifindex=0;
-#ifdef OSX
-  if(setsockopt(sock,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#else
-  if(setsockopt(sock,SOL_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#endif  // OSX
-    syslog(LOG_ERR,"unable to subscribe to advert group [%s]",strerror(errno));
-    exit(256);
+  else {
+    ctrl_advert_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
+    ctrl_advert_socket->bind(r->nicAddress(),SWITCHYARD_ADVERTS_PORT);
   }
-  memset(&sa,0,sizeof(sa));
-  sa.sin_family=AF_INET;
-  sa.sin_port=htons(SWITCHYARD_ADVERTS_PORT);
-  sa.sin_addr.s_addr=htonl(INADDR_ANY);
-  if(bind(sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    syslog(LOG_ERR,"unable to bind advertisment port [%s]",strerror(errno));
-    exit(256);
-  }
-  ctrl_advert_socket=new QUdpSocket(this);
-  ctrl_advert_socket->setSocketDescriptor(sock,QAbstractSocket::BoundState);
+  ctrl_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
   connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readData()));
 
   //
