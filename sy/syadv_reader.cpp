@@ -1,0 +1,127 @@
+// syadv_reader.cpp
+//
+// Reader for AoIP Stream List
+//
+// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//     All Rights Reserved.
+//
+
+#include <QtCore/QObject>
+
+
+#include "syadv_reader.h"
+#include "syprofile.h"
+
+SyAdvReader::SyAdvReader()
+{
+  load();
+}
+
+
+unsigned SyAdvReader::srcQuantity() const
+{
+  return adv_slots.size();
+}
+
+
+unsigned SyAdvReader::slot(unsigned n) const
+{
+  return adv_slots[n];
+}
+
+
+QHostAddress SyAdvReader::nodeAddress(unsigned n) const
+{
+  return adv_node_addresses[n];
+}
+
+
+QString SyAdvReader::nodeName(unsigned n) const
+{
+  return adv_node_names[n];
+}
+
+
+QHostAddress SyAdvReader::streamAddress(unsigned n) const
+{
+  return adv_stream_addresses[n];
+}
+
+
+QString SyAdvReader::sourceName(unsigned n) const
+{
+  return adv_source_names[n];
+}
+
+
+QString SyAdvReader::fullName(unsigned n) const
+{
+  QString ret=sourceName(n);
+  if(!nodeName(n).isEmpty()) {
+    ret+="@"+nodeName(n);
+  }
+  return ret;
+}
+
+
+bool SyAdvReader::load()
+{
+  clear();
+  adv_slots.push_back(0);
+  adv_node_addresses.push_back(QHostAddress());
+  adv_node_names.push_back("");
+  adv_stream_addresses.push_back(QHostAddress());
+  adv_source_names.push_back(QObject::tr("--- OFF ---"));
+  
+  int count=1;
+  bool ok=false;
+  QString section=QString().sprintf("Source %u",count);
+  SyProfile *p=new SyProfile();
+  if(!p->setSource(SWITCHYARD_SOURCES_FILE)) {
+    return false;
+  }
+  int slot=p->intValue(section,"Slot",0,&ok);
+  while(ok) {
+    adv_slots.push_back(slot);
+    adv_node_addresses.push_back(p->addressValue(section,"NodeAddress",""));
+    adv_node_names.push_back(p->stringValue(section,"NodeName"));
+    adv_stream_addresses.push_back(p->addressValue(section,"StreamAddress",""));
+    adv_source_names.push_back(p->stringValue(section,"SourceName"));
+    section=QString().sprintf("Source %u",++count);
+    slot=p->intValue(section,"Slot",0,&ok);
+  }
+  delete p;
+  return true;
+}
+
+
+void SyAdvReader::clear()
+{
+  adv_slots.clear();
+  adv_node_addresses.clear();
+  adv_node_names.clear();
+  adv_stream_addresses.clear();
+  adv_source_names.clear();
+}
+
+
+QString SyAdvReader::dump() const
+{
+  QString ret;
+
+  for(unsigned i=0;i<srcQuantity();i++) {
+    ret+=QString().sprintf("Source %u:\n",i+1);
+    ret+=QString().sprintf("  Node Address: %s\n",(const char *)nodeAddress(i).
+	   toString().toAscii());
+    ret+=QString().sprintf("  Node Name: %s\n",
+			   (const char *)nodeName(i).toAscii());
+    ret+=QString().sprintf("  Slot: %u\n",slot(i));
+    ret+=QString().sprintf("  Stream Address: %s\n",
+			   (const char *)streamAddress(i).toString().toAscii());
+    ret+=QString().sprintf("  SourceName: %s\n",
+			   (const char *)sourceName(i).toAscii());
+    ret+="\n";
+  }
+
+  return ret;
+}

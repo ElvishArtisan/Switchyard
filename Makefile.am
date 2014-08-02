@@ -9,9 +9,9 @@
 ##   All Rights Reserved.
 ##
 
-SUBDIRS = common\
-          conf\
-          syd
+SUBDIRS = conf\
+          sy\
+          tests
 
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
@@ -39,6 +39,7 @@ MAINTAINERCLEANFILES = *~\
                        config.sub\
                        depcomp\
                        install-sh\
+                       ltmain.sh\
                        Makefile.in\
                        missing\
                        mkinstalldirs
