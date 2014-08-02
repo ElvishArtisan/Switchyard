@@ -20,13 +20,12 @@
 
 #include <sy/syrouting.h>
 
-extern void RtpCallback(int read_sock,int write_sock,SyRouting *r,void *priv);
-
 class SyRtpServer : public QObject
 {
   Q_OBJECT;
  public:
-  SyRtpServer(SyRouting *routing,void *priv,QObject *parent=0);
+  SyRtpServer(void *(*callback_func)(unsigned,const char *,int,SyRouting *,void *),
+	      void *callback_priv,SyRouting *routing,QObject *parent=0);
 
  signals:
   void exiting();
@@ -37,6 +36,7 @@ class SyRtpServer : public QObject
  private:
   pthread_t rtp_thread;
   QTimer *rtp_exit_timer;
+  void *rtp_callback_priv;
 };
 
 

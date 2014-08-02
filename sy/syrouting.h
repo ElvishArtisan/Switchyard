@@ -66,6 +66,7 @@ class SyRouting
   void subscribe(const QHostAddress &addr);
   void unsubscribe(const QHostAddress &addr);
   int subscriptionSocket() const;
+  int rtpSendSocket() const;
   void load();
   void save() const;
   uint32_t nic_addr;
@@ -78,6 +79,7 @@ class SyRouting
   float src_meter[SWITCHYARD_MAX_SLOTS][SWITCHYARD_MAX_CHANNELS];
   uint32_t dst_addr[SWITCHYARD_MAX_SLOTS];
   float dst_meter[SWITCHYARD_MAX_SLOTS][SWITCHYARD_MAX_CHANNELS];
+  void writeRtpData(unsigned src_slot,const char *data,int len) const;
   static unsigned livewireNumber(const QHostAddress &addr);
   static QString dumpAddress(uint32_t addr);
 
@@ -92,6 +94,7 @@ class SyRouting
   std::vector<QHostAddress> sy_nic_netmasks;
   std::vector<QString> sy_nic_devices;
   int sy_subscription_socket;
+  int sy_rtp_send_socket;
 };
 
 

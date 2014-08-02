@@ -8,7 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -Wno-strict-aliasing -I$(top_srcdir)
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir)
 LIBS = -L$(top_srcdir)/sy
 MOC = @MOC@
 
@@ -27,8 +27,7 @@ moc_%.cpp:	%.h
 
 noinst_PROGRAMS = syd
 
-dist_syd_SOURCES = rtp_callback.cpp\
-                   syd.cpp syd.h
+dist_syd_SOURCES = syd.cpp syd.h
 
 nodist_syd_SOURCES = moc_syd.cpp
 

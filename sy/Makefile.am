@@ -8,7 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -I$(top_srcdir)
+AM_CPPFLAGS = -Wall -Wno-strict-aliasing -I$(top_srcdir)
 MOC = @MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)

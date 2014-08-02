@@ -20,6 +20,21 @@
 
 bool global_exiting=false;
 
+void *RtpCallback(unsigned dst_slot,const char *data,int len,
+		  SyRouting *r,void *priv)
+{
+  static unsigned i;
+
+  for(i=0;i<r->src_slots;i++) {
+    if(r->src_enabled[i]&&(r->src_addr[i]!=0)&&
+       (dst_slot==r->dst_addr[i])) {
+      r->writeRtpData(i,data,len);
+    }
+  }
+  return NULL;
+}
+
+
 void SignalHandler(int signo)
 {
   switch(signo) {
@@ -95,7 +110,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Start RTP
   //
-  syd_rtp=new SyRtpServer(syd_routing,NULL,this);
+  syd_rtp=new SyRtpServer(RtpCallback,NULL,syd_routing,this);
   connect(syd_rtp,SIGNAL(exiting()),this,SLOT(exitData()));
 
   //

@@ -357,6 +357,12 @@ int SyRouting::subscriptionSocket() const
 }
 
 
+int SyRouting::rtpSendSocket() const
+{
+  return sy_rtp_send_socket;
+}
+
+
 void SyRouting::load()
 {
   QString section;
@@ -416,6 +422,18 @@ void SyRouting::save() const
 }
 
 
+void SyRouting::writeRtpData(unsigned src_slot,const char *data,int len) const
+{
+  struct sockaddr_in sa;
+
+  memset(&sa,0,sizeof(sa));
+  sa.sin_family=AF_INET;
+  sa.sin_port=htons(SWITCHYARD_RTP_PORT);
+  sa.sin_addr.s_addr=src_addr[src_slot];
+  sendto(rtpSendSocket(),data,len,0,(struct sockaddr *)(&sa),sizeof(sa));
+}
+
+
 unsigned SyRouting::livewireNumber(const QHostAddress &addr)
 {
   return 0xFFFF&addr.toIPv4Address();
@@ -445,6 +463,11 @@ void SyRouting::LoadInterfaces()
 {
   if((sy_subscription_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
     syslog(LOG_ERR,"unable to create RTP subscription socket [%s]",
+	   strerror(errno));
+    exit(256);
+  }
+  if((sy_rtp_send_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
+    syslog(LOG_ERR,"unable to creat rtp send socket [%s]",
 	   strerror(errno));
     exit(256);
   }
