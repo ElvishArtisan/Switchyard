@@ -35,6 +35,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 syprofile.cpp syprofile.h\
                                 syringbuffer.cpp syringbuffer.h\
                                 syrouting.cpp syrouting.h\
+                                syrtp_header.cpp syrtp_header.h\
                                 syrtp_server.cpp syrtp_server.h
 
 nodist_libSwitchyard_la_SOURCES = moc_syadv_server.cpp\
@@ -55,9 +56,11 @@ include_HEADERS = syadv_packet.h\
                   sygpio_server.h\
                   sylwrp_clientconnection.h\
                   sylwrp_server.h\
+                  symcastsocket.h\
                   syprofile.h\
                   syringbuffer.h\
                   syrouting.h\
+                  syrtp_header.h\
                   syrtp_server.h
 
 libSwitchyard_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)

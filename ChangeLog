@@ -142,3 +142,11 @@
 2014-08-02 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyRtpServer::shutdown()' method in 'sy/syrtpserver.cpp'
 	and 'sy/syrtpserver.h'.
+2014-08-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyRtpHeader' class in 'sy/syrtp_header.cpp' and
+	'sy/syrtp_header.h'.
+2014-08-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'syrtp_header.h' to the 'include_HEADERS' rule in
+	'sy/Makefile.am'.
+	* Added 'symcastsocket.h' to the 'include_HEADERS' rule in
+	'sy/Makefile.am'.
