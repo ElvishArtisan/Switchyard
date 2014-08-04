@@ -150,3 +150,6 @@
 	'sy/Makefile.am'.
 	* Added 'symcastsocket.h' to the 'include_HEADERS' rule in
 	'sy/Makefile.am'.
+2014-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added an include for 'QtGui/QApplication' in 'tests/syd.cpp' to
+	allow building with Qt<=4.2.

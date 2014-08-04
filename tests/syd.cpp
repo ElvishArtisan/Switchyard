@@ -12,6 +12,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
 #include <QtCore/QCoreApplication>
 #include <QtCore/QTimer>
 
