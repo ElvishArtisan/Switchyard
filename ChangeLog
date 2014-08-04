@@ -156,3 +156,5 @@
 2014-08-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'SySyslog()', 'SyOpenLog()' and 'SyCloseLog()' functions
 	in 'sy/sylogger.cpp' and 'sy/sylogger.h'.
+2014-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Removed extraneous include from 'sy/sylogger.h'.

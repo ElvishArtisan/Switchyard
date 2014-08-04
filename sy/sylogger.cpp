@@ -6,8 +6,6 @@
 //     All Rights Reserved
 //
 
-#include <stdarg.h>
-
 #include "sylogger.h"
 
 void SyOpenLog(const QString &ident)
