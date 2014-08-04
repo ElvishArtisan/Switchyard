@@ -158,3 +158,5 @@
 	in 'sy/sylogger.cpp' and 'sy/sylogger.h'.
 2014-08-04 Fred Gleason <fredg@paravelsystems.com>
 	* Removed extraneous include from 'sy/sylogger.h'.
+2014-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.7.0.
