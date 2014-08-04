@@ -54,13 +54,14 @@ SyMcastSocket::Mode SyMcastSocket::mode() const
 bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 {
   if(mcast_recv_socket!=NULL) {
-    if(!mcast_recv_socket->bind(port,QUdpSocket::ShareAddress)) {
+    if(!mcast_recv_socket->bind(addr,port,QUdpSocket::ShareAddress)) {
       SySyslog(LOG_ERR,QString().
 	       sprintf("unable to bind port %u for reading [%s]",
 		       port,strerror(errno)));
       exit(256);
     }    
   }
+
   if(mcast_send_socket!=NULL) {
     if(!mcast_send_socket->bind(addr,port,QUdpSocket::ShareAddress)) {
       SySyslog(LOG_ERR,QString().
