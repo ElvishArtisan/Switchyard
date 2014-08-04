@@ -153,3 +153,6 @@
 2014-08-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added an include for 'QtGui/QApplication' in 'tests/syd.cpp' to
 	allow building with Qt<=4.2.
+2014-08-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SySyslog()', 'SyOpenLog()' and 'SyCloseLog()' functions
+	in 'sy/sylogger.cpp' and 'sy/sylogger.h'.

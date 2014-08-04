@@ -18,12 +18,12 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <syslog.h>
 #include <unistd.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QStringList>
 
+#include "sylogger.h"
 #include "syprofile.h"
 #include "syrouting.h"
 
@@ -48,7 +48,7 @@ SyRouting::SyRouting(unsigned d_slots,unsigned s_slots,unsigned gpis,unsigned gp
   }
 
   if((d_slots>=SWITCHYARD_MAX_SLOTS)||(s_slots>=SWITCHYARD_MAX_SLOTS)) {
-    syslog(LOG_ERR,"maximum slot count exceeded");
+    SySyslog(LOG_ERR,"maximum slot count exceeded");
     exit(256);
   }
   dst_slots=d_slots;
@@ -395,7 +395,8 @@ void SyRouting::save() const
   QString tempfile=QString(SWITCHYARD_ROUTING_FILE)+"-temp";
 
   if((f=fopen(tempfile.toAscii(),"w"))==NULL) {
-    syslog(LOG_WARNING,"unable to save routing data [%s]",strerror(errno));
+    SySyslog(LOG_WARNING,QString().
+	     sprintf("unable to save routing data [%s]",strerror(errno)));
     return;
   }
 
@@ -462,13 +463,15 @@ int SyRouting::GetSlotByGpio(int gpio) const
 void SyRouting::LoadInterfaces()
 {
   if((sy_subscription_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    syslog(LOG_ERR,"unable to create RTP subscription socket [%s]",
-	   strerror(errno));
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to create RTP subscription socket [%s]",
+		     strerror(errno)));
     exit(256);
   }
   if((sy_rtp_send_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    syslog(LOG_ERR,"unable to creat rtp send socket [%s]",
-	   strerror(errno));
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to creat rtp send socket [%s]",
+		     strerror(errno)));
     exit(256);
   }
 
@@ -478,7 +481,8 @@ void SyRouting::LoadInterfaces()
   struct sockaddr_in *sa_in=NULL;
 
   if(getifaddrs(&ifap)<0) {
-    syslog(LOG_ERR,"unable to get interface information [%s]",strerror(errno));
+    SySyslog(LOG_ERR,QString().
+	   sprintf("unable to get interface information [%s]",strerror(errno)));
     exit(256);
   }
   ifa=ifap;

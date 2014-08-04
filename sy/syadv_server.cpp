@@ -9,12 +9,12 @@
 
 #include <errno.h>
 #include <sys/time.h>
-#include <syslog.h>
 #include <unistd.h>
 
 #include <QtCore/QStringList>
 
 #include "syadv_server.h"
+#include "sylogger.h"
 
 SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   : QObject(parent)
@@ -170,8 +170,9 @@ void SyAdvServer::saveSourcesData()
   unsigned num=0;
 
   if((f=fopen(tempfile.toAscii(),"w"))==NULL) {
-    syslog(LOG_WARNING,"unable to update sources database [%s]",
-	   strerror(errno));
+    SySyslog(LOG_WARNING,
+	     QString().sprintf("unable to update sources database [%s]",
+			       strerror(errno)));
     return;
   }
 
@@ -195,7 +196,9 @@ void SyAdvServer::saveSourcesData()
 
   fclose(f);
   rename(tempfile.toAscii(),SWITCHYARD_SOURCES_FILE);
-  syslog(LOG_DEBUG,"saved sources list to \"%s\"",SWITCHYARD_SOURCES_FILE);
+  SySyslog(LOG_DEBUG,
+	   QString().sprintf("saved sources list to \"%s\"",
+			     SWITCHYARD_SOURCES_FILE));
 }
 
 
@@ -213,7 +216,7 @@ void SyAdvServer::SendSourceUpdate(AdvertType type)
 				      SWITCHYARD_ADVERTS_PORT);
   }
   else {
-    syslog(LOG_WARNING,"invalid LWCP packet generated");
+    SySyslog(LOG_WARNING,"invalid LWCP packet generated");
   }
   delete p;
 }

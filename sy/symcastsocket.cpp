@@ -13,9 +13,9 @@
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <syslog.h>
 #include <unistd.h>
 
+#include "sylogger.h"
 #include "symcastsocket.h"
 
 SyMcastSocket::SyMcastSocket(Mode mode,QObject *parent)
@@ -55,15 +55,17 @@ bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 {
   if(mcast_recv_socket!=NULL) {
     if(!mcast_recv_socket->bind(port,QUdpSocket::ShareAddress)) {
-      syslog(LOG_ERR,"unable to bind port %u for reading [%s]",
-	     port,strerror(errno));
+      SySyslog(LOG_ERR,QString().
+	       sprintf("unable to bind port %u for reading [%s]",
+		       port,strerror(errno)));
       exit(256);
     }    
   }
   if(mcast_send_socket!=NULL) {
     if(!mcast_send_socket->bind(addr,port,QUdpSocket::ShareAddress)) {
-      syslog(LOG_ERR,"unable to bind port %u for writing [%s]",
-	     port,strerror(errno));
+      SySyslog(LOG_ERR,QString().
+	       sprintf("unable to bind port %u for writing [%s]",
+		       port,strerror(errno)));
       exit(256);
     }
   }
@@ -75,14 +77,15 @@ bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 bool SyMcastSocket::bind(uint16_t port)
 {
   if(mcast_send_socket!=NULL) {
-    syslog(LOG_ERR,
+    SySyslog(LOG_ERR,
      "you must provide an interface address when binding a socket for writing");
     exit(256);
   }
   if(mcast_recv_socket!=NULL) {
     if(!mcast_recv_socket->bind(port,QUdpSocket::ShareAddress)) {
-      syslog(LOG_ERR,"unable to bind port %u for reading [%s]",
-	     port,strerror(errno));
+      SySyslog(LOG_ERR,QString().
+	       sprintf("unable to bind port %u for reading [%s]",
+		       port,strerror(errno)));
       exit(256);
     }    
   }
@@ -94,7 +97,7 @@ qint64 SyMcastSocket::readDatagram(char *data,qint64 len,
 				   QHostAddress *addr,quint16 *port)
 {
   if(mcast_recv_socket==NULL) {
-    syslog(LOG_ERR,"attempted to read from a write-only socket");
+    SySyslog(LOG_ERR,"attempted to read from a write-only socket");
     exit(256);
   }
   return mcast_recv_socket->readDatagram(data,len,addr,port);
@@ -105,7 +108,7 @@ qint64 SyMcastSocket::writeDatagram(const char *data,qint64 len,
 				    const QHostAddress &addr,quint16 port)
 {
   if(mcast_send_socket==NULL) {
-    syslog(LOG_ERR,"attempted to write to a read-only socket");
+    SySyslog(LOG_ERR,"attempted to write to a read-only socket");
     exit(256);
   }
   return mcast_send_socket->writeDatagram(data,len,addr,port);
@@ -116,7 +119,7 @@ qint64 SyMcastSocket::writeDatagram(const QByteArray &datagram,
 				    const QHostAddress &addr,quint16 port)
 {
   if(mcast_send_socket==NULL) {
-    syslog(LOG_ERR,"attempted to write to a read-only socket");
+    SySyslog(LOG_ERR,"attempted to write to a read-only socket");
     exit(256);
   }
   return mcast_send_socket->writeDatagram(datagram,addr,port);
@@ -128,7 +131,7 @@ void SyMcastSocket::subscribe(const QHostAddress &addr)
   struct ip_mreqn mreq;
 
   if(mcast_recv_socket==NULL) {
-    syslog(LOG_ERR,"cannot subscribe on a write-only socket");
+    SySyslog(LOG_ERR,"cannot subscribe on a write-only socket");
     exit(256);
   }
   memset(&mreq,0,sizeof(mreq));
@@ -142,8 +145,9 @@ void SyMcastSocket::subscribe(const QHostAddress &addr)
     if(setsockopt(mcast_recv_socket->socketDescriptor(),SOL_IP,
 		  IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
 #endif  // OSX
-    syslog(LOG_ERR,"unable to subscribe to group %s [%s]",
-	   (const char *)addr.toString().toAscii(),strerror(errno));
+      SySyslog(LOG_ERR,QString().
+	       sprintf("unable to subscribe to group %s [%s]",
+		      (const char *)addr.toString().toAscii(),strerror(errno)));
     exit(256);
   }
 }
@@ -160,7 +164,7 @@ void SyMcastSocket::unsubscribe(const QHostAddress &addr)
   struct ip_mreqn mreq;
 
   if(mcast_recv_socket==NULL) {
-    syslog(LOG_ERR,"cannot unsubscribe on a write-only socket");
+    SySyslog(LOG_ERR,"cannot unsubscribe on a write-only socket");
     exit(256);
   }
   memset(&mreq,0,sizeof(mreq));
@@ -174,8 +178,9 @@ void SyMcastSocket::unsubscribe(const QHostAddress &addr)
     if(setsockopt(mcast_recv_socket->socketDescriptor(),SOL_IP,
 		  IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
 #endif  // OSX
-    syslog(LOG_ERR,"unable to unsubscribe from group %s [%s]",
-	   (const char *)addr.toString().toAscii(),strerror(errno));
+      SySyslog(LOG_ERR,QString().
+	       sprintf("unable to unsubscribe from group %s [%s]",
+		      (const char *)addr.toString().toAscii(),strerror(errno)));
     exit(256);
   }
 }

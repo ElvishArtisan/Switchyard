@@ -9,7 +9,6 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <syslog.h>
 #include <unistd.h>
 
 #include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
@@ -17,6 +16,7 @@
 #include <QtCore/QTimer>
 
 #include <sy/sycmdswitch.h>
+#include <sy/sylogger.h>
 
 #include "syd.h"
 
@@ -70,9 +70,9 @@ MainObject::MainObject(QObject *parent)
   }
 
   //
-  // Open Syslog
+  // Open Logger
   //
-  openlog("syd",LOG_NDELAY|LOG_PERROR,LOG_DAEMON);
+  SyOpenLog("syd");
 
   //
   // Load Routing Rules
@@ -168,7 +168,7 @@ void MainObject::exitTimerData()
 
 void MainObject::exitData()
 {
-  syslog(LOG_DEBUG,"calling exit handler");
+  SySyslog(LOG_DEBUG,"calling exit handler");
   unlink(SWITCHYARD_SOURCES_FILE);
   unlink(SYD_PID_FILE);
   exit(0);

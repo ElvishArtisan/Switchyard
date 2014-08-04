@@ -11,10 +11,10 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <signal.h>
-#include <syslog.h>
 #include <unistd.h>
 
 #include "syconfig.h"
+#include "sylogger.h"
 #include "syrtp_server.h"
 
 bool __rtp_shutting_down=false;
@@ -56,7 +56,8 @@ void *__RtpServer_ThreadCallback(void *p)
   sa.sin_port=htons(SWITCHYARD_RTP_PORT);
   sa.sin_addr.s_addr=htonl(INADDR_ANY);
   if(bind(read_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    syslog(LOG_ERR,"unable to bind RTP socket [%s]",strerror(errno));
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to bind RTP socket [%s]",strerror(errno)));
     __rtp_shutting_down=true;
     return NULL;
   }
@@ -73,7 +74,8 @@ void *__RtpServer_ThreadCallback(void *p)
   sa.sin_port=htons(SWITCHYARD_RTP_PORT);
   sa.sin_addr.s_addr=cb_data->routing->nic_addr;
   if(bind(write_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    syslog(LOG_ERR,"unable to bind RTP socket [%s]",strerror(errno));
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to bind RTP socket [%s]",strerror(errno)));
     __rtp_shutting_down=true;
     return NULL;
   }
@@ -109,7 +111,8 @@ void *__RtpServer_ThreadCallback(void *p)
   while(!__rtp_shutting_down) {
     switch(poll(&fds,1,100)) {
     case -1:
-      syslog(LOG_WARNING,"poll() returned error [%s]",strerror(errno));
+      SySyslog(LOG_WARNING,QString().
+	       sprintf("poll() returned error [%s]",strerror(errno)));
       break;
 
     case 0:

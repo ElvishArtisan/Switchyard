@@ -7,9 +7,8 @@
 //   All Rights Reserved.
 //
 
-#include <syslog.h>
-
 #include "sygpio_server.h"
+#include "sylogger.h"
 
 SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   : QObject(parent)
@@ -44,8 +43,9 @@ SyGpioServer::~SyGpioServer()
 
 void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
 {
-  syslog(LOG_DEBUG,"sending gpi: src: %d  line: %d  state: %d  pulse: %d",
-	 gpi,line,state,pulse);
+  SySyslog(LOG_DEBUG,QString().
+	   sprintf("sending gpi: src: %d  line: %d  state: %d  pulse: %d",
+		   gpi,line,state,pulse));
 
   char data[28]={0x03,0x00,0x02,0x07,0xC6,0x04,0x55,0x1E,
 		 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -84,8 +84,9 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
 
 void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
 {
-  syslog(LOG_DEBUG,"sending gpo: src: %d  line: %d  state: %d  pulse: %d",
-	 gpo,line,state,pulse);
+  SySyslog(LOG_DEBUG,QString().
+	   sprintf("sending gpo: src: %d  line: %d  state: %d  pulse: %d",
+		   gpo,line,state,pulse));
 
   char data[60]={0x03,0x00,0x02,0x07,0x36,0x0B,0x97,0xA9,
 		 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -164,9 +165,10 @@ void SyGpioServer::gpiReadyReadData()
 		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
       gpio_routing->setGpi(((0xFF&data[23])<<8)+(0xFF&data[24]),
 			   0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
-      syslog(LOG_DEBUG,"received gpi: src: %d  line: %d  state: %d  pulse: %d",
-	     ((0xFF&data[23])<<8)+(0xFF&data[24]),
-	     0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
+      SySyslog(LOG_DEBUG,QString().
+	       sprintf("received gpi: src: %d  line: %d  state: %d  pulse: %d",
+		       ((0xFF&data[23])<<8)+(0xFF&data[24]),
+		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false));
     }
     
   }
@@ -193,9 +195,11 @@ void SyGpioServer::gpoReadyReadData()
       gpio_routing->setGpo(((0xFF&data[23])<<8)+(0xFF&data[24]),
 			   0x08-(0xff&data[25]),(data[27]&0x40)!=0,
 			   (data[27]&0x0A)!=0);
-      syslog(LOG_DEBUG,"received gpo: src: %d  line: %d  state: %d  pulse: %d",
-	     ((0xFF&data[23])<<8)+(0xFF&data[24]),
-	     0x08-(0xff&data[25]),(data[27]&0x40)!=0,(data[27]&0x0A)!=0);
+      SySyslog(LOG_DEBUG,QString().
+	       sprintf("received gpo: src: %d  line: %d  state: %d  pulse: %d",
+		       ((0xFF&data[23])<<8)+(0xFF&data[24]),
+		       0x08-(0xff&data[25]),(data[27]&0x40)!=0,
+		       (data[27]&0x0A)!=0));
     }
   }
 }

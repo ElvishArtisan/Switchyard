@@ -15,9 +15,9 @@
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
-#include <syslog.h>
 #include <unistd.h>
 
+#include "sylogger.h"
 #include "sylwrp_server.h"
 
 SyLwrpServer::SyLwrpServer(SyRouting *routing)
@@ -37,7 +37,8 @@ SyLwrpServer::SyLwrpServer(SyRouting *routing)
   ctrl_server=new QTcpServer(this);
   connect(ctrl_server,SIGNAL(newConnection()),this,SLOT(newConnectionData()));
   if (!ctrl_server->listen(QHostAddress::Any,SWITCHYARD_LWRP_PORT)){
-    syslog(LOG_ERR,"unable to bind port %d",SWITCHYARD_LWRP_PORT);
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to bind port %d",SWITCHYARD_LWRP_PORT));
     exit(256);
   }
 
