@@ -7,6 +7,7 @@ License:	Proprietary
 URL:		http://www.paravelsystems.com/
 Source0:	%{name}-%{version}.tar.gz
 BuildRequires:	qt-devel
+BuildRoot: 	/var/tmp/%{name}-@VERSION@
 
 
 %package devel
@@ -68,5 +69,7 @@ ldconfig
 %{_libdir}/libSwitchyard.la
 
 %changelog
+* Mon Aug  4 2014 Fred Gleason <fredg@paravelsystems.com>
+-- Added a BuildRoot: directive.
 * Fri Aug  1 2014 Fred Gleason <fredg@paravelsystems.com>
 -- Initial packaging.
