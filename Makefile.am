@@ -29,6 +29,7 @@ EXTRA_DIST = autogen.sh\
              get_target.sh\
              PACKAGE_VERSION\
              Switchyard.pc.in\
+             switchyard.pro\
              switchyard.spec.in
 
 CLEANFILES = *~\

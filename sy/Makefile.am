@@ -66,6 +66,8 @@ include_HEADERS = syadv_packet.h\
 
 libSwitchyard_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
 
+EXTRA_DIST = sy.pro
+
 CLEANFILES = *~\
              *.idb\
              *ilk\
