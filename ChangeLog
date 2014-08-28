@@ -165,3 +165,10 @@
 2014-08-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed warnings in 'sy/sycmdswitch.cpp'.
 	* Fixed warnings in 'sy/sygpio_server.cpp'.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out build system for Win32.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Removed includes for 'sys/ipc.h' and 'sys/shm.h' from
+	'sy/syrouting.h'.
+	* Ported calls for random number generation to Win32 in
+	'sy/sysadv_server.cpp'.

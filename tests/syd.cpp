@@ -16,7 +16,7 @@
 #include <QtCore/QTimer>
 
 #include <sy/sycmdswitch.h>
-#include <sy/sylogger.h>
+#include <sy/sysyslog.h>
 
 #include "syd.h"
 
@@ -72,7 +72,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Open Logger
   //
-  SyOpenLog("syd");
+  SyOpenLog("syd",LOG_PERROR,LOG_DAEMON);
 
   //
   // Load Routing Rules
@@ -101,6 +101,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Detach and write PID file
   //
+#ifdef LINUX
   if(!debug) {
     daemon(0,0);
     if((f=fopen(SYD_PID_FILE,"w"))!=NULL) {
@@ -108,6 +109,7 @@ MainObject::MainObject(QObject *parent)
       fclose(f);
     }
   }
+#endif  // LINUX
 
   //
   // Start RTP

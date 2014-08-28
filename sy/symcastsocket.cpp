@@ -9,13 +9,18 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "sylogger.h"
+#ifdef WIN32
+#include <Winsock2.h>
+#else
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <sys/socket.h>
+#endif  // WIN32
+
+#include "sysyslog.h"
 #include "symcastsocket.h"
 
 SyMcastSocket::SyMcastSocket(Mode mode,QObject *parent)
@@ -129,6 +134,7 @@ qint64 SyMcastSocket::writeDatagram(const QByteArray &datagram,
 
 void SyMcastSocket::subscribe(const QHostAddress &addr)
 {
+#ifndef WIN32
   struct ip_mreqn mreq;
 
   if(mcast_recv_socket==NULL) {
@@ -151,6 +157,7 @@ void SyMcastSocket::subscribe(const QHostAddress &addr)
 		      (const char *)addr.toString().toAscii(),strerror(errno)));
     exit(256);
   }
+#endif  // WIN32
 }
 
 
@@ -162,6 +169,7 @@ void SyMcastSocket::subscribe(const QString &addr)
 
 void SyMcastSocket::unsubscribe(const QHostAddress &addr)
 {
+#ifndef WIN32
   struct ip_mreqn mreq;
 
   if(mcast_recv_socket==NULL) {
@@ -184,6 +192,7 @@ void SyMcastSocket::unsubscribe(const QHostAddress &addr)
 		      (const char *)addr.toString().toAscii(),strerror(errno)));
     exit(256);
   }
+#endif  // WIN32
 }
 
 

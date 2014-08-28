@@ -9,12 +9,14 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <poll.h>
 #include <signal.h>
 #include <unistd.h>
 
+#ifndef WIN32
+#include <poll.h>
+#endif  // WIN32
+
 #include "syconfig.h"
-#include "sylogger.h"
 #include "syrtp_server.h"
 
 bool __rtp_shutting_down=false;
@@ -28,6 +30,7 @@ struct rtp_cb_data
 
 void *__RtpServer_ThreadCallback(void *p)
 {
+#ifndef WIN32
   struct rtp_cb_data *cb_data=(struct rtp_cb_data *)p;
   struct sockaddr_in sa;
   struct sockaddr_in play_sa;
@@ -144,6 +147,7 @@ void *__RtpServer_ThreadCallback(void *p)
 
   close(write_sock);
   close(read_sock);
+#endif  // WIN32
   return NULL;
 }
 

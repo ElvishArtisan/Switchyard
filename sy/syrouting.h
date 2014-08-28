@@ -11,8 +11,6 @@
 
 #include <math.h>
 #include <stdint.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 
 #include <vector>
 

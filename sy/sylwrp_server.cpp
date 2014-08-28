@@ -11,13 +11,13 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
 #include <sys/time.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
+//#include <netinet/in.h>
+//#include <netinet/ip.h>
 #include <unistd.h>
 
-#include "sylogger.h"
+#include "sysyslog.h"
 #include "sylwrp_server.h"
 
 SyLwrpServer::SyLwrpServer(SyRouting *routing)

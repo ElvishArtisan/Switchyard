@@ -10,9 +10,13 @@
 #ifndef SYRTP_SERVER_H
 #define SYRTP_SERVER_H
 
+#ifdef WIN32
+#include <Winsock2.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#endif  // WIN32
 #include <pthread.h>
 
 #include <QtCore/QObject>

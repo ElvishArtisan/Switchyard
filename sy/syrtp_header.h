@@ -15,7 +15,7 @@
 #include <sys/types.h>
 #include <vector>
 #ifdef WIN32
-#include <win32_types.h>
+//#include <win32_types.h>
 #include <Winsock2.h>
 #endif  // WIN32
 

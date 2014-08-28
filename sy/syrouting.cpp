@@ -6,24 +6,29 @@
 //     All Rights Reserved.
 //
 
-#include <arpa/inet.h>
+//#include <arpa/inet.h>
 #include <errno.h>
-#include <ifaddrs.h>
-#include <net/if.h>
-#include <sys/ioctl.h>
+//#include <ifaddrs.h>
+//#include <net/if.h>
+//#include <sys/ioctl.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/socket.h>
+//#include <sys/ipc.h>
+//#include <sys/shm.h>
+//#include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef WIN32
+#include <Winsock2.h>
+#else
+#endif  // WIN32
+
 #include <QtCore/QDir>
 #include <QtCore/QStringList>
 
-#include "sylogger.h"
+#include "sysyslog.h"
 #include "syprofile.h"
 #include "syrouting.h"
 
@@ -87,10 +92,15 @@ QString SyRouting::hostName() const
 #ifdef OSX
   char hostname[sysconf(_SC_HOST_NAME_MAX)];
     gethostname(hostname,sysconf(_SC_HOST_NAME_MAX));
-#else
+#endif  // OSX
+#ifdef LINUX
   char hostname[HOST_NAME_MAX];
   gethostname(hostname,HOST_NAME_MAX);
-#endif  // OSX
+#endif  // LINUX
+#ifdef WIN32
+  char hostname[256];
+  gethostname(hostname,256);
+#endif  // WIN32
   return QString(hostname).split(".")[0];
 }
 
@@ -319,6 +329,7 @@ QString SyRouting::nicDevice(unsigned n)
 
 void SyRouting::subscribe(const QHostAddress &addr)
 {
+#ifndef WIN32
   struct ip_mreqn mreq;
 
   memset(&mreq,0,sizeof(mreq));
@@ -331,12 +342,15 @@ void SyRouting::subscribe(const QHostAddress &addr)
 #else
   setsockopt(sy_subscription_socket,SOL_IP,IP_ADD_MEMBERSHIP,
 	     &mreq,sizeof(mreq));
-#endif
+#endif  // OSX
+
+#endif // WIN32
 }
 
 
 void SyRouting::unsubscribe(const QHostAddress &addr)
 {
+#ifndef WIN32
   struct ip_mreqn mreq;
 
   memset(&mreq,0,sizeof(mreq));
@@ -348,6 +362,8 @@ void SyRouting::unsubscribe(const QHostAddress &addr)
 #else
   setsockopt(sy_subscription_socket,SOL_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
 #endif  // OSX
+
+#endif  // WIN32
 }
 
 
@@ -514,7 +530,8 @@ void SyRouting::LoadInterfaces()
 	   (const char *)sy_nic_netmasks[i].toString().toAscii());
   }
   */
-#else
+#endif  // OSX
+#ifdef LINUX
   struct ifreq ifr;
   int index=0;
   uint64_t mac;
@@ -560,5 +577,7 @@ void SyRouting::LoadInterfaces()
     }
     ifr.ifr_ifindex=++index;
   }
-#endif  // OSX
+#endif  // LINUX
+#ifdef WIN32
+#endif  // WIN32
 }

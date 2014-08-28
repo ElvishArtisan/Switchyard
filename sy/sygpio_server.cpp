@@ -8,7 +8,7 @@
 //
 
 #include "sygpio_server.h"
-#include "sylogger.h"
+#include "sysyslog.h"
 
 SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   : QObject(parent)

@@ -20,11 +20,12 @@ HEADERS += syd.h
 
 INCLUDEPATH += ..
 
-LIBS += -L../sy/release -lswitchyard
+LIBS += -L../sy/release -lws2_32 -lswitchyard
 
 CONFIG += qt
+CONFIG += thread
 CONFIG += warn_on
 CONFIG += release
-CONFIG += windows
+CONFIG += console
 
 QT += network

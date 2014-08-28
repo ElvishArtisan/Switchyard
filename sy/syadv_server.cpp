@@ -11,10 +11,14 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#ifdef WIN32
+#include <Winsock2.h>
+#endif  // WIN32
+
 #include <QtCore/QStringList>
 
 #include "syadv_server.h"
-#include "sylogger.h"
+#include "sysyslog.h"
 
 SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   : QObject(parent)
@@ -39,8 +43,13 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   //
   // Start Advertising
   //
+#ifdef WIN32
+  srand(static_cast<unsigned int> (time(NULL)));
+  ctrl_advert_seqno=rand();
+#else
   srandom(time(NULL));
   ctrl_advert_seqno=random();
+#endif  // WIN32
   ctrl_advert_timestamp=GetTimestamp();
   ctrl_advert_timer=new QTimer(this);
   ctrl_advert_timer->setSingleShot(true);
@@ -397,7 +406,12 @@ void SyAdvServer::GenerateAdvertPacket(SyAdvPacket *p,AdvertType type) const
 
 int SyAdvServer::GetAdvertInterval() const
 {
+#ifdef WIN32
+  long base=rand()/(RAND_MAX/14)+2;
+#else
   long base=random()/(RAND_MAX/14)+2;
+#endif  // WIN32
+
   return 1000*base+10*base;
 }
 
