@@ -18,6 +18,7 @@
 
 #include "syconfig.h"
 #include "syrtp_server.h"
+#include "sysyslog.h"
 
 bool __rtp_shutting_down=false;
 

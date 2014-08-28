@@ -6,10 +6,6 @@
 //     All Rights Reserved
 //
 
-#ifndef WIN32
-#include <syslog.h>
-#endif  // WIN32
-
 #include "sysyslog.h"
 
 void SyOpenLog(const QString &ident,int option,int facility)

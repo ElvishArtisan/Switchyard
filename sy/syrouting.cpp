@@ -6,16 +6,9 @@
 //     All Rights Reserved.
 //
 
-//#include <arpa/inet.h>
 #include <errno.h>
-//#include <ifaddrs.h>
-//#include <net/if.h>
-//#include <sys/ioctl.h>
 #include <stdio.h>
 #include <string.h>
-//#include <sys/ipc.h>
-//#include <sys/shm.h>
-//#include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -23,6 +16,10 @@
 #ifdef WIN32
 #include <Winsock2.h>
 #else
+#include <arpa/inet.h>
+//#include <ifaddrs.h>
+#include <net/if.h>
+#include <sys/ioctl.h>
 #endif  // WIN32
 
 #include <QtCore/QDir>

@@ -56,6 +56,8 @@
 #define LOG_INFO 6
 #define LOG_DEBUG 7
 
+#else
+#include <syslog.h>
 #endif  // WIN32
 
 #include <QtCore/QString>

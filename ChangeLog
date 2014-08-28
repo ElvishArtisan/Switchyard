@@ -172,3 +172,5 @@
 	'sy/syrouting.h'.
 	* Ported calls for random number generation to Win32 in
 	'sy/sysadv_server.cpp'.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed regressions resulting from adding Win32 port.
