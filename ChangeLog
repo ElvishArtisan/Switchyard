@@ -192,3 +192,6 @@
 2014-09-28 Fred Gleason <fredg@paravelsystems.com>
 	* Ported the 'SyRouting::LoadInterfaces()' method to Win32 in
 	'sy/syrouting.cpp'.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyRouting::socketErrorString()' method in
+	'sy/syrouting.cpp' and 'sy/syrouting.h'.

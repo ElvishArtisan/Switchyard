@@ -80,6 +80,7 @@ class SyRouting
   void writeRtpData(unsigned src_slot,const char *data,int len) const;
   static unsigned livewireNumber(const QHostAddress &addr);
   static QString dumpAddress(uint32_t addr);
+  static QString socketErrorString(const QString &msg);
 
  private:
   int GetSlotByGpio(int gpio) const;

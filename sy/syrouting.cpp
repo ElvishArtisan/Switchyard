@@ -37,6 +37,17 @@
 SyRouting::SyRouting(unsigned d_slots,unsigned s_slots,unsigned gpis,unsigned gpos)
 {
   //
+  // Initialize Networking
+  //
+#ifdef WIN32
+  WSADATA data;
+  if(WSAStartup(2,&data)!=0) {
+    SySyslog(LOG_ERR,"Winsock initialialization failed");
+    exit(256);
+  }
+#endif  // WIN32
+
+  //
   // Create Database Directory
   //
   QDir dir(SWITCHYARD_CACHE_DIR);
@@ -482,6 +493,20 @@ QString SyRouting::dumpAddress(uint32_t addr)
 }
 
 
+QString SyRouting::socketErrorString(const QString &msg)
+{
+  QString ret=msg;
+#ifdef WIN32
+  int err=WSAGetLastError();
+  ret+=QString().sprintf(" [Winsock error: %d]",err);
+#else
+  ret+=QString(" [")+strerror(errno)+"]";
+#endif  // WIN32
+
+  return ret;
+}
+
+
 int SyRouting::GetSlotByGpio(int gpio) const
 {
   for(unsigned i=0;i<dstSlots();i++) {
@@ -497,17 +522,15 @@ int SyRouting::GetSlotByGpio(int gpio) const
 void SyRouting::LoadInterfaces()
 {
   if((sy_subscription_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to create RTP subscription socket [%s]",
-		     strerror(errno)));
+    SySyslog(LOG_ERR,
+      SyRouting::socketErrorString("unable to create RTP suscription socket"));
     exit(256);
   }
   if((sy_rtp_send_socket=socket(PF_INET,SOCK_DGRAM,IPPROTO_IP))<0) {
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to creat rtp send socket [%s]",
-		     strerror(errno)));
+    SySyslog(LOG_ERR,
+      SyRouting::socketErrorString("unable to create RTP send socket"));
     exit(256);
-  }
+  } 
 
 #ifdef OSX
   struct ifaddrs *ifap=NULL;
@@ -541,13 +564,6 @@ void SyRouting::LoadInterfaces()
     }
   } while((ifa=ifa->ifa_next)!=NULL);
   freeifaddrs(ifap);
-  /*
-  for(unsigned i=0;i<sy_nic_addresses.size();i++) {
-    printf("%s: %s  %s\n",(const char *)sy_nic_devices[i].toAscii(),
-	   (const char *)sy_nic_addresses[i].toString().toAscii(),
-	   (const char *)sy_nic_netmasks[i].toString().toAscii());
-  }
-  */
 #endif  // OSX
 #ifdef LINUX
   struct ifreq ifr;
@@ -630,6 +646,12 @@ void SyRouting::LoadInterfaces()
   if(info!=NULL) {
     free(info);
   }
-
 #endif  // WIN32
+  /*
+  for(unsigned i=0;i<sy_nic_addresses.size();i++) {
+    printf("%s: %s  %s\n",(const char *)sy_nic_devices[i].toAscii(),
+	   (const char *)sy_nic_addresses[i].toString().toAscii(),
+	   (const char *)sy_nic_netmasks[i].toString().toAscii());
+  }
+  */
 }
