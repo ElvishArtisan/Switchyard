@@ -180,3 +180,9 @@
 	* Added the AC_CONFIG_MACRO_DIR([m4]) macro in 'configure.ac'.
 2014-09-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed regressions resulting from adding Win32 port.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Ported 'SyMcastSocket::subscribe()' and
+	'SyMcastSocket::unsubscribe()' methods to Win32 in
+	'sy/symcastsocket.cpp'.
+	* Ported 'SyRouting::subscribe()' and 'SyRouting::unsubscribe()'
+	methods to Win32 in 'sy/syrouting.cpp'.

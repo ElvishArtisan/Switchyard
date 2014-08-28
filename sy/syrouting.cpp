@@ -15,6 +15,8 @@
 
 #ifdef WIN32
 #include <Winsock2.h>
+#include <Ws2tcpip.h>
+#include <mswsock.h>
 #else
 #include <arpa/inet.h>
 #include <net/if.h>
@@ -328,7 +330,15 @@ QString SyRouting::nicDevice(unsigned n)
 
 void SyRouting::subscribe(const QHostAddress &addr)
 {
-#ifndef WIN32
+#ifdef WIN32
+  struct ip_mreq_source imr;
+
+  memset(&imr,0,sizeof(imr));
+  imr.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
+  imr.imr_interface.s_addr=nic_addr;
+  setsockopt(sy_subscription_socket,IPPROTO_IP,IP_ADD_MEMBERSHIP,
+	     (char *)&imr,sizeof(imr));
+#else
   struct ip_mreqn mreq;
 
   memset(&mreq,0,sizeof(mreq));
@@ -349,7 +359,15 @@ void SyRouting::subscribe(const QHostAddress &addr)
 
 void SyRouting::unsubscribe(const QHostAddress &addr)
 {
-#ifndef WIN32
+#ifdef WIN32
+  struct ip_mreq_source imr;
+
+  memset(&imr,0,sizeof(imr));
+  imr.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
+  imr.imr_interface.s_addr=nic_addr;
+  setsockopt(sy_subscription_socket,IPPROTO_IP,IP_DROP_MEMBERSHIP,
+	     (char *)&imr,sizeof(imr));
+#else
   struct ip_mreqn mreq;
 
   memset(&mreq,0,sizeof(mreq));

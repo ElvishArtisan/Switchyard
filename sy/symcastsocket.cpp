@@ -14,6 +14,8 @@
 
 #ifdef WIN32
 #include <Winsock2.h>
+#include <Ws2tcpip.h>
+#include <mswsock.h>
 #else
 #include <netinet/in.h>
 #include <netinet/ip.h>
@@ -134,30 +136,44 @@ qint64 SyMcastSocket::writeDatagram(const QByteArray &datagram,
 
 void SyMcastSocket::subscribe(const QHostAddress &addr)
 {
-#ifndef WIN32
-  struct ip_mreqn mreq;
-
   if(mcast_recv_socket==NULL) {
     SySyslog(LOG_ERR,"cannot subscribe on a write-only socket");
     exit(256);
   }
+
+#ifdef WIN32
+  struct ip_mreq_source imr;
+
+  memset(&imr,0,sizeof(imr));
+  imr.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
+  imr.imr_interface.s_addr=htonl(mcast_iface_address.toIPv4Address());
+  if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
+		IP_ADD_MEMBERSHIP,(char *)&imr,sizeof(imr))<0) {
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to subscribe to group %s [%s]",
+		     (const char *)addr.toString().toAscii(),strerror(errno)));
+    exit(256);
+  }
+#else
+  struct ip_mreqn mreq;
+
   memset(&mreq,0,sizeof(mreq));
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=htonl(mcast_iface_address.toIPv4Address());
   mreq.imr_ifindex=0;
 #ifdef OSX
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
-		IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
+    IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
 #else
-    if(setsockopt(mcast_recv_socket->socketDescriptor(),SOL_IP,
-		  IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
+  if(setsockopt(mcast_recv_socket->socketDescriptor(),SOL_IP,
+    IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
 #endif  // OSX
-      SySyslog(LOG_ERR,QString().
-	       sprintf("unable to subscribe to group %s [%s]",
-		      (const char *)addr.toString().toAscii(),strerror(errno)));
+    SySyslog(LOG_ERR,QString().
+      sprintf("unable to subscribe to group %s [%s]",
+        (const char *)addr.toString().toAscii(),strerror(errno)));
     exit(256);
   }
-#endif  // WIN32
+#endif // WIN32
 }
 
 
@@ -169,13 +185,27 @@ void SyMcastSocket::subscribe(const QString &addr)
 
 void SyMcastSocket::unsubscribe(const QHostAddress &addr)
 {
-#ifndef WIN32
-  struct ip_mreqn mreq;
-
   if(mcast_recv_socket==NULL) {
     SySyslog(LOG_ERR,"cannot unsubscribe on a write-only socket");
     exit(256);
   }
+
+#ifdef WIN32
+  struct ip_mreq_source imr;
+
+  memset(&imr,0,sizeof(imr));
+  imr.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
+  imr.imr_interface.s_addr=htonl(mcast_iface_address.toIPv4Address());
+  if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
+		IP_DROP_MEMBERSHIP,(char *)&imr,sizeof(imr))<0) {
+    SySyslog(LOG_ERR,QString().
+	     sprintf("unable to subscribe to group %s [%s]",
+		     (const char *)addr.toString().toAscii(),strerror(errno)));
+    exit(256);
+  }
+#else
+  struct ip_mreqn mreq;
+
   memset(&mreq,0,sizeof(mreq));
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=htonl(mcast_iface_address.toIPv4Address());
