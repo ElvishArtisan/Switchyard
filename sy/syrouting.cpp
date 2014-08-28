@@ -17,10 +17,12 @@
 #include <Winsock2.h>
 #else
 #include <arpa/inet.h>
-//#include <ifaddrs.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
 #endif  // WIN32
+#ifdef OSX
+#include <ifaddrs.h>
+#endif  // OSX
 
 #include <QtCore/QDir>
 #include <QtCore/QStringList>

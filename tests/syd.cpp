@@ -52,7 +52,6 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   bool debug=false;
-  FILE *f=NULL;
 
   //
   // Process Command Line
@@ -102,6 +101,7 @@ MainObject::MainObject(QObject *parent)
   // Detach and write PID file
   //
 #ifdef LINUX
+  FILE *f=NULL;
   if(!debug) {
     daemon(0,0);
     if((f=fopen(SYD_PID_FILE,"w"))!=NULL) {

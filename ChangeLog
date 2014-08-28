@@ -178,3 +178,5 @@
 	* Modernized the AM_INIT() and AC_INIT() macro invocation in
 	'configure.ac'.
 	* Added the AC_CONFIG_MACRO_DIR([m4]) macro in 'configure.ac'.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed regressions resulting from adding Win32 port.
