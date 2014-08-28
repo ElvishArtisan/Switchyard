@@ -7,10 +7,11 @@ dnl
 dnl   All Rights Reserved.
 dnl
 
-AC_INIT(switchyard,`cat PACKAGE_VERSION`,Fred Gleason <fredg@paravelsystems.com>)
-AM_INIT_AUTOMAKE(switchyard,`cat PACKAGE_VERSION`)
+AC_INIT(switchyard,m4_esyscmd(cat PACKAGE_VERSION))
+AM_INIT_AUTOMAKE
 AC_SUBST(RPM_RELEASE,1)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+AC_CONFIG_MACRO_DIR([m4])
 
 #
 # Some Fully Resolved Install Paths

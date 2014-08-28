@@ -13,6 +13,11 @@ SUBDIRS = conf\
           sy\
           tests
 
+ACLOCAL_AMFLAGS = -I m4
+
+maintainer-clean-local:	
+	rm -rf m4
+
 rpm:	dist
 	cp switchyard-$(VERSION).tar.gz $(RPM_ROOT)/SOURCES/
 	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard.spec
