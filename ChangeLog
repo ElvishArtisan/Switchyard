@@ -189,3 +189,6 @@
 2014-09-28 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented 'SySyslog()' to output messages to stderr on Win32
 	in 'sy/sysyslog.cpp'.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Ported the 'SyRouting::LoadInterfaces()' method to Win32 in
+	'sy/syrouting.cpp'.

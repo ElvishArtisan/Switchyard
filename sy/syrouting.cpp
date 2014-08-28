@@ -17,6 +17,7 @@
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
 #include <mswsock.h>
+#include <iphlpapi.h>
 #else
 #include <arpa/inet.h>
 #include <net/if.h>
@@ -596,5 +597,39 @@ void SyRouting::LoadInterfaces()
   }
 #endif  // LINUX
 #ifdef WIN32
+  IP_ADAPTER_INFO *info;
+  ULONG buf_len;
+  DWORD ret=0;
+
+  info=(IP_ADAPTER_INFO *)malloc(sizeof(IP_ADAPTER_INFO));
+  buf_len=sizeof(IP_ADAPTER_INFO);
+  if(GetAdaptersInfo(info,&buf_len)!=ERROR_SUCCESS) {
+    free(info);
+    info=(IP_ADAPTER_INFO *)malloc(buf_len);
+  }
+  if(GetAdaptersInfo(info,&buf_len)!=ERROR_SUCCESS) {
+    SySyslog(LOG_ERR,QString().sprintf("GetAdaptersInfo failed, error=%lu",ret));
+    exit(256);
+  }
+  PIP_ADAPTER_INFO a=info;
+  int count=0;
+  while(a) {
+    //printf("Name: %s\n",a->AdapterName);
+    //printf("Desc: %s\n",a->Description);
+    QString dev=QString().sprintf("%d: ",count+1);
+    for(unsigned i=0;i<a->AddressLength;i++) {
+      dev+=QString().sprintf("%02X:",(int)a->Address[i]);
+    }
+    dev=dev.left(dev.length()-1);
+    sy_nic_devices.push_back(dev);
+    sy_nic_addresses.push_back(QHostAddress(a->IpAddressList.IpAddress.String));
+    sy_nic_netmasks.push_back(QHostAddress(a->IpAddressList.IpMask.String));
+    count++;
+    a=info->Next;
+  }
+  if(info!=NULL) {
+    free(info);
+  }
+
 #endif  // WIN32
 }

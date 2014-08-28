@@ -20,7 +20,7 @@ HEADERS += syd.h
 
 INCLUDEPATH += ..
 
-LIBS += -L../sy/release -lws2_32 -lswitchyard
+LIBS += -L../sy/release -lswitchyard
 
 CONFIG += qt
 CONFIG += thread

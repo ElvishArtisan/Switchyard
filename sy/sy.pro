@@ -53,7 +53,7 @@ HEADERS += syrtp_server.h
 
 INCLUDEPATH += ../
 
-LIBS += -lwsock32
+LIBS += -lws2_32 -liphlpapi
 
 CONFIG += qt
 CONFIG += dll
