@@ -18,7 +18,9 @@ void SyOpenLog(const QString &ident,int option,int facility)
 
 void SySyslog(int priority,const QString &msg)
 {
-#ifndef WIN32
+#ifdef WIN32
+  fprintf(stderr,"%s\n",(const char *)msg.toAscii());
+#else
   syslog(priority,"%s",(const char *)msg.toAscii());
 #endif  // WIN32
 }
