@@ -28,6 +28,7 @@
 #endif  // OSX
 
 #include <QtCore/QDir>
+#include <QtCore/QSettings>
 #include <QtCore/QStringList>
 
 #include "sysyslog.h"
@@ -410,6 +411,23 @@ int SyRouting::rtpSendSocket() const
 
 void SyRouting::load()
 {
+#ifdef WIN32
+  QSettings *s=
+    new QSettings(QSettings::SystemScope,"Paravel Systems","Switchyard");
+  setNicAddress(QHostAddress(s->value("NicAddress").toString()));
+  for(unsigned i=0;i<srcSlots();i++) {
+    QString key=QString().sprintf("Slot%u",i+1);
+    setSrcAddress(i,s->value(key+"/SourceAddress").toString());
+    setSrcName(i,s->value(key+"/SourceName").toString());
+    setSrcEnabled(i,s->value(key+"/SourceEnabled").toUInt());
+  }
+  for(unsigned i=0;i<dstSlots();i++) {
+    QString key=QString().sprintf("Slot%u",i+1);
+    setDstAddress(i,s->value(key+"/DestinationAddress").toString());
+    setDstName(i,s->value(key+"/DestinationName").toString());
+  }
+  delete s;
+#else
   QString section;
   SyProfile *p=new SyProfile();
   p->setSource(SWITCHYARD_ROUTING_FILE);
@@ -429,13 +447,32 @@ void SyRouting::load()
     setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
     setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
   }
-
   delete p;
+#endif  // WIN32
 }
 
 
 void SyRouting::save() const
 {
+  printf("save()\n");
+#ifdef WIN32
+  QSettings *s=
+    new QSettings(QSettings::SystemScope,"Paravel Systems","Switchyard");
+  s->setValue("NicAddress",nicAddress().toString());
+  for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
+    QString key=QString().sprintf("Slot%u",i+1);
+    if(i<(int)srcSlots()) {
+      s->setValue(key+"/SourceAddress",srcAddress(i).toString());
+      s->setValue(key+"/SourceName",srcName(i));
+      s->setValue(key+"/SourceEnabled",srcEnabled(i));
+    }
+    if(i<(int)dstSlots()) {
+      s->setValue(key+"/DestinationAddress",dstAddress(i).toString());
+      s->setValue(key+"/DestinationName",dstName(i));
+    }
+  }
+  delete s;
+#else
   FILE *f=NULL;
   QString tempfile=QString(SWITCHYARD_ROUTING_FILE)+"-temp";
 
@@ -465,6 +502,7 @@ void SyRouting::save() const
   }
   fclose(f);
   rename(tempfile.toAscii(),SWITCHYARD_ROUTING_FILE);
+#endif  // WIN32
 }
 
 

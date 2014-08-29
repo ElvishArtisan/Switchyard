@@ -195,3 +195,6 @@
 2014-09-28 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyRouting::socketErrorString()' method in
 	'sy/syrouting.cpp' and 'sy/syrouting.h'.
+2014-09-28 Fred Gleason <fredg@paravelsystems.com>
+	* Ported the 'SyRouting::load()' and SyRouting::save()' methods to
+	Win32 in 'sy/syrouting.cpp'.
