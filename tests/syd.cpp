@@ -171,7 +171,7 @@ void MainObject::exitTimerData()
 void MainObject::exitData()
 {
   SySyslog(LOG_DEBUG,"calling exit handler");
-  unlink(SWITCHYARD_SOURCES_FILE);
+  delete syd_adv;
   unlink(SYD_PID_FILE);
   exit(0);
 }

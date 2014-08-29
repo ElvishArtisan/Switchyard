@@ -30,6 +30,7 @@ class SyAdvServer : public QObject
  public:
   enum AdvertType {Type0=0,Type1=1,Type2=2,TypeLast=3};
   SyAdvServer(SyRouting *r,bool read_only=false,QObject *parent=0);
+  ~SyAdvServer();
 
  private slots:
   void readData();

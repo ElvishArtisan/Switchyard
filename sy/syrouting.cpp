@@ -412,8 +412,9 @@ int SyRouting::rtpSendSocket() const
 void SyRouting::load()
 {
 #ifdef WIN32
-  QSettings *s=
-    new QSettings(QSettings::SystemScope,"Paravel Systems","Switchyard");
+  QSettings *s= new QSettings(QSettings::SystemScope,
+			      SWITCHYARD_SETTINGS_ORGANIZATION,
+			      SWITCHYARD_SETTINGS_APPLICATION);
   setNicAddress(QHostAddress(s->value("NicAddress").toString()));
   for(unsigned i=0;i<srcSlots();i++) {
     QString key=QString().sprintf("Slot%u",i+1);
@@ -456,8 +457,9 @@ void SyRouting::save() const
 {
   printf("save()\n");
 #ifdef WIN32
-  QSettings *s=
-    new QSettings(QSettings::SystemScope,"Paravel Systems","Switchyard");
+  QSettings *s= new QSettings(QSettings::SystemScope,
+			      SWITCHYARD_SETTINGS_ORGANIZATION,
+			      SWITCHYARD_SETTINGS_APPLICATION);
   s->setValue("NicAddress",nicAddress().toString());
   for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
     QString key=QString().sprintf("Slot%u",i+1);

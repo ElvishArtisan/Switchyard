@@ -198,3 +198,8 @@
 2014-09-28 Fred Gleason <fredg@paravelsystems.com>
 	* Ported the 'SyRouting::load()' and SyRouting::save()' methods to
 	Win32 in 'sy/syrouting.cpp'.
+2014-09-29 Fred Gleason <fredg@paravelsystems.com>
+	* Addded SWITCHYARD_SETTINGS_ORGANIZATION and
+	SWITCHYARD_SETTINGS_APPLICATION defines in 'sy/syconfig.h'.
+	* Ported source database generation to Win32 in 'sy/syadv_server.cpp'
+	* Ported source database reading to Win32 in 'sy/syadv_reader.cpp'

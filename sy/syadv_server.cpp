@@ -15,6 +15,7 @@
 #include <Winsock2.h>
 #endif  // WIN32
 
+#include <QtCore/QSettings>
 #include <QtCore/QStringList>
 
 #include "syadv_server.h"
@@ -69,6 +70,32 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   ctrl_savesources_timer->setSingleShot(true);
   connect(ctrl_savesources_timer,SIGNAL(timeout()),
 	  this,SLOT(saveSourcesData()));
+}
+
+
+SyAdvServer::~SyAdvServer()
+{
+  printf("~SyAdvServer()\n");
+
+  //
+  // Delete Source Table
+  //
+#ifdef WIN32
+  QSettings *s= new QSettings(QSettings::SystemScope,
+			      SWITCHYARD_SETTINGS_ORGANIZATION,
+			      SWITCHYARD_SETTINGS_APPLICATION);
+
+  QStringList keys=s->allKeys();
+  for(int i=0;i<keys.size();i++) {
+    QStringList f0=keys[i].split(" ");
+    if((f0[0]=="Source")&&(f0.size()==2)) {
+      s->remove(keys[i]);
+    }
+  }
+  delete s;
+#else
+  unlink(SWITCHYARD_SOURCES_FILE);
+#endif  // WIN32
 }
 
 
@@ -174,6 +201,43 @@ void SyAdvServer::sendData()
 
 void SyAdvServer::saveSourcesData()
 {
+#ifdef WIN32
+  unsigned num=0;
+  QSettings *s= new QSettings(QSettings::SystemScope,
+			      SWITCHYARD_SETTINGS_ORGANIZATION,
+			      SWITCHYARD_SETTINGS_APPLICATION);
+
+  //
+  // Write current sources
+  //
+  for(unsigned i=0;i<ctrl_sources.size();i++) {
+    SyAdvSource *src=ctrl_sources[i];
+    if(src!=NULL) {
+      QString key=QString().sprintf("Source %u",++num);
+      s->setValue(key+"/Slot",src->slot());
+      s->setValue(key+"/NodeAddress",src->nodeAddress().toString());
+      s->setValue(key+"/NodeName",src->nodeName());
+      s->setValue(key+"/StreamAddress",src->streamAddress().toString());
+      s->setValue(key+"/SourceName",src->sourceName());
+      src->setSaved();
+    }  
+  }
+
+  //
+  // Purge stale sources
+  //
+  QStringList keys=s->allKeys();
+  for(int i=0;i<keys.size();i++) {
+    QStringList f0=keys[i].split(" ");
+    if((f0[0]=="Source")&&(f0.size()==2)) {
+      if(f0[1].toUInt()>=num) {
+	s->remove(keys[i]);
+      }
+    }
+  }
+
+  delete s;
+#else
   QString tempfile=QString(SWITCHYARD_SOURCES_FILE)+"-temp";
   FILE *f=NULL;
   unsigned num=0;
@@ -199,8 +263,8 @@ void SyAdvServer::saveSourcesData()
 	fprintf(f,"SourceName=%s\n",(const char *)src->sourceName().toUtf8());
 	fprintf(f,"\n");
       }
+      src->setSaved();
     }
-    src->setSaved();
   }
 
   fclose(f);
@@ -208,6 +272,7 @@ void SyAdvServer::saveSourcesData()
   SySyslog(LOG_DEBUG,
 	   QString().sprintf("saved sources list to \"%s\"",
 			     SWITCHYARD_SOURCES_FILE));
+#endif  // WIN32
 }
 
 

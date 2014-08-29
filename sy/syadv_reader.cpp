@@ -7,7 +7,7 @@
 //
 
 #include <QtCore/QObject>
-
+#include <QtCore/QSettings>
 
 #include "syadv_reader.h"
 #include "syprofile.h"
@@ -72,7 +72,24 @@ bool SyAdvReader::load()
   adv_node_names.push_back("");
   adv_stream_addresses.push_back(QHostAddress());
   adv_source_names.push_back(QObject::tr("--- OFF ---"));
-  
+
+#ifdef WIN32
+  int count=1;
+  QString key="Source 1";
+  QSettings *s= new QSettings(QSettings::SystemScope,
+			      SWITCHYARD_SETTINGS_ORGANIZATION,
+			      SWITCHYARD_SETTINGS_APPLICATION);
+  while(!s->value(key+"/Slot").isNull()) {
+    adv_slots.push_back(s->value(key+"/Slot").toInt());
+    adv_node_addresses.
+      push_back(QHostAddress(s->value(key+"/NodeAddress").toString()));
+    adv_node_names.push_back(s->value(key+"/NodeName").toString());
+    adv_stream_addresses.
+      push_back(QHostAddress(s->value(key+"/StreamAddress").toString()));
+    adv_source_names.push_back(s->value(key+"/SourceName").toString());
+    key=QString().sprintf("Source %d",count++);
+  }
+#else 
   int count=1;
   bool ok=false;
   QString section=QString().sprintf("Source %u",count);
@@ -91,6 +108,8 @@ bool SyAdvReader::load()
     slot=p->intValue(section,"Slot",0,&ok);
   }
   delete p;
+#endif  // WIN32
+
   return true;
 }
 
