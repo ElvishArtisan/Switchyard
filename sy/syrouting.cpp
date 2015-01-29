@@ -445,6 +445,7 @@ void SyRouting::load()
     setSrcEnabled(i,p->intValue(section,"SourceEnabled"));
   }
   for(unsigned i=0;i<dstSlots();i++) {
+    section=QString().sprintf("Slot%u",i+1);
     setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
     setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
   }
@@ -455,7 +456,6 @@ void SyRouting::load()
 
 void SyRouting::save() const
 {
-  printf("save()\n");
 #ifdef WIN32
   QSettings *s= new QSettings(QSettings::SystemScope,
 			      SWITCHYARD_SETTINGS_ORGANIZATION,

@@ -203,3 +203,7 @@
 	SWITCHYARD_SETTINGS_APPLICATION defines in 'sy/syconfig.h'.
 	* Ported source database generation to Win32 in 'sy/syadv_server.cpp'
 	* Ported source database reading to Win32 in 'sy/syadv_reader.cpp'
+2015-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/syrouting.cpp' that broke saving of destination
+	information to the routing database.
+	* Changed SYD_SLOTS in 'tests/syd.h' to '4'.
