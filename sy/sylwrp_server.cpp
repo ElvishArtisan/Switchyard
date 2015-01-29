@@ -189,6 +189,9 @@ bool SyLwrpServer::ExecuteSrc(int id,QStringList &args)
       if(fields[0]=="RTPP") {
 	found=true;
       }
+      if(fields[0]=="FASM") {
+	found=true;
+      }
       if(!found) {
 	return false;
       }

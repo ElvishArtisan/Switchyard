@@ -207,3 +207,6 @@
 	* Fixed a bug in 'sy/syrouting.cpp' that broke saving of destination
 	information to the routing database.
 	* Changed SYD_SLOTS in 'tests/syd.h' to '4'.
+2015-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'FASM' tag to set of recognized tags when parsing 'SRC'
+	commands in 'sy/sylwrp_server.cpp'.
