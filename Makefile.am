@@ -19,12 +19,12 @@ maintainer-clean-local:
 	rm -rf m4
 
 rpm:	dist
-	cp switchyard-$(VERSION).tar.gz $(RPM_ROOT)/SOURCES/
+	cp switchyard-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
 	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard.spec
-	mv $(RPM_ROOT)/RPMS/$(ARCH)/switchyard-*.rpm $(top_srcdir)/
-	mv $(RPM_ROOT)/SRPMS/switchyard-*.src.rpm $(top_srcdir)/
-	rm $(RPM_ROOT)/SOURCES/switchyard-$(VERSION).tar.gz
-	rm -rf $(RPM_ROOT)/BUILD/switchyard-$(VERSION)
+	mv $(HOME)/rpmbuild/RPMS/$(ARCH)/switchyard-*.rpm $(top_srcdir)/
+	mv $(HOME)/rpmbuild/SRPMS/switchyard-*.src.rpm $(top_srcdir)/
+	rm $(HOME)/rpmbuild/SOURCES/switchyard-$(VERSION).tar.gz
+	rm -rf $(HOME)/rpmbuild/BUILD/switchyard-$(VERSION)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = Switchyard.pc

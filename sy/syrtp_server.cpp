@@ -166,7 +166,7 @@ SyRtpServer::SyRtpServer(void *(*callback_func)(unsigned,const char *,int,SyRout
   //
   // Initilialize Subscriptions
   //
-  for(unsigned i=0;i<routing->srcSlots();i++) {
+  for(unsigned i=0;i<routing->dstSlots();i++) {
     if(!routing->dstAddress(i).isNull()) {
       routing->subscribe(routing->dstAddress(i));
     }

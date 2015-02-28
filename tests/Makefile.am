@@ -25,7 +25,8 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 
-noinst_PROGRAMS = syd
+noinst_PROGRAMS = sycapture\
+                  syd
 
 dist_syd_SOURCES = syd.cpp syd.h
 
@@ -33,6 +34,14 @@ nodist_syd_SOURCES = moc_syd.cpp
 
 syd_LDADD = @SWITCHYARDLIBS@
 syd_LDFLAGS = @SWITCHYARDFLAGS@
+
+
+dist_sycapture_SOURCES = sycapture.cpp sycapture.h
+
+nodist_sycapture_SOURCES = moc_sycapture.cpp
+
+sycapture_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
+sycapture_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
 
 EXTRA_DIST = rc.syd.in
 

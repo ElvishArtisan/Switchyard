@@ -210,3 +210,12 @@
 2015-01-28 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'FASM' tag to set of recognized tags when parsing 'SRC'
 	commands in 'sy/sylwrp_server.cpp'.
+2015-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Moved syd(8) from 'noinst' to 'sbin' in 'tests/Makefile.am'.
+	* Modified to 'make rpm' target in 'Makefile.am' to use a home
+	directory based RPM build tree.
+2015-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Moved syd(8) from 'sbin' to 'noinst' in 'tests/Makefile.am'.
+	* Fixed a bug in 'sy/syrtp_server.cpp' that caused RTP subscriptions
+	to not be made if no source slots were configured.
+	* Added sycapture(8) in 'tests/sycapture.cpp' and 'test/sycapture.h'.

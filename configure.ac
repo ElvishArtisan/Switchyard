@@ -85,6 +85,11 @@ AC_CHECK_PROG(MOC_NAME,moc-qt4,[moc-qt4],[moc])
 AC_SUBST(MOC,$MOC_NAME)
 
 #
+# Check for libsndfile (Needed for sycapture)
+#
+PKG_CHECK_MODULES(libsndfile,[sndfile],[],[AC_MSG_ERROR([*** libsndfile not found ***])])
+
+#
 # Determine Distro
 #
 AR_GET_DISTRO()
