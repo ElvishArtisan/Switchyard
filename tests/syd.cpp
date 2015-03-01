@@ -86,7 +86,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Start Advertisements
   //
-  syd_adv=new SyAdvServer(syd_routing,true,this);
+  syd_adv=new SyAdvServer(syd_routing,false,this);
 
   //
   // Start GPIO Processing

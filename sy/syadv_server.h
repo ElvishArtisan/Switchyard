@@ -35,7 +35,9 @@ class SyAdvServer : public QObject
  private slots:
   void readData();
   void expireData();
-  void sendData();
+  void sendAdvert0Data();
+  void sendAdvert1Data();
+  void sendAdvert2Data();
   void saveSourcesData();
 
  private:
@@ -45,12 +47,11 @@ class SyAdvServer : public QObject
   SyAdvSource *GetSource(const QHostAddress &node_addr,unsigned slot);
   int TagIsSource(const SyTag *tag) const;
   void ScheduleSourceSave();
-  double GetTimestamp() const;
   SyMcastSocket *ctrl_advert_socket;
-  QTimer *ctrl_advert_timer;
+  QTimer *ctrl_advert_timer0;
+  QTimer *ctrl_advert_timer1;
+  QTimer *ctrl_advert_timer2;
   uint32_t ctrl_advert_seqno;
-  double ctrl_advert_timestamp;
-  AdvertType ctrl_advert_type;
   SyRouting *adv_routing;
   QTimer *ctrl_expire_timer;
   QTimer *ctrl_savesources_timer;

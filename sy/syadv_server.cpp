@@ -2,7 +2,7 @@
 //
 // Livewire Advertising Protocol Server
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2015 Fred Gleason <fredg@paravelsystems.com>
 //
 //   All Rights Reserved.
 //
@@ -21,11 +21,20 @@
 #include "syadv_server.h"
 #include "sysyslog.h"
 
+//
+// LiveWire advertising uses three different types of packets:
+//
+// Type 0 - Sent every ten seconds
+//
+// Type 1 - Sent at random intervals, between 6 and 20 seconds
+//
+// Type 2 - Sent every 150 seconds, as well as immediately at service startup.
+//
+
 SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   : QObject(parent)
 {
   adv_routing=r;
-  ctrl_advert_type=SyAdvServer::Type0;
 
   //
   // Initialize Advertisment Socket
@@ -51,12 +60,17 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   srandom(time(NULL));
   ctrl_advert_seqno=random();
 #endif  // WIN32
-  ctrl_advert_timestamp=GetTimestamp();
-  ctrl_advert_timer=new QTimer(this);
-  ctrl_advert_timer->setSingleShot(true);
+  ctrl_advert_timer0=new QTimer(this);
+  ctrl_advert_timer2=new QTimer(this);
+  ctrl_advert_timer1=new QTimer(this);
+  ctrl_advert_timer1->setSingleShot(true);
   if(!read_only) {
-    connect(ctrl_advert_timer,SIGNAL(timeout()),this,SLOT(sendData()));
-    ctrl_advert_timer->start(GetAdvertInterval());
+    connect(ctrl_advert_timer0,SIGNAL(timeout()),this,SLOT(sendAdvert0Data()));
+    ctrl_advert_timer0->start(10000);
+    connect(ctrl_advert_timer1,SIGNAL(timeout()),this,SLOT(sendAdvert1Data()));
+    ctrl_advert_timer1->start(GetAdvertInterval());
+    connect(ctrl_advert_timer2,SIGNAL(timeout()),this,SLOT(sendAdvert2Data()));
+    ctrl_advert_timer2->start(150000);
   }
 
   //
@@ -70,13 +84,13 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   ctrl_savesources_timer->setSingleShot(true);
   connect(ctrl_savesources_timer,SIGNAL(timeout()),
 	  this,SLOT(saveSourcesData()));
+
+  SendSourceUpdate(SyAdvServer::Type2);
 }
 
 
 SyAdvServer::~SyAdvServer()
 {
-  printf("~SyAdvServer()\n");
-
   //
   // Delete Source Table
   //
@@ -182,20 +196,22 @@ void SyAdvServer::expireData()
 }
 
 
-void SyAdvServer::sendData()
+void SyAdvServer::sendAdvert0Data()
 {
-  int base=GetAdvertInterval();
-  double stamp=GetTimestamp();
+  SendSourceUpdate(SyAdvServer::Type0);
+}
 
-  SendSourceUpdate(ctrl_advert_type);
-  ctrl_advert_type=(SyAdvServer::AdvertType)(ctrl_advert_type+1);
-  if(ctrl_advert_type==SyAdvServer::TypeLast) {
-    ctrl_advert_type=SyAdvServer::Type0;
-  }
-  if((ctrl_advert_timestamp-stamp)<16.0) {
-    ctrl_advert_timestamp=stamp+150.0;
-  }
-  ctrl_advert_timer->start(base);
+
+void SyAdvServer::sendAdvert1Data()
+{
+  SendSourceUpdate(SyAdvServer::Type1);
+  ctrl_advert_timer1->start(GetAdvertInterval());
+}
+
+
+void SyAdvServer::sendAdvert2Data()
+{
+  SendSourceUpdate(SyAdvServer::Type2);
 }
 
 
@@ -529,13 +545,4 @@ void SyAdvServer::ScheduleSourceSave()
 {
   ctrl_savesources_timer->stop();
   ctrl_savesources_timer->start(SWITCHYARD_SAVESOURCES_INTERVAL);
-}
-
-
-double SyAdvServer::GetTimestamp() const
-{
-  struct timeval tv;
-  memset(&tv,0,sizeof(tv));
-  gettimeofday(&tv,NULL);
-  return (double)tv.tv_sec+(double)tv.tv_usec/1000000.0;
 }
