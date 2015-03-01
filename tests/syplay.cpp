@@ -100,9 +100,9 @@ MainObject::MainObject(QObject *parent)
   connect(cap_rtp,SIGNAL(exiting()),this,SLOT(exitData()));
   cap_rtp_hdr=new SyRtpHeader(SyRtpHeader::PayloadDynamicFirst);
   cap_rtp_hdr->setSsrc(rand());
-  cap_rtp_timer=new QTimer(this);
-  connect(cap_rtp_timer,SIGNAL(timeout()),this,SLOT(sendRtpData()));
-  cap_rtp_timer->start(5);
+
+  cap_clock=new SyClock(this);
+  connect(cap_clock,SIGNAL(sendRtp()),this,SLOT(sendRtpData()));
 
   //
   // Set Signals

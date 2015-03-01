@@ -12,11 +12,11 @@
 #include <stdint.h>
 
 #include <QtCore/QObject>
-#include <QtCore/QTimer>
 
 #include <sndfile.h>
 
 #include <sy/syadv_server.h>
+#include <sy/syclock.h>
 #include <sy/syconfig.h>
 #include <sy/sylwrp_server.h>
 #include <sy/syrouting.h>
@@ -42,8 +42,8 @@ class MainObject : public QObject
   SyAdvServer *cap_adv;
   SyRtpServer *cap_rtp;
   SyRtpHeader *cap_rtp_hdr;
+  SyClock *cap_clock;
   SNDFILE *cap_sf;
-  QTimer *cap_rtp_timer;
 };
 
 
