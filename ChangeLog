@@ -222,3 +222,5 @@
 2015-03-01 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored SyAdvServer' to transmit advertising updates correctly
 	in 'sy/syadv_server.cpp' and 'sy/syadv_server.h'.
+2015-03-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added syplay(8) in 'tests/syplay.cpp' and 'test/syplay.h'.

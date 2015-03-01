@@ -139,8 +139,10 @@ void *__RtpServer_ThreadCallback(void *p)
       if(dst>0) {
 	//printf("received %ld bytes from %s.\n",n,
 	//       (const char *)SyRouting::dumpAddress(dst).toAscii());
-	cb_data->callback_func(dst,(char *)buffer,n,cb_data->routing,
-			       cb_data->priv);
+	if(cb_data->callback_func!=NULL) {
+	  cb_data->callback_func(dst,(char *)buffer,n,cb_data->routing,
+				 cb_data->priv);
+	}
 	break;
       }
     }

@@ -26,22 +26,23 @@ moc_%.cpp:	%.h
 
 
 noinst_PROGRAMS = sycapture\
-                  syd
+                  syd\
+                  syplay
 
 dist_syd_SOURCES = syd.cpp syd.h
-
 nodist_syd_SOURCES = moc_syd.cpp
-
 syd_LDADD = @SWITCHYARDLIBS@
 syd_LDFLAGS = @SWITCHYARDFLAGS@
 
-
 dist_sycapture_SOURCES = sycapture.cpp sycapture.h
-
 nodist_sycapture_SOURCES = moc_sycapture.cpp
-
 sycapture_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
 sycapture_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
+
+dist_syplay_SOURCES = syplay.cpp syplay.h
+nodist_syplay_SOURCES = moc_syplay.cpp
+syplay_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
+syplay_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
 
 EXTRA_DIST = rc.syd.in
 
