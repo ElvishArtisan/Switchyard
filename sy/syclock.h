@@ -12,6 +12,7 @@
 
 #include <stdint.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include <queue>
 
@@ -28,10 +29,10 @@ class SyClock : public QObject
  public:
   SyClock(QObject *parent=0);
   ~SyClock();
-  double pllRatio() const;
 
  signals:
   void sendRtp();
+  void pllUpdated(double ratio,int offset);
 
  private slots:
   void readyReadData();
@@ -39,15 +40,17 @@ class SyClock : public QObject
   void sendRtpData();
 
  private:
-  double GetTime();
   SyMcastSocket *clock_socket;
   QTimer *clock_pll_timer;
-  double clock_pll_ratio;
   QTimer *clock_rtp_timer;
   uint64_t clock_counter;
   int clock_burst_counter;
-  std::queue<double> clock_tick_window;
-  bool clock_window_active;
+  uint32_t clock_clock_frame;
+  uint32_t clock_pcm_frame;
+  uint32_t clock_diff_clock_frame;
+  uint32_t clock_diff_pcm_frame;
+  uint32_t clock_clock_count;
+  double clock_pll_ratio;
 };
 
 

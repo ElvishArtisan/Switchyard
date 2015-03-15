@@ -226,3 +226,5 @@
 	* Added syplay(8) in 'tests/syplay.cpp' and 'test/syplay.h'.
 2015-03-01 Fred Gleason <fredg@paravelsystems.com>
 	* Stubbed out 'SyClock' in 'sy/syclock.cpp' and 'sy/syclock.h'.
+2015-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented PLL algorithm in 'sy/syclock.cpp' and 'sy/syclock.h'.

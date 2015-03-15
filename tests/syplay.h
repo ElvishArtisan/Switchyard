@@ -32,6 +32,7 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
+  void pllUpdatedData(double ratio,int offset);
   void sendRtpData();
   void exitTimerData();
   void exitData();

@@ -102,6 +102,8 @@ MainObject::MainObject(QObject *parent)
   cap_rtp_hdr->setSsrc(rand());
 
   cap_clock=new SyClock(this);
+  connect(cap_clock,SIGNAL(pllUpdated(double,int)),
+	  this,SLOT(pllUpdatedData(double,int)));
   connect(cap_clock,SIGNAL(sendRtp()),this,SLOT(sendRtpData()));
 
   //
@@ -116,6 +118,12 @@ MainObject::MainObject(QObject *parent)
   QTimer *timer=new QTimer(this);
   connect(timer,SIGNAL(timeout()),this,SLOT(exitTimerData()));
   timer->start(200);
+}
+
+
+void MainObject::pllUpdatedData(double ratio,int offset)
+{
+  printf("PLL Ratio: %15.13lf  Offset: %d\n",ratio,offset);
 }
 
 
