@@ -27,7 +27,8 @@ moc_%.cpp:	%.h
 
 noinst_PROGRAMS = sycapture\
                   syd\
-                  syplay
+                  syplay\
+                  sytone
 
 dist_syd_SOURCES = syd.cpp syd.h
 nodist_syd_SOURCES = moc_syd.cpp
@@ -43,6 +44,11 @@ dist_syplay_SOURCES = syplay.cpp syplay.h
 nodist_syplay_SOURCES = moc_syplay.cpp
 syplay_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
 syplay_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
+
+dist_sytone_SOURCES = sytone.cpp sytone.h
+nodist_sytone_SOURCES = moc_sytone.cpp
+sytone_LDADD = @SWITCHYARDLIBS@ -lm
+sytone_LDFLAGS = @SWITCHYARDFLAGS@
 
 EXTRA_DIST = rc.syd.in
 
