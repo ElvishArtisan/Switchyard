@@ -96,10 +96,10 @@ void SyClock::readyReadData()
 	int64_t diff=(int64_t)clock_diff_clock_frame-
 	  (int64_t)clock_diff_pcm_frame;
 	if(diff>clock_diff_setpoint) {
-	  clock_pll_interval--;
+	  clock_pll_interval-=((diff-clock_diff_setpoint)/240);
 	}
 	if(diff<clock_diff_setpoint) {
-	  clock_pll_interval++;
+	  clock_pll_interval+=((diff-clock_diff_setpoint)/240);
 	}
 	emit pllUpdated(clock_pll_interval,diff);
 	/*
