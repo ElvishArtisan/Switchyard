@@ -8,6 +8,7 @@
 
 #include <signal.h>
 #include <stdio.h>
+#include <sched.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -65,6 +66,16 @@ MainObject::MainObject(QObject *parent)
     tone_buffer[12+3*i]=0xFF&(pcm[i]>>24);
     tone_buffer[12+3*i+1]=0xFF&(pcm[i]>>16);
     tone_buffer[12+3*i+2]=0xFF&(pcm[i]>>8);
+  }
+
+  //
+  // Get Realtime Permissions
+  //
+  struct sched_param sched;
+  memset(&sched,0,sizeof(sched));
+  sched.sched_priority=1;
+  if(sched_setscheduler(0,SCHED_FIFO,&sched)!=0) {
+    fprintf(stderr,"sytone: unable to set realtime priority\n");
   }
 
   //

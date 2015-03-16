@@ -249,3 +249,6 @@
 	'sy/syclock.h'.
 2015-03-16 Fred Gleason <fredg@paravelsystems.com>
 	* Modified PLL comparitor to use absolute time intervals.
+2015-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to set SCHED_FIFO scheduling priority in
+	'tests/sytone.cpp'.
