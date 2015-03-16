@@ -80,7 +80,7 @@ void SyClock::readyReadData()
     //seq=ntohl(*((uint32_t *)data));
     frame=ntohl(*((uint32_t *)(data+4)));
 
-    if(llabs((int64_t)clock_clock_frame-(int64_t)frame)>4800) {
+    if(llabs((int64_t)clock_pcm_frame-(int64_t)frame)>4800) {
       clock_clock_frame=frame;
       clock_pcm_frame=frame;
       clock_diff_setpoint=0;
