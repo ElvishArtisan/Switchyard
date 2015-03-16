@@ -97,8 +97,8 @@ MainObject::MainObject(QObject *parent)
   connect(tone_clock,SIGNAL(sourceAddressChanged(const QHostAddress &)),
 	  this,SLOT(sourceAddressChangedData(const QHostAddress &)));
   connect(tone_clock,SIGNAL(pllHasReset()),this,SLOT(pllHasResetData()));
-  connect(tone_clock,SIGNAL(pllUpdated(double,int)),
-	  this,SLOT(pllUpdatedData(double,int)));
+  connect(tone_clock,SIGNAL(pllUpdated(int,int)),
+	  this,SLOT(pllUpdatedData(int,int)));
   connect(tone_clock,SIGNAL(sendRtp()),this,SLOT(sendRtpData()));
 
   //
@@ -128,7 +128,7 @@ void MainObject::pllHasResetData()
 }
 
 
-void MainObject::pllUpdatedData(double ratio,int offset)
+void MainObject::pllUpdatedData(int interval,int offset)
 {
   if(offset>tone_max_offset) {
     tone_max_offset=offset;
@@ -137,8 +137,8 @@ void MainObject::pllUpdatedData(double ratio,int offset)
     tone_min_offset=offset;
   }
 
-  printf("PLL Ratio: %15.13lf  Offset: %d  Max: %d  Min: %d\n",
-	 ratio,offset,tone_max_offset,tone_min_offset);
+  printf("PLL Interval: %d  Offset: %d  Max: %d  Min: %d\n",
+	 interval,offset,tone_max_offset,tone_min_offset);
 }
 
 

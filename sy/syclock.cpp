@@ -23,12 +23,11 @@ SyClock::SyClock(QObject *parent)
 {
   clock_counter=0;
   clock_burst_counter=0;
-  clock_pll_ratio=1.0;
+  clock_pll_interval=500;
   clock_clock_frame=0;
   clock_pcm_frame=0;
   clock_diff_clock_frame=0;
   clock_diff_pcm_frame=0;
-  clock_pll_ratio=1.0;
   clock_clock_count=0;
 
   //
@@ -97,12 +96,12 @@ void SyClock::readyReadData()
 	int64_t diff=(int64_t)clock_diff_clock_frame-
 	  (int64_t)clock_diff_pcm_frame;
 	if(diff>clock_diff_setpoint) {
-	  clock_pll_ratio=clock_pll_ratio*0.999999999;
+	  clock_pll_interval--;
 	}
 	if(diff<clock_diff_setpoint) {
-	  clock_pll_ratio=clock_pll_ratio*1.000000001;
+	  clock_pll_interval++;
 	}
-	emit pllUpdated(clock_pll_ratio,diff);
+	emit pllUpdated(clock_pll_interval,diff);
 	/*
 	printf("clock: %u  pcm: %u  diff: %ld  ratio: %15.13lf\n",
 	       clock_diff_clock_frame,clock_diff_pcm_frame,diff,clock_pll_ratio);
@@ -125,7 +124,7 @@ void SyClock::pllData()
   clock_burst_counter=1000;
   sendRtpData();
   clock_counter++;
-  clock_pll_timer->start(500.0*clock_pll_ratio);
+  clock_pll_timer->start(clock_pll_interval);
 }
 
 

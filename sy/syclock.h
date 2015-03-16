@@ -35,7 +35,7 @@ class SyClock : public QObject
  signals:
   void sendRtp();
   void pllHasReset();
-  void pllUpdated(double ratio,int offset);
+  void pllUpdated(int interval,int offset);
   void sourceAddressChanged(const QHostAddress &addr);
 
  private slots:
@@ -56,7 +56,7 @@ class SyClock : public QObject
   uint32_t clock_diff_pcm_frame;
   int64_t clock_diff_setpoint;
   uint32_t clock_clock_count;
-  double clock_pll_ratio;
+  int clock_pll_interval;
 };
 
 
