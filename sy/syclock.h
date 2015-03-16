@@ -53,7 +53,7 @@ class SyClock : public QObject
   uint32_t clock_pcm_frame;
   uint32_t clock_diff_clock_frame;
   uint32_t clock_diff_pcm_frame;
-  uint32_t clock_diff_setpoint;
+  int64_t clock_diff_setpoint;
   uint32_t clock_clock_count;
   double clock_pll_ratio;
 };

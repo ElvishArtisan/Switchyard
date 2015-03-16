@@ -80,7 +80,7 @@ void SyClock::readyReadData()
     //seq=ntohl(*((uint32_t *)data));
     frame=ntohl(*((uint32_t *)(data+4)));
 
-    if(clock_clock_frame==0) {  // Initialize PLL
+    if(llabs((int64_t)clock_clock_frame-(int64_t)frame)>4800) {
       clock_clock_frame=frame;
       clock_pcm_frame=frame;
       clock_diff_setpoint=0;
@@ -96,10 +96,10 @@ void SyClock::readyReadData()
 	int64_t diff=(int64_t)clock_diff_clock_frame-
 	  (int64_t)clock_diff_pcm_frame;
 	if(diff>clock_diff_setpoint) {
-	  clock_pll_ratio=clock_pll_ratio*0.9999999999;
+	  clock_pll_ratio=clock_pll_ratio*0.999999999;
 	}
 	if(diff<clock_diff_setpoint) {
-	  clock_pll_ratio=clock_pll_ratio*1.0000000001;
+	  clock_pll_ratio=clock_pll_ratio*1.000000001;
 	}
 	emit pllUpdated(clock_pll_ratio,diff);
 	/*
