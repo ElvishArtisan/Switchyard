@@ -83,6 +83,7 @@ void SyClock::readyReadData()
     if(clock_clock_frame==0) {  // Initialize PLL
       clock_clock_frame=frame;
       clock_pcm_frame=frame;
+      clock_diff_setpoint=0;
     }
     else {
       if((clock_clock_count==0)||
@@ -94,10 +95,10 @@ void SyClock::readyReadData()
       if(clock_clock_count++>=50) {
 	int64_t diff=(int64_t)clock_diff_clock_frame-
 	  (int64_t)clock_diff_pcm_frame;
-	if(diff>0) {
+	if(diff>clock_diff_setpoint) {
 	  clock_pll_ratio=clock_pll_ratio*0.9999999999;
 	}
-	if(diff<0) {
+	if(diff<clock_diff_setpoint) {
 	  clock_pll_ratio=clock_pll_ratio*1.0000000001;
 	}
 	emit pllUpdated(clock_pll_ratio,diff);
@@ -105,6 +106,7 @@ void SyClock::readyReadData()
 	printf("clock: %u  pcm: %u  diff: %ld  ratio: %15.13lf\n",
 	       clock_diff_clock_frame,clock_diff_pcm_frame,diff,clock_pll_ratio);
 	*/
+	clock_diff_setpoint=diff;
 	clock_clock_count=0;
       }
     }

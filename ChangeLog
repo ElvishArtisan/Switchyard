@@ -235,3 +235,6 @@
 	'sy/syclock.h'.
 	* Added a 'SyClock::sourceAddressChanged()' signal in 'sy/syclock.cpp'
 	and 'sy/syclock.h'.
+2015-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Modified PLL algorithm to use derivative setpoint in 'sy/syclock.cpp'
+	and 'sy/syclock.h'.
