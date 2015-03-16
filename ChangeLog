@@ -244,3 +244,6 @@
 2015-03-16 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'sy/syclock.cpp' that caused the PLL to spontaneously
 	reset.
+2015-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyClock::pllHasReset()' signal in 'sy/syclock.cpp' and
+	'sy/syclock.h'.

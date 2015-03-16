@@ -84,6 +84,7 @@ void SyClock::readyReadData()
       clock_clock_frame=frame;
       clock_pcm_frame=frame;
       clock_diff_setpoint=0;
+      emit pllHasReset();
     }
     else {
       if((clock_clock_count==0)||

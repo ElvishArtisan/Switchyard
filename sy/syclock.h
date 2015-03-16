@@ -34,6 +34,7 @@ class SyClock : public QObject
 
  signals:
   void sendRtp();
+  void pllHasReset();
   void pllUpdated(double ratio,int offset);
   void sourceAddressChanged(const QHostAddress &addr);
 

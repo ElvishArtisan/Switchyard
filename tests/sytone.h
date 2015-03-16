@@ -33,6 +33,7 @@ class MainObject : public QObject
 
  private slots:
   void sourceAddressChangedData(const QHostAddress &addr);
+  void pllHasResetData();
   void pllUpdatedData(double ratio,int offset);
   void sendRtpData();
   void exitTimerData();

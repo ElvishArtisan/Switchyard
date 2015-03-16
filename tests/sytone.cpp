@@ -96,6 +96,7 @@ MainObject::MainObject(QObject *parent)
   tone_clock=new SyClock(this);
   connect(tone_clock,SIGNAL(sourceAddressChanged(const QHostAddress &)),
 	  this,SLOT(sourceAddressChangedData(const QHostAddress &)));
+  connect(tone_clock,SIGNAL(pllHasReset()),this,SLOT(pllHasResetData()));
   connect(tone_clock,SIGNAL(pllUpdated(double,int)),
 	  this,SLOT(pllUpdatedData(double,int)));
   connect(tone_clock,SIGNAL(sendRtp()),this,SLOT(sendRtpData()));
@@ -118,6 +119,12 @@ MainObject::MainObject(QObject *parent)
 void MainObject::sourceAddressChangedData(const QHostAddress &addr)
 {
   printf("Clock source is now: %s\n",(const char *)addr.toString().toAscii());
+}
+
+
+void MainObject::pllHasResetData()
+{
+  printf("PLL Reset\n");
 }
 
 
