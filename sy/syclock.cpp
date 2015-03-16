@@ -99,7 +99,7 @@ void SyClock::readyReadData()
 	  clock_pll_interval-=((diff-clock_diff_setpoint)/240);
 	}
 	if(diff<clock_diff_setpoint) {
-	  clock_pll_interval+=((diff-clock_diff_setpoint)/240);
+	  clock_pll_interval+=((clock_diff_setpoint-diff)/240);
 	}
 	emit pllUpdated(clock_pll_interval,diff);
 	/*
