@@ -62,6 +62,12 @@ SyClock::~SyClock()
 }
 
 
+QHostAddress SyClock::sourceAddress() const
+{
+  return clock_source_address;
+}
+
+
 void SyClock::readyReadData()
 {
   char data[1500];
@@ -101,6 +107,10 @@ void SyClock::readyReadData()
 	*/
 	clock_clock_count=0;
       }
+    }
+    if(addr!=clock_source_address) {
+      clock_source_address=addr;
+      emit sourceAddressChanged(clock_source_address);
     }
     //    printf("SEQ: %u  FRAME: %u\n",seq,frame);
   }

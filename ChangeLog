@@ -230,3 +230,8 @@
 	* Implemented PLL algorithm in 'sy/syclock.cpp' and 'sy/syclock.h'.
 2015-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added sytone(8) in 'tests/sytone.cpp' and 'test/sytone.h'.
+2015-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyClock::sourceAddress()' method in 'sy/syclock.cpp' and
+	'sy/syclock.h'.
+	* Added a 'SyClock::sourceAddressChanged()' signal in 'sy/syclock.cpp'
+	and 'sy/syclock.h'.

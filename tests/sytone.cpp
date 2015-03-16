@@ -90,7 +90,12 @@ MainObject::MainObject(QObject *parent)
   tone_rtp_hdr=new SyRtpHeader(SyRtpHeader::PayloadDynamicFirst);
   tone_rtp_hdr->setSsrc(rand());
 
+  //
+  // Start Clock Recovery
+  //
   tone_clock=new SyClock(this);
+  connect(tone_clock,SIGNAL(sourceAddressChanged(const QHostAddress &)),
+	  this,SLOT(sourceAddressChangedData(const QHostAddress &)));
   connect(tone_clock,SIGNAL(pllUpdated(double,int)),
 	  this,SLOT(pllUpdatedData(double,int)));
   connect(tone_clock,SIGNAL(sendRtp()),this,SLOT(sendRtpData()));
@@ -107,6 +112,12 @@ MainObject::MainObject(QObject *parent)
   QTimer *timer=new QTimer(this);
   connect(timer,SIGNAL(timeout()),this,SLOT(exitTimerData()));
   timer->start(200);
+}
+
+
+void MainObject::sourceAddressChangedData(const QHostAddress &addr)
+{
+  printf("Clock source is now: %s\n",(const char *)addr.toString().toAscii());
 }
 
 
