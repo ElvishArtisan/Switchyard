@@ -49,6 +49,12 @@ SyClock::SyClock(QObject *parent)
   clock_rtp_timer->setSingleShot(true);
   connect(clock_rtp_timer,SIGNAL(timeout()),this,SLOT(sendRtpData()));
 
+  clock_watchdog_timer=new QTimer(this);
+  clock_watchdog_timer->setSingleShot(true);
+  connect(clock_watchdog_timer,SIGNAL(timeout()),this,SLOT(watchdogData()));
+
+  clock_watchdog_state=false;
+  clock_watchdog_timer->start(SYCLOCK_WATCHDOG_INTERVAL);
   pllData();
 }
 
@@ -57,6 +63,7 @@ SyClock::~SyClock()
 {
   delete clock_rtp_timer;
   delete clock_pll_timer;
+  delete clock_watchdog_timer;
   delete clock_socket;
 }
 
@@ -116,6 +123,12 @@ void SyClock::readyReadData()
     }
     //    printf("SEQ: %u  FRAME: %u\n",seq,frame);
   }
+  if(clock_watchdog_state) {
+    clock_watchdog_state=false;
+    emit watchdogChanged(false);
+  }
+  clock_watchdog_timer->stop();
+  clock_watchdog_timer->start(SYCLOCK_WATCHDOG_INTERVAL);
 }
 
 
@@ -136,4 +149,11 @@ void SyClock::sendRtpData()
     clock_pcm_frame+=240;
     clock_rtp_timer->start(5);
   }
+}
+
+
+void SyClock::watchdogData()
+{
+  clock_watchdog_state=true;
+  emit watchdogChanged(true);
 }

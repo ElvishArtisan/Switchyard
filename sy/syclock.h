@@ -23,6 +23,7 @@
 #include <sy/symcastsocket.h>
 
 #define SYCLOCK_WINDOW_SIZE 100.0
+#define SYCLOCK_WATCHDOG_INTERVAL 5000
 
 class SyClock : public QObject
 {
@@ -37,11 +38,13 @@ class SyClock : public QObject
   void pllHasReset();
   void pllUpdated(int interval,int offset);
   void sourceAddressChanged(const QHostAddress &addr);
+  void watchdogChanged(bool state);
 
  private slots:
   void readyReadData();
   void pllData();
   void sendRtpData();
+  void watchdogData();
 
  private:
   QHostAddress clock_source_address;
@@ -57,6 +60,8 @@ class SyClock : public QObject
   int64_t clock_diff_setpoint;
   uint32_t clock_clock_count;
   int clock_pll_interval;
+  QTimer *clock_watchdog_timer;
+  bool clock_watchdog_state;
 };
 
 

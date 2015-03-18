@@ -134,7 +134,7 @@ AC_CONFIG_FILES([\
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \
-    Switchyard.pc \
+    switchyard.pc \
     switchyard.spec \
     ])
 

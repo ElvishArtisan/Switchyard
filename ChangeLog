@@ -252,3 +252,7 @@
 2015-03-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to set SCHED_FIFO scheduling priority in
 	'tests/sytone.cpp'.
+2015-03-18 Fred Gleason <fredg@paravelsystems.com>
+	* Moved 'Switchyard.pc.in' to 'switchyard.pc.in'.
+	* Added a 'SyClock::watchdogChanged()' signal in 'sy/syclock.cpp'
+	and 'sy/syclock.h'.

@@ -27,13 +27,13 @@ rpm:	dist
 	rm -rf $(HOME)/rpmbuild/BUILD/switchyard-$(VERSION)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = Switchyard.pc
+pkgconfig_DATA = switchyard.pc
 
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
              get_target.sh\
              PACKAGE_VERSION\
-             Switchyard.pc.in\
+             switchyard.pc.in\
              switchyard.pro\
              switchyard.spec.in
 

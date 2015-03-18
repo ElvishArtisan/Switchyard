@@ -35,6 +35,7 @@ class MainObject : public QObject
   void sourceAddressChangedData(const QHostAddress &addr);
   void pllHasResetData();
   void pllUpdatedData(int interval,int offset);
+  void clockWatchdogChangedData(bool state);
   void sendRtpData();
   void exitTimerData();
   void exitData();

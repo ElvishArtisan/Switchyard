@@ -65,7 +65,7 @@ ldconfig
 
 %files devel
 %{_includedir}/sy/*.h
-%{_libdir}/pkgconfig/Switchyard.pc
+%{_libdir}/pkgconfig/switchyard.pc
 %{_libdir}/libSwitchyard.a
 %{_libdir}/libSwitchyard.la
 

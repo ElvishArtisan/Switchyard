@@ -110,6 +110,8 @@ MainObject::MainObject(QObject *parent)
   connect(tone_clock,SIGNAL(pllHasReset()),this,SLOT(pllHasResetData()));
   connect(tone_clock,SIGNAL(pllUpdated(int,int)),
 	  this,SLOT(pllUpdatedData(int,int)));
+  connect(tone_clock,SIGNAL(watchdogChanged(bool)),
+	  this,SLOT(clockWatchdogChangedData(bool)));
   connect(tone_clock,SIGNAL(sendRtp()),this,SLOT(sendRtpData()));
 
   //
@@ -136,6 +138,12 @@ void MainObject::sourceAddressChangedData(const QHostAddress &addr)
 void MainObject::pllHasResetData()
 {
   printf("PLL Reset\n");
+}
+
+
+void MainObject::clockWatchdogChangedData(bool state)
+{
+  printf("Clock watchdog barked: %d\n",state);
 }
 
 
