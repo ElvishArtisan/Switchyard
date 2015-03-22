@@ -256,3 +256,5 @@
 	* Moved 'Switchyard.pc.in' to 'switchyard.pc.in'.
 	* Added a 'SyClock::watchdogChanged()' signal in 'sy/syclock.cpp'
 	and 'sy/syclock.h'.
+2015-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Changed RTP callback signature in 'sy/rtp_server.h'.

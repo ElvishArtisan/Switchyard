@@ -21,7 +21,7 @@
 
 bool global_exiting=false;
 
-void *RtpCallback(unsigned dst_slot,const char *data,int len,
+void *RtpCallback(uint32_t dst_addr,const char *data,int len,
 		  SyRouting *r,void *priv)
 {
   static int i;

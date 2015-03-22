@@ -28,7 +28,7 @@ class SyRtpServer : public QObject
 {
   Q_OBJECT;
  public:
-  SyRtpServer(void *(*callback_func)(unsigned,const char *,int,SyRouting *,void *),
+  SyRtpServer(void *(*callback_func)(uint32_t,const char *,int,SyRouting *,void *),
 	      void *callback_priv,SyRouting *routing,QObject *parent=0);
   ~SyRtpServer();
   void shutdown();

@@ -22,14 +22,14 @@
 
 bool global_exiting=false;
 
-void *RtpCallback(unsigned dst_slot,const char *data,int len,
+void *RtpCallback(uint32_t dst_addr,const char *data,int len,
 		  SyRouting *r,void *priv)
 {
   static unsigned i;
 
   for(i=0;i<r->src_slots;i++) {
     if(r->src_enabled[i]&&(r->src_addr[i]!=0)&&
-       (dst_slot==r->dst_addr[i])) {
+       (dst_addr==r->dst_addr[i])) {
       r->writeRtpData(i,data,len);
     }
   }
