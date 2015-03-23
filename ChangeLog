@@ -258,3 +258,6 @@
 	and 'sy/syclock.h'.
 2015-03-22 Fred Gleason <fredg@paravelsystems.com>
 	* Changed RTP callback signature in 'sy/rtp_server.h'.
+2015-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 1:0:1.
+	* Incremented the package version to 0.9.0.

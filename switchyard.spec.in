@@ -54,7 +54,6 @@ ldconfig
 
 %files
 %defattr(-,root,root,-)
-%{_sbindir}/syd
 %{_libdir}/libSwitchyard.so
 %{_libdir}/libSwitchyard.so.@INTERFACE_MAJOR@
 %{_libdir}/libSwitchyard.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
@@ -70,6 +69,8 @@ ldconfig
 %{_libdir}/libSwitchyard.la
 
 %changelog
+* Sun Mar 22 2015 Fred Gleason <fredg@paravelsystems.com>
+-- Removed syd(8).
 * Wed Jan 28 2015 Fred Gleason <fredg@paravelsystems.com>
 -- Added syd(8).
 * Mon Aug  4 2014 Fred Gleason <fredg@paravelsystems.com>
