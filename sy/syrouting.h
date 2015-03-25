@@ -22,6 +22,7 @@
 class SyRouting
 {
  public:
+  enum Realm {Stereo=0,Backfeed=1,Surround=2};
   SyRouting(unsigned d_slots,unsigned s_slots,
 	    unsigned gpis=0,unsigned gpos=0);
   unsigned dstSlots() const;
@@ -79,6 +80,7 @@ class SyRouting
   float dst_meter[SWITCHYARD_MAX_SLOTS][SWITCHYARD_MAX_CHANNELS];
   void writeRtpData(unsigned src_slot,const char *data,int len) const;
   static unsigned livewireNumber(const QHostAddress &addr);
+  static QHostAddress streamAddress(Realm realm,uint16_t lw_num);
   static QString dumpAddress(uint32_t addr);
   static QString socketErrorString(const QString &msg);
 

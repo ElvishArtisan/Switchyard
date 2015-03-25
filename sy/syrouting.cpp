@@ -520,6 +520,30 @@ void SyRouting::writeRtpData(unsigned src_slot,const char *data,int len) const
 }
 
 
+QHostAddress SyRouting::streamAddress(SyRouting::Realm realm,uint16_t lw_num)
+{
+  //
+  // From page 113 of 'Intro to Livewire, v2.1.1'
+  //
+  QHostAddress ret;
+  switch(realm) {
+  case SyRouting::Stereo:    // 239.192.0.0/15
+    ret.setAddress(4022337536+lw_num);
+    break;
+
+  case SyRouting::Backfeed:  // 239.193.0.0/15
+    ret.setAddress(4022403072+lw_num);
+    break;
+
+  case SyRouting::Surround:  // 239.128.0.0/15
+    ret.setAddress(4022599680+lw_num);
+    break;
+  }
+
+  return ret;
+}
+
+
 unsigned SyRouting::livewireNumber(const QHostAddress &addr)
 {
   return 0xFFFF&addr.toIPv4Address();

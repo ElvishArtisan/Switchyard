@@ -264,3 +264,6 @@
 2015-03-25 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'const char *modver' parameter to the constructor of
 	'LwCmdSwitch' in 'sy/lwcmdswitch.cpp' and 'sy/lwcmdswitch.h'.
+2015-03-25 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyRouting::streamAddress()' method in 'sy/syrouting.cpp'
+	and 'sy/syrouting.h'.
