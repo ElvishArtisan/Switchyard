@@ -12,7 +12,7 @@
 #include "sycmdswitch.h"
 
 SyCmdSwitch::SyCmdSwitch(int argc,char *argv[],const char *modname,
-			 const char *usage)
+			 const char *modver,const char *usage)
 {
   unsigned l=0;
   bool handled=false;
@@ -20,7 +20,7 @@ SyCmdSwitch::SyCmdSwitch(int argc,char *argv[],const char *modname,
   for(int i=1;i<argc;i++) {
 #ifndef WIN32
     if(!strcmp(argv[i],"--version")) {
-      printf("%s v%s\n",modname,VERSION);
+      printf("%s v%s\n",modname,modver);
       exit(0);
     }
 #endif  // WIN32

@@ -41,7 +41,7 @@ MainObject::MainObject(QObject *parent)
   // Process Command Line
   //
   SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"syplay",SYPLAY_USAGE);
+    new SyCmdSwitch(qApp->argc(),qApp->argv(),"syplay",VERSION,SYPLAY_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--input") {
       filename=cmd->value(i);

@@ -44,7 +44,7 @@ MainObject::MainObject(QObject *parent)
   // Process Command Line
   //
   SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"sytone",SYTONE_USAGE);
+    new SyCmdSwitch(qApp->argc(),qApp->argv(),"sytone",VERSION,SYTONE_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
     if(!cmd->processed(i)) {
       fprintf(stderr,"syplay: unrecognized option\n");

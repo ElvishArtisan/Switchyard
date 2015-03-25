@@ -16,7 +16,8 @@
 class SyCmdSwitch
 {
  public:
-  SyCmdSwitch(int argc,char *argv[],const char *modname,const char *usage);
+  SyCmdSwitch(int argc,char *argv[],const char *modname,const char *modver,
+	      const char *usage);
   unsigned keys() const;
   QString key(unsigned n) const;
   QString value(unsigned n) const;

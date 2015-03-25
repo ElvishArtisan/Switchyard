@@ -258,6 +258,9 @@
 	and 'sy/syclock.h'.
 2015-03-22 Fred Gleason <fredg@paravelsystems.com>
 	* Changed RTP callback signature in 'sy/rtp_server.h'.
-2015-03-22 Fred Gleason <fredg@paravelsystems.com>
+2015-03-23 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 1:0:1.
 	* Incremented the package version to 0.9.0.
+2015-03-25 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'const char *modver' parameter to the constructor of
+	'LwCmdSwitch' in 'sy/lwcmdswitch.cpp' and 'sy/lwcmdswitch.h'.

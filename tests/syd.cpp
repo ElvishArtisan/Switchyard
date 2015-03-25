@@ -56,7 +56,8 @@ MainObject::MainObject(QObject *parent)
   //
   // Process Command Line
   //
-  SyCmdSwitch *cmd=new SyCmdSwitch(qApp->argc(),qApp->argv(),"syd",SYD_USAGE);
+  SyCmdSwitch *cmd=new SyCmdSwitch(qApp->argc(),qApp->argv(),"syd",VERSION,
+				   SYD_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="-d") {
       debug=true;

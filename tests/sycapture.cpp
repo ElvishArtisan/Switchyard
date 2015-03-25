@@ -59,7 +59,8 @@ MainObject::MainObject(QObject *parent)
   // Process Command Line
   //
   SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"sycapture",SYCAPTURE_USAGE);
+    new SyCmdSwitch(qApp->argc(),qApp->argv(),"sycapture",VERSION,
+		    SYCAPTURE_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--output") {
       filename=cmd->value(i);
