@@ -28,7 +28,10 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 syclock.cpp syclock.h\
                                 sycmdswitch.cpp sycmdswitch.h\
                                 syconfig.h\
+                                sydestination.cpp sydestination.h\
                                 sygpio_server.cpp sygpio_server.h\
+                                sylwrp_client.cpp\
+                                sylwrp_client.h\
                                 sylwrp_clientconnection.cpp\
                                 sylwrp_clientconnection.h\
                                 sylwrp_server.cpp sylwrp_server.h\
@@ -38,11 +41,13 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 syringbuffer.cpp syringbuffer.h\
                                 syrouting.cpp syrouting.h\
                                 syrtp_header.cpp syrtp_header.h\
-                                syrtp_server.cpp syrtp_server.h
+                                syrtp_server.cpp syrtp_server.h\
+                                sysource.cpp sysource.h
 
 nodist_libSwitchyard_la_SOURCES = moc_syadv_server.cpp\
                                   moc_syclock.cpp\
                                   moc_sygpio_server.cpp\
+                                  moc_sylwrp_client.cpp\
                                   moc_sylwrp_server.cpp\
                                   moc_symcastsocket.cpp\
                                   moc_syrtp_server.cpp
@@ -57,7 +62,9 @@ include_HEADERS = syadv_packet.h\
                   syclock.h\
                   sycmdswitch.h\
                   syconfig.h\
+                  sydestination.h\
                   sygpio_server.h\
+                  sylwrp_client.h\
                   sylwrp_clientconnection.h\
                   sylwrp_server.h\
                   symcastsocket.h\
@@ -65,7 +72,8 @@ include_HEADERS = syadv_packet.h\
                   syringbuffer.h\
                   syrouting.h\
                   syrtp_header.h\
-                  syrtp_server.h
+                  syrtp_server.h\
+                  sysource.h
 
 libSwitchyard_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
 

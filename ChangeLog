@@ -267,3 +267,9 @@
 2015-03-25 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyRouting::streamAddress()' method in 'sy/syrouting.cpp'
 	and 'sy/syrouting.h'.
+2015-03-25 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'SyLwrpClient' class in 'sy/sylwrp_client.cpp' and
+	'sy/sylwrp_client.h'.
+	* Added an 'SySource' class in 'sy/sysource.cpp' and 'sy/sysource.h'.
+	* Added an 'SyDestination' class in 'sy/sydestination.cpp' and
+	'sy/sydestination.h'.
