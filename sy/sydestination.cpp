@@ -8,15 +8,9 @@
 
 #include "sydestination.h"
 
-SyDestination::SyDestination(const QHostAddress &s_addr,const QString &name)
-{
-  dst_stream_address=s_addr;
-  dst_name=name;
-}
-
-
 SyDestination::SyDestination()
 {
+  dst_channels=2;
 }
 
 
@@ -41,4 +35,16 @@ QString SyDestination::name() const
 void SyDestination::setName(const QString &name)
 {
   dst_name=name;
+}
+
+
+unsigned SyDestination::channels() const
+{
+  return dst_channels;
+}
+
+
+void SyDestination::setChannels(unsigned chans)
+{
+  dst_channels=chans;
 }

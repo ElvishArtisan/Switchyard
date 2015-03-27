@@ -44,12 +44,20 @@ class SyLwrpClient :public QObject
   void setSrcName(int slot,const QString &str);
   bool srcEnabled(int slot) const;
   void setSrcEnabled(int slot,bool state);
+  unsigned srcChannels(int slot) const;
+  void setSrcChannels(int slot,unsigned chans);
+  unsigned srcPacketSize(int slot);
+  void setSrcPacketSize(int slot,unsigned size);
+  bool srcShareable(int slot) const;
+  void setSrcShareable(int slot,bool state);
   int srcMeterLevel(int slot,int chan) const;
   QHostAddress dstAddress(int slot) const;
   void setDstAddress(int slot,const QHostAddress &addr);
   void setDstAddress(int slot,const QString &addr);
   QString dstName(int slot) const;
   void setDstName(int slot,const QString &str);
+  unsigned dstChannels(int slot) const;
+  void setDstChannels(int slot,unsigned chans);
   int dstMeterLevel(int slot,int chan) const;
   bool gpiState(int gpi,int line) const;
   bool gpiStateBySlot(int slot,int line) const;
@@ -57,12 +65,15 @@ class SyLwrpClient :public QObject
   bool gpoState(int gpo,int line) const;
   bool gpoStateBySlot(int slot,int line) const;
   void setGpo(int gpo,int line,bool state,bool pulse);
+  QHostAddress nicAddress() const;
+  void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QString &hostname,uint16_t port,const QString &pwd);
 
  signals:
   void connected();
   void sourceChanged(int slotnum,const SySource *src);
   void destinationChanged(int slotnum,const SyDestination *dst);
+  void nicAddressChanged(const QHostAddress &addr);
 
  private slots:
   void connectedData();
@@ -75,6 +86,7 @@ class SyLwrpClient :public QObject
   void ProcessSRC(const QStringList &cmds);
   void ProcessDST(const QStringList &cmds);
   void ProcessIP(const QStringList &cmds);
+  void ProcessIFC(const QStringList &cmds);
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
   QString lwrp_hostname;
@@ -86,6 +98,7 @@ class SyLwrpClient :public QObject
   unsigned lwrp_gpis;
   unsigned lwrp_gpos;
   bool lwrp_connected;
+  QHostAddress lwrp_nic_address;
 };
 
 

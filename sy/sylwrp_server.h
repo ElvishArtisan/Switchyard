@@ -41,6 +41,7 @@ class SyLwrpServer : public QObject
   bool ExecuteDst(int ch,QStringList &args);
   bool ExecuteGpi(int ch,QStringList &args);
   bool ExecuteGpo(int ch,QStringList &args);
+  bool ExecuteIfc(int ch,QStringList &args);
   QString SrcLine(int slot);
   QString DstLine(int slot);
   QString GpiLine(int slot);

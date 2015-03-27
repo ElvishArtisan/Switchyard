@@ -124,6 +124,48 @@ void SyLwrpClient::setSrcEnabled(int slot,bool state)
 }
 
 
+unsigned SyLwrpClient::srcChannels(int slot) const
+{
+  return lwrp_sources[slot]->channels();
+}
+
+
+void SyLwrpClient::setSrcChannels(int slot,unsigned chans)
+{
+  QString cmd=QString().sprintf("SRC %d ",slot+1)+
+    QString().sprintf("NCHN:%d",chans);
+  SendCommand(cmd);
+}
+
+
+unsigned SyLwrpClient::srcPacketSize(int slot)
+{
+  return lwrp_sources[slot]->packetSize();
+}
+
+
+void SyLwrpClient::setSrcPacketSize(int slot,unsigned size)
+{
+  QString cmd=QString().sprintf("SRC %d ",slot+1)+
+    QString().sprintf("RTPP:%d",size);
+  SendCommand(cmd);
+}
+
+
+bool SyLwrpClient::srcShareable(int slot) const
+{
+  return lwrp_sources[slot]->shareable();
+}
+
+
+void SyLwrpClient::setSrcShareable(int slot,bool state)
+{
+  QString cmd=QString().sprintf("SRC %d ",slot+1)+
+    QString().sprintf("SHAB:%d",state);
+  SendCommand(cmd);
+}
+
+
 int SyLwrpClient::srcMeterLevel(int slot,int chan) const
 {
   return 0;
@@ -160,6 +202,20 @@ void SyLwrpClient::setDstName(int slot,const QString &str)
 {
   QString cmd=QString().sprintf("DST %d ",slot+1)+
     "NAME:\""+str+"\"";
+  SendCommand(cmd);
+}
+
+
+unsigned SyLwrpClient::dstChannels(int slot) const
+{
+  return lwrp_destinations[slot]->channels();
+}
+
+
+void SyLwrpClient::setDstChannels(int slot,unsigned chans)
+{
+  QString cmd=QString().sprintf("DST %d ",slot+1)+
+    "NCHN:"+QString().sprintf("%u",chans);
   SendCommand(cmd);
 }
 
@@ -201,6 +257,19 @@ bool SyLwrpClient::gpoStateBySlot(int slot,int line) const
 
 void SyLwrpClient::setGpo(int gpo,int line,bool state,bool pulse)
 {
+}
+
+
+QHostAddress SyLwrpClient::nicAddress() const
+{
+  return lwrp_nic_address;
+}
+
+
+void SyLwrpClient::setNicAddress(const QHostAddress &addr)
+{
+  QString cmd=QString("IFC ")+addr.toString();
+  SendCommand(cmd);
 }
 
 
@@ -304,6 +373,9 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
   }
   SendCommand("SRC");
   SendCommand("DST");
+  if((lwrp_socket->peerAddress().toIPv4Address()>>24)==127) {
+    SendCommand("IFC");
+  }
   SendCommand("IP");
 }
 
@@ -360,4 +432,23 @@ void SyLwrpClient::ProcessIP(const QStringList &cmds)
 {
   lwrp_connected=true;
   emit connected();
+}
+
+
+void SyLwrpClient::ProcessIFC(const QStringList &cmds)
+{
+  QHostAddress addr;
+
+  if(cmds.size()==2) {
+    addr.setAddress(cmds[1]);
+    if(!addr.isNull()) {
+      if(lwrp_nic_address!=addr) {
+	lwrp_nic_address=addr;
+	emit nicAddressChanged(addr);
+      }
+      else {
+	lwrp_nic_address=addr;
+      }
+    }
+  }
 }

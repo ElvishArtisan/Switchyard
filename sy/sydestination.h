@@ -15,16 +15,18 @@
 class SyDestination
 {
  public:
-  SyDestination(const QHostAddress &s_addr,const QString &name);
   SyDestination();
   QHostAddress streamAddress() const;
   void setStreamAddress(const QHostAddress &addr);
   QString name() const;
   void setName(const QString &name);
+  unsigned channels() const;
+  void setChannels(unsigned chans);
 
  private:
   QHostAddress dst_stream_address;
   QString dst_name;
+  unsigned dst_channels;
 };
 
 

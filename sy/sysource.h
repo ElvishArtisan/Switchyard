@@ -23,11 +23,20 @@ class SySource
   void setName(const QString &name);
   bool enabled() const;
   void setEnabled(bool state);
+  unsigned channels() const;
+  void setChannels(unsigned chans);
+  unsigned packetSize() const;
+  void setPacketSize(unsigned size);
+  bool shareable() const;
+  void setShareable(bool state);
 
  private:
   QHostAddress src_stream_address;
   QString src_name;
   bool src_enabled;
+  unsigned src_channels;
+  unsigned src_packet_size;
+  bool src_shareable;
 };
 
 
