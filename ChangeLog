@@ -273,3 +273,6 @@
 	* Added an 'SySource' class in 'sy/sysource.cpp' and 'sy/sysource.h'.
 	* Added an 'SyDestination' class in 'sy/sydestination.cpp' and
 	'sy/sydestination.h'.
+2015-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Modifed the 'LWRP' field in the 'VER' command to return
+	SWITCHYARD_PROTOCOL_VERSION.

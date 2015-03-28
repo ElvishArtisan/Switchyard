@@ -118,9 +118,8 @@ bool SyLwrpServer::ExecuteLogin(int id,QStringList &args)
 bool SyLwrpServer::ExecuteVer(int id,QStringList &args)
 {
   SendCommand(id,QString().
-     sprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:%u NGPO:%u",
-	     SWITCHYARD_PROTOCOL_VERSION,SWITCHYARD_DEVICE_NAME,
-	     SWITCHYARD_VERSION,
+    sprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:%u NGPO:%u",
+	     SWITCHYARD_LWRP_VERSION,SWITCHYARD_DEVICE_NAME,VERSION,
 	     ctrl_routing->srcSlots(),ctrl_routing->dstSlots(),
 	     ctrl_routing->gpis(),ctrl_routing->gpos()));
   return true;
