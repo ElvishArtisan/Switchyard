@@ -273,6 +273,17 @@
 	* Added an 'SySource' class in 'sy/sysource.cpp' and 'sy/sysource.h'.
 	* Added an 'SyDestination' class in 'sy/sydestination.cpp' and
 	'sy/sydestination.h'.
+2015-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SyLwrpClient::srcChannels()',
+	'SyLwrpClient::setSrcChannels()', 'SyLwrpClient::srcPacketSize()',
+	'SyLwrpClient::setSrcPacketSize()', 'SyLwrpClient::srcShareable()',
+	'SyLwrpClient::setSrcShareable()', 'SyLwrpClient::dstChannels()' and
+	'SyLwrpClient::setChannels()' methods.
+	* Implemented an 'IFC' [Interface Address] LWRP command in
+	'sy/sylwrp_server.cpp' and 'sy/lwrp_server.h'.
 2015-03-28 Fred Gleason <fredg@paravelsystems.com>
 	* Modifed the 'LWRP' field in the 'VER' command to return
 	SWITCHYARD_PROTOCOL_VERSION.
+2015-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a fencepost error when determining maximum slot count
+	in 'sy/syrouting.cpp'.

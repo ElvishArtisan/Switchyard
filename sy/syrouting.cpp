@@ -66,7 +66,7 @@ SyRouting::SyRouting(unsigned d_slots,unsigned s_slots,unsigned gpis,unsigned gp
     sy_gpo_states.push_back(0);
   }
 
-  if((d_slots>=SWITCHYARD_MAX_SLOTS)||(s_slots>=SWITCHYARD_MAX_SLOTS)) {
+  if((d_slots>SWITCHYARD_MAX_SLOTS)||(s_slots>SWITCHYARD_MAX_SLOTS)) {
     SySyslog(LOG_ERR,"maximum slot count exceeded");
     exit(256);
   }

@@ -355,6 +355,24 @@ bool SyLwrpServer::ExecuteGpo(int ch,QStringList &args)
 }
 
 
+bool SyLwrpServer::ExecuteIfc(int ch,QStringList &args)
+{
+  if(args.size()>2) {
+    return false;
+  }
+  if(args.size()==2) {
+    QHostAddress addr(args[1]);
+    if(addr.isNull()) {
+      return false;
+    }
+    ctrl_routing->setNicAddress(addr);
+  }
+  SendCommand(ch,"IFC "+ctrl_routing->nicAddress().toString());
+
+  return true;
+}
+
+
 QString SyLwrpServer::SrcLine(int slot)
 {
   return QString().
@@ -460,6 +478,9 @@ void SyLwrpServer::ParseCommand(int id)
   }
   if(args[0]=="gpo") {
     ok=ExecuteGpo(id,args);
+  }
+  if(args[0]=="ifc") {
+    ok=ExecuteIfc(id,args);
   }
   if(!ok) {
     SendCommand(id,"ERROR 1000 bad command");
