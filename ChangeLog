@@ -287,3 +287,5 @@
 2015-03-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a fencepost error when determining maximum slot count
 	in 'sy/syrouting.cpp'.
+2015-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.10.0.
