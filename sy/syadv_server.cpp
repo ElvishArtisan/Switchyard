@@ -299,189 +299,248 @@ void SyAdvServer::SendSourceUpdate(AdvertType type)
 
   SyAdvPacket *p=new SyAdvPacket();
   p->setSequenceNumber(ctrl_advert_seqno++);
-  GenerateAdvertPacket(p,type);
-  if((n=p->writePacket(data,1500))>0) {
-    ctrl_advert_socket->writeDatagram((const char *)data,n,
-				      QHostAddress(SWITCHYARD_ADVERTS_ADDRESS),
-				      SWITCHYARD_ADVERTS_PORT);
-  }
-  else {
-    SySyslog(LOG_WARNING,"invalid LWCP packet generated");
-  }
-  delete p;
-}
-
-
-void SyAdvServer::GenerateAdvertPacket(SyAdvPacket *p,AdvertType type) const
-{
-  //
-  // FIXME: This breaks when used with more than eight active sources!
-  //
-  SyTag tag;
-  char hostname[33];
-
   switch(type) {
   case SyAdvServer::Type0:
-    tag.setTagName("NEST");
-    tag.setTagValue(SyTag::TagType0,5+adv_routing->activeSources());
-    p->addTag(tag);
-    tag.setTagName("PVER");
-    tag.setTagValue(SyTag::TagType8,2);
-    p->addTag(tag);
-    tag.setTagName("ADVT");
-    tag.setTagValue(SyTag::TagType7,3);
-    p->addTag(tag);
-    tag.setTagName("TERM");
-    tag.setTagValue(SyTag::TagType6,0x0D);  // number of bytes in following two tags
-    p->addTag(tag);
-    tag.setTagName("INDI");
-    tag.setTagValue(SyTag::TagType0,1);
-    p->addTag(tag);
-    tag.setTagName("HWID");
-    tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
-    p->addTag(tag);
-    for(unsigned i=0;i<adv_routing->srcSlots();i++) {
-      if((!adv_routing->srcAddress(i).isNull())&&
-	 (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
-	 adv_routing->srcEnabled(i)) {
-	tag.setTagName(QString().sprintf("S%03u",i+1));
-	tag.setTagValue(SyTag::TagType6,0x1C);    // number of bytes describing source
-	p->addTag(tag);
-	tag.setTagName("INDI");
-	tag.setTagValue(SyTag::TagType0,2);
-	p->addTag(tag);
-	tag.setTagName("PSID");
-	tag.setTagValue(SyTag::TagType1,adv_routing->srcAddress(i).toIPv4Address()&0xFFFF);
-	p->addTag(tag);
-	tag.setTagName("BUSY");
-	tag.setTagValue(SyTag::TagType9,0);
-	p->addTag(tag);
-      }
+    GenerateAdvertPacket0(p);
+    if((n=p->writePacket(data,1500))>0) {
+      ctrl_advert_socket->writeDatagram((const char *)data,n,
+					QHostAddress(SWITCHYARD_ADVERTS_ADDRESS),
+					SWITCHYARD_ADVERTS_PORT);
+    }
+    else {
+      SySyslog(LOG_WARNING,"invalid LWCP packet generated");
     }
     break;
 
   case SyAdvServer::Type1:
-    tag.setTagName("NEST");
-    tag.setTagValue(SyTag::TagType0,3);
-    p->addTag(tag);
-    tag.setTagName("PVER");
-    tag.setTagValue(SyTag::TagType8,2);
-    p->addTag(tag);
-    tag.setTagName("ADVT");
-    tag.setTagValue(SyTag::TagType7,2);
-    p->addTag(tag);
-    tag.setTagName("TERM");
-    tag.setTagValue(SyTag::TagType6,0x2D);  // Length!
-    p->addTag(tag);
-    tag.setTagName("INDI");
-    tag.setTagValue(SyTag::TagType0,5);
-    p->addTag(tag);
-    tag.setTagName("ADVV");
-    tag.setTagValue(SyTag::TagType1,0x0A);
-    p->addTag(tag);
-    tag.setTagName("HWID");
-    tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
-    p->addTag(tag);
-    tag.setTagName("INIP");
-    tag.setTagValue(SyTag::TagType1,adv_routing->nicAddress());
-    p->addTag(tag);
-    tag.setTagName("UDPC");
-    tag.setTagValue(SyTag::TagType8,4000);
-    p->addTag(tag);
-    tag.setTagName("NUMS");
-    tag.setTagValue(SyTag::TagType8,1);
-    p->addTag(tag);
+    GenerateAdvertPacket1(p);
+    if((n=p->writePacket(data,1500))>0) {
+      ctrl_advert_socket->writeDatagram((const char *)data,n,
+					QHostAddress(SWITCHYARD_ADVERTS_ADDRESS),
+					SWITCHYARD_ADVERTS_PORT);
+    }
+    else {
+      SySyslog(LOG_WARNING,"invalid LWCP packet generated");
+    }
     break;
 
   case SyAdvServer::Type2:
-    tag.setTagName("NEST");
-    tag.setTagValue(SyTag::TagType0,3+adv_routing->activeSources());
-    p->addTag(tag);
-    tag.setTagName("PVER");
-    tag.setTagValue(SyTag::TagType8,2);
-    p->addTag(tag);
-    tag.setTagName("ADVT");
-    tag.setTagValue(SyTag::TagType7,1);
-    p->addTag(tag);
-    tag.setTagName("TERM");
-    tag.setTagValue(SyTag::TagType6,0x54);  // number of bytes to first source tag
-    p->addTag(tag);
-    tag.setTagName("INDI");
-    tag.setTagValue(SyTag::TagType0,6);
-    p->addTag(tag);
-    tag.setTagName("ADVV");  // ???
-    tag.setTagValue(SyTag::TagType1,0x0A);
-    p->addTag(tag);
-    tag.setTagName("HWID");
-    tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
-    p->addTag(tag);
-    tag.setTagName("INIP");
-    tag.setTagValue(SyTag::TagType1,adv_routing->nicAddress());
-    p->addTag(tag);
-    tag.setTagName("UDPC");
-    tag.setTagValue(SyTag::TagType8,4000);
-    p->addTag(tag);
-    tag.setTagName("NUMS");
-    tag.setTagValue(SyTag::TagType8,adv_routing->activeSources());
-    p->addTag(tag);
-    gethostname(hostname,32);
-    tag.setTagName("ATRN");
-    tag.setTagValue(SyTag::TagString,QString(hostname).split(".")[0],32); // 32 characters, zero padded
-    p->addTag(tag);
-
-    //
-    // One for each source
-    //
-    for(unsigned i=0;i<adv_routing->srcSlots();i++) {
-      if((!adv_routing->srcAddress(i).isNull())&&
-	 (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
-	 adv_routing->srcEnabled(i)) {
-	tag.setTagName(QString().sprintf("S%03u",i+1));
-	tag.setTagValue(SyTag::TagType6,0x65);  // bytes in source record
-	p->addTag(tag);
-	tag.setTagName("INDI");
-	tag.setTagValue(SyTag::TagType0,0x0B);
-	p->addTag(tag);
-	tag.setTagName("PSID");
-	tag.setTagValue(SyTag::TagType1,adv_routing->srcNumber(i));
-	p->addTag(tag);
-	tag.setTagName("SHAB");
-	tag.setTagValue(SyTag::TagType7,0);
-	p->addTag(tag);
-	tag.setTagName("FSID");
-	tag.setTagValue(SyTag::TagType1,adv_routing->srcAddress(i));
-	p->addTag(tag);
-	tag.setTagName("FAST");
-	tag.setTagValue(SyTag::TagType7,2);
-	p->addTag(tag);
-	tag.setTagName("FASM");
-	tag.setTagValue(SyTag::TagType7,1);
-	p->addTag(tag);
-	tag.setTagName("BSID");
-	tag.setTagValue(SyTag::TagType1,0);
-	p->addTag(tag);
-	tag.setTagName("BAST");
-	tag.setTagValue(SyTag::TagType7,1);
-	p->addTag(tag);
-	tag.setTagName("BASM");
-	tag.setTagValue(SyTag::TagType7,0);
-	p->addTag(tag);
-	tag.setTagName("LPID");
-	tag.setTagValue(SyTag::TagType1,adv_routing->srcNumber(i));
-	p->addTag(tag);
-	tag.setTagName("STPL");
-	tag.setTagValue(SyTag::TagType7,0);
-	p->addTag(tag);
-	tag.setTagName("PSNM");  // 16 characters, null padded
-	tag.setTagValue(SyTag::TagString,adv_routing->srcName(i),16);
-	p->addTag(tag);
+    for(unsigned i=0;i<adv_routing->srcSlots();i+=8) {
+      if(GenerateAdvertPacket2(p,i)) {
+	if((n=p->writePacket(data,1500))>0) {
+	  ctrl_advert_socket->writeDatagram((const char *)data,n,
+					    QHostAddress(SWITCHYARD_ADVERTS_ADDRESS),
+					    SWITCHYARD_ADVERTS_PORT);
+	}
+	else {
+	  SySyslog(LOG_WARNING,"invalid LWCP packet generated");
+	}
       }
+      delete p;
+      p=new SyAdvPacket();
+      p->setSequenceNumber(ctrl_advert_seqno++);
     }
     break;
 
   case SyAdvServer::TypeLast:
     break;
   }
+  delete p;
+}
+
+
+void SyAdvServer::GenerateAdvertPacket0(SyAdvPacket *p) const
+{
+  //
+  // Length is 16 + 39 + 35*num_of_srcs (41 srcs max)
+  //
+  SyTag tag;
+
+  tag.setTagName("NEST");
+  tag.setTagValue(SyTag::TagType0,5+adv_routing->activeSources());
+  p->addTag(tag);
+  tag.setTagName("PVER");
+  tag.setTagValue(SyTag::TagType8,2);
+  p->addTag(tag);
+  tag.setTagName("ADVT");
+  tag.setTagValue(SyTag::TagType7,3);
+  p->addTag(tag);
+  tag.setTagName("TERM");
+  tag.setTagValue(SyTag::TagType6,0x0D);  // number of bytes in following two tags
+  p->addTag(tag);
+  tag.setTagName("INDI");
+  tag.setTagValue(SyTag::TagType0,1);
+  p->addTag(tag);
+  tag.setTagName("HWID");
+  tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
+  p->addTag(tag);
+  for(unsigned i=0;i<adv_routing->srcSlots();i++) {
+    if((!adv_routing->srcAddress(i).isNull())&&
+       (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
+       adv_routing->srcEnabled(i)) {
+      tag.setTagName(QString().sprintf("S%03u",i+1));
+      tag.setTagValue(SyTag::TagType6,0x1C);    // number of bytes describing source
+      p->addTag(tag);
+      tag.setTagName("INDI");
+      tag.setTagValue(SyTag::TagType0,2);
+      p->addTag(tag);
+      tag.setTagName("PSID");
+      tag.setTagValue(SyTag::TagType1,adv_routing->srcAddress(i).toIPv4Address()&0xFFFF);
+      p->addTag(tag);
+      tag.setTagName("BUSY");
+      tag.setTagValue(SyTag::TagType9,0);
+      p->addTag(tag);
+    }
+  }
+}
+
+
+void SyAdvServer::GenerateAdvertPacket1(SyAdvPacket *p) const
+{
+  //
+  // Length is 87
+  //
+  SyTag tag;
+
+  tag.setTagName("NEST");
+  tag.setTagValue(SyTag::TagType0,3);
+  p->addTag(tag);
+  tag.setTagName("PVER");
+  tag.setTagValue(SyTag::TagType8,2);
+  p->addTag(tag);
+  tag.setTagName("ADVT");
+  tag.setTagValue(SyTag::TagType7,2);
+  p->addTag(tag);
+  tag.setTagName("TERM");
+  tag.setTagValue(SyTag::TagType6,0x2D);  // Length!
+  p->addTag(tag);
+  tag.setTagName("INDI");
+  tag.setTagValue(SyTag::TagType0,5);
+  p->addTag(tag);
+  tag.setTagName("ADVV");
+  tag.setTagValue(SyTag::TagType1,0x0A);
+  p->addTag(tag);
+  tag.setTagName("HWID");
+  tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
+  p->addTag(tag);
+  tag.setTagName("INIP");
+  tag.setTagValue(SyTag::TagType1,adv_routing->nicAddress());
+  p->addTag(tag);
+  tag.setTagName("UDPC");
+  tag.setTagValue(SyTag::TagType8,4000);
+  p->addTag(tag);
+  tag.setTagName("NUMS");
+  tag.setTagValue(SyTag::TagType8,1);
+  p->addTag(tag);
+}
+
+
+bool SyAdvServer::GenerateAdvertPacket2(SyAdvPacket *p,unsigned base_slot) const
+{
+  SyTag tag;
+  char hostname[33];
+  unsigned count=0;
+
+  //
+  // Get number of active sources
+  //
+  for(unsigned i=base_slot;i<(base_slot+8);i++) {
+    if((i<adv_routing->srcSlots())&&
+       (!adv_routing->srcAddress(i).isNull())&&
+       (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
+       adv_routing->srcEnabled(i)) {
+      count++;
+    }
+  }
+
+  //
+  // Generate Packet
+  //
+  tag.setTagName("NEST");
+  tag.setTagValue(SyTag::TagType0,3+count);
+  p->addTag(tag);
+  tag.setTagName("PVER");
+  tag.setTagValue(SyTag::TagType8,2);
+  p->addTag(tag);
+  tag.setTagName("ADVT");
+  tag.setTagValue(SyTag::TagType7,1);
+  p->addTag(tag);
+  tag.setTagName("TERM");
+  tag.setTagValue(SyTag::TagType6,0x54);  // number of bytes to first source tag
+  p->addTag(tag);
+  tag.setTagName("INDI");
+  tag.setTagValue(SyTag::TagType0,6);
+  p->addTag(tag);
+  tag.setTagName("ADVV");  // Version
+  tag.setTagValue(SyTag::TagType1,0x0A);
+  p->addTag(tag);
+  tag.setTagName("HWID");
+  tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
+  p->addTag(tag);
+  tag.setTagName("INIP");
+  tag.setTagValue(SyTag::TagType1,adv_routing->nicAddress());
+  p->addTag(tag);
+  tag.setTagName("UDPC");
+  tag.setTagValue(SyTag::TagType8,4000);
+  p->addTag(tag);
+  tag.setTagName("NUMS");
+  tag.setTagValue(SyTag::TagType8,adv_routing->activeSources());
+  p->addTag(tag);
+  gethostname(hostname,32);
+  tag.setTagName("ATRN");
+  tag.setTagValue(SyTag::TagString,QString(hostname).split(".")[0],32); // 32 characters, zero padded
+  p->addTag(tag);
+  
+  //
+  // One for each source
+  //
+  for(unsigned i=base_slot;i<(base_slot+8);i++) {
+    if((i<adv_routing->srcSlots())&&
+       (!adv_routing->srcAddress(i).isNull())&&
+       (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
+       adv_routing->srcEnabled(i)) {
+      tag.setTagName(QString().sprintf("S%03u",i+1));
+      tag.setTagValue(SyTag::TagType6,0x65);  // bytes in source record
+      p->addTag(tag);
+      tag.setTagName("INDI");
+      tag.setTagValue(SyTag::TagType0,0x0B);
+      p->addTag(tag);
+      tag.setTagName("PSID");
+      tag.setTagValue(SyTag::TagType1,adv_routing->srcNumber(i));
+      p->addTag(tag);
+      tag.setTagName("SHAB");
+      tag.setTagValue(SyTag::TagType7,0);
+      p->addTag(tag);
+      tag.setTagName("FSID");
+      tag.setTagValue(SyTag::TagType1,adv_routing->srcAddress(i));
+      p->addTag(tag);
+      tag.setTagName("FAST");
+      tag.setTagValue(SyTag::TagType7,2);
+      p->addTag(tag);
+      tag.setTagName("FASM");
+      tag.setTagValue(SyTag::TagType7,1);
+      p->addTag(tag);
+      tag.setTagName("BSID");
+      tag.setTagValue(SyTag::TagType1,0);
+      p->addTag(tag);
+      tag.setTagName("BAST");
+      tag.setTagValue(SyTag::TagType7,1);
+      p->addTag(tag);
+      tag.setTagName("BASM");
+      tag.setTagValue(SyTag::TagType7,0);
+      p->addTag(tag);
+      tag.setTagName("LPID");
+      tag.setTagValue(SyTag::TagType1,adv_routing->srcNumber(i));
+      p->addTag(tag);
+      tag.setTagName("STPL");
+      tag.setTagValue(SyTag::TagType7,0);
+      p->addTag(tag);
+      tag.setTagName("PSNM");  // 16 characters, null padded
+      tag.setTagValue(SyTag::TagString,adv_routing->srcName(i),16);
+      p->addTag(tag);
+    }
+  }
+  return count>0;
 }
 
 

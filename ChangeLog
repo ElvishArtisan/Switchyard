@@ -291,3 +291,7 @@
 	* Incremented the package version to 0.10.0.
 2015-04-04 Fred Gleason <fredg@paravelsystems.com>
 	* Cleaned up warning in 'tests/sytone.cpp'.
+2015-04-04 Fred Gleason <fredg@paravelsystems.com>
+	* Increased 'SWITCHYARD_MAX_SLOTS' to 32 in 'sy/syconfig.h'.
+	* Refactored code in 'sy/syadv_server.cpp' and 'sy/syadv_server.h'
+	to allow more than eight streams to be advertised.

@@ -42,7 +42,9 @@ class SyAdvServer : public QObject
 
  private:
   void SendSourceUpdate(AdvertType type);
-  void GenerateAdvertPacket(SyAdvPacket *p,AdvertType type) const;
+  void GenerateAdvertPacket0(SyAdvPacket *p) const;
+  void GenerateAdvertPacket1(SyAdvPacket *p) const;
+  bool GenerateAdvertPacket2(SyAdvPacket *p,unsigned base_slot) const;
   int GetAdvertInterval() const;
   SyAdvSource *GetSource(const QHostAddress &node_addr,unsigned slot);
   int TagIsSource(const SyTag *tag) const;
