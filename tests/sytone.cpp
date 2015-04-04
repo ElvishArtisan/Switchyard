@@ -163,13 +163,11 @@ void MainObject::pllUpdatedData(int interval,int offset)
 
 void MainObject::sendRtpData()
 {
-  int offset;
-
   //
   // Write RTP Header
   //
   (*tone_rtp_hdr)++;
-  offset=4*tone_rtp_hdr->writeBlock((uint32_t *)tone_buffer,1500/4);
+  tone_rtp_hdr->writeBlock((uint32_t *)tone_buffer,1500/4);
 
   tone_routing->writeRtpData(0,tone_buffer,1452);
 }

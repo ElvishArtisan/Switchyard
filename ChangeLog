@@ -289,3 +289,5 @@
 	in 'sy/syrouting.cpp'.
 2015-03-29 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.10.0.
+2015-04-04 Fred Gleason <fredg@paravelsystems.com>
+	* Cleaned up warning in 'tests/sytone.cpp'.
