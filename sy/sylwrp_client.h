@@ -27,7 +27,7 @@ class SyLwrpClient :public QObject
 {
   Q_OBJECT;
  public:
-  SyLwrpClient(QObject *parent=0);
+  SyLwrpClient(unsigned id,QObject *parent=0);
   ~SyLwrpClient();
   QString deviceName() const;
   unsigned dstSlots() const;
@@ -70,10 +70,10 @@ class SyLwrpClient :public QObject
   void connectToHost(const QString &hostname,uint16_t port,const QString &pwd);
 
  signals:
-  void connected();
-  void sourceChanged(int slotnum,const SySource *src);
-  void destinationChanged(int slotnum,const SyDestination *dst);
-  void nicAddressChanged(const QHostAddress &addr);
+  void connected(unsigned id);
+  void sourceChanged(unsigned id,int slotnum,const SySource *src);
+  void destinationChanged(unsigned id,int slotnum,const SyDestination *dst);
+  void nicAddressChanged(unsigned id,const QHostAddress &nicaddr);
 
  private slots:
   void connectedData();
@@ -99,6 +99,7 @@ class SyLwrpClient :public QObject
   unsigned lwrp_gpos;
   bool lwrp_connected;
   QHostAddress lwrp_nic_address;
+  unsigned lwrp_id;
 };
 
 

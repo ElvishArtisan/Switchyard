@@ -11,10 +11,11 @@
 #include "syastring.h"
 #include "sylwrp_client.h"
 
-SyLwrpClient::SyLwrpClient(QObject *parent)
+SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   : QObject(parent)
 {
   lwrp_connected=false;
+  lwrp_id=id;
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
@@ -400,7 +401,7 @@ void SyLwrpClient::ProcessSRC(const QStringList &cmds)
       }
     }
     if(lwrp_connected) {
-      emit sourceChanged(slotnum,src);
+      emit sourceChanged(lwrp_id,slotnum,src);
     }
   }
 }
@@ -422,7 +423,7 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
       }
     }
     if(lwrp_connected) {
-      emit destinationChanged(slotnum,dst);
+      emit destinationChanged(lwrp_id,slotnum,dst);
     }
   }
 }
@@ -431,7 +432,7 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
 void SyLwrpClient::ProcessIP(const QStringList &cmds)
 {
   lwrp_connected=true;
-  emit connected();
+  emit connected(lwrp_id);
 }
 
 
@@ -444,7 +445,7 @@ void SyLwrpClient::ProcessIFC(const QStringList &cmds)
     if(!addr.isNull()) {
       if(lwrp_nic_address!=addr) {
 	lwrp_nic_address=addr;
-	emit nicAddressChanged(addr);
+	emit nicAddressChanged(lwrp_id,addr);
       }
       else {
 	lwrp_nic_address=addr;

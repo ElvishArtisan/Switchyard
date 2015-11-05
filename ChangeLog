@@ -298,3 +298,7 @@
 2015-04-05 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 2:0:1.
 	* Incremented the package version to 0.10.1.
+2015-11-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'unsigned id' parameter to the constructor and signals
+	of the 'SyLwrpClient' class in 'sy/sylwrp_client.cpp' and
+	'sy/sylwrp_client.h'.
