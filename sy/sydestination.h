@@ -17,6 +17,7 @@ class SyDestination
  public:
   SyDestination();
   QHostAddress streamAddress() const;
+  void setStreamAddress(const QString &addr);
   void setStreamAddress(const QHostAddress &addr);
   QString name() const;
   void setName(const QString &name);

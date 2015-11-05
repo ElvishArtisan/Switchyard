@@ -302,3 +302,6 @@
 	* Added an 'unsigned id' parameter to the constructor and signals
 	of the 'SyLwrpClient' class in 'sy/sylwrp_client.cpp' and
 	'sy/sylwrp_client.h'.
+2015-11-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyDestination::setStreamAddress(const QString &) method
+	in 'sy/sydestination.cpp' and 'sy/sydestination.h'.

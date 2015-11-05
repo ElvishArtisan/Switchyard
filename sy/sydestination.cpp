@@ -6,6 +6,8 @@
 //     All Rights Reserved.
 //
 
+#include <QtCore/QStringList>
+
 #include "sydestination.h"
 
 SyDestination::SyDestination()
@@ -17,6 +19,13 @@ SyDestination::SyDestination()
 QHostAddress SyDestination::streamAddress() const
 {
   return dst_stream_address;
+}
+
+
+void SyDestination::setStreamAddress(const QString &addr)
+{
+  QStringList f0=addr.split(" ");
+  setStreamAddress(QHostAddress(f0[0]));
 }
 
 

@@ -302,6 +302,7 @@ void SyLwrpClient::readyReadData()
   char data[1500];
 
   while((n=lwrp_socket->read(data,1500))>0) {
+    data[n]=0;
     for(int i=0;i<n;i++) {
       switch(0xFF&data[i]) {
       case 0x0A:
@@ -419,7 +420,7 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
 	dst->setName(f1[1].replace("\"",""));
       }
       if(f1[0]=="ADDR") {
-	dst->setStreamAddress(QHostAddress(f1[1].replace("\"","")));
+	dst->setStreamAddress(f1[1].replace("\"",""));
       }
     }
     if(lwrp_connected) {
