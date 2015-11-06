@@ -277,6 +277,7 @@ void SyLwrpClient::setNicAddress(const QHostAddress &addr)
 void SyLwrpClient::connectToHost(const QString &hostname,uint16_t port,
 				 const QString &pwd)
 {
+  lwrp_connection_hostname=hostname;
   lwrp_hostname=hostname;
   lwrp_port=port;
   lwrp_password=pwd;
@@ -432,6 +433,9 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
 
 void SyLwrpClient::ProcessIP(const QStringList &cmds)
 {
+  if(cmds.size()==9) {
+    lwrp_hostname=cmds[8];
+  }
   lwrp_connected=true;
   emit connected(lwrp_id);
 }

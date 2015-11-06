@@ -89,6 +89,7 @@ class SyLwrpClient :public QObject
   void ProcessIFC(const QStringList &cmds);
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
+  QString lwrp_connection_hostname;
   QString lwrp_hostname;
   uint16_t lwrp_port;
   QString lwrp_password;

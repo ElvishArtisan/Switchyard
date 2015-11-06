@@ -305,3 +305,7 @@
 2015-11-05 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyDestination::setStreamAddress(const QString &) method
 	in 'sy/sydestination.cpp' and 'sy/sydestination.h'.
+2015-11-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/sylwrp_client.cpp' and 'sy/syclient_lwrp.h'
+	where the 'SyLwrpClient::hostName()' method would return the connected
+	IP address rather than the configured host name of the node.
