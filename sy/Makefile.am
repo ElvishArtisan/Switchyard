@@ -36,6 +36,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 sylwrp_clientconnection.h\
                                 sylwrp_server.cpp sylwrp_server.h\
                                 symcastsocket.cpp symcastsocket.h\
+                                synode.cpp synode.h\
                                 syprofile.cpp syprofile.h\
                                 sysyslog.cpp sysyslog.h\
                                 syringbuffer.cpp syringbuffer.h\
@@ -68,6 +69,7 @@ include_HEADERS = syadv_packet.h\
                   sylwrp_clientconnection.h\
                   sylwrp_server.h\
                   symcastsocket.h\
+                  synode.h\
                   syprofile.h\
                   syringbuffer.h\
                   syrouting.h\

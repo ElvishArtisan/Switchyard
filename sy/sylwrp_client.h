@@ -20,6 +20,7 @@
 
 #include <sy/syconfig.h>
 #include <sy/sydestination.h>
+#include <sy/synode.h>
 #include <sy/sysource.h>
 #include <sy/syrouting.h>
 
@@ -35,6 +36,7 @@ class SyLwrpClient :public QObject
   unsigned gpis() const;
   unsigned gpos() const;
   QString hostName() const;
+  QHostAddress hostAddress() const;
   uint16_t port() const;
   int srcNumber(int slot) const;
   QHostAddress srcAddress(int slot) const;
@@ -67,12 +69,14 @@ class SyLwrpClient :public QObject
   void setGpo(int gpo,int line,bool state,bool pulse);
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
-  void connectToHost(const QString &hostname,uint16_t port,const QString &pwd);
+  void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd);
 
  signals:
   void connected(unsigned id);
-  void sourceChanged(unsigned id,int slotnum,const SySource *src);
-  void destinationChanged(unsigned id,int slotnum,const SyDestination *dst);
+  void sourceChanged(unsigned id,int slotnum,const SyNode *node,
+		     const SySource *src);
+  void destinationChanged(unsigned id,int slotnum,const SyNode *node,
+			  const SyDestination *dst);
   void nicAddressChanged(unsigned id,const QHostAddress &nicaddr);
 
  private slots:
@@ -89,7 +93,8 @@ class SyLwrpClient :public QObject
   void ProcessIFC(const QStringList &cmds);
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
-  QString lwrp_connection_hostname;
+  SyNode *lwrp_node;
+  QHostAddress lwrp_host_address;
   QString lwrp_hostname;
   uint16_t lwrp_port;
   QString lwrp_password;

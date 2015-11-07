@@ -20,11 +20,14 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+
+  lwrp_node=new SyNode();
 }
 
 
 SyLwrpClient::~SyLwrpClient()
 {
+  delete lwrp_node;
   delete lwrp_socket;
 }
 
@@ -62,6 +65,12 @@ unsigned SyLwrpClient::gpos() const
 QString SyLwrpClient::hostName() const
 {
   return lwrp_hostname;
+}
+
+
+QHostAddress SyLwrpClient::hostAddress() const
+{
+  return lwrp_host_address;
 }
 
 
@@ -274,14 +283,13 @@ void SyLwrpClient::setNicAddress(const QHostAddress &addr)
 }
 
 
-void SyLwrpClient::connectToHost(const QString &hostname,uint16_t port,
+void SyLwrpClient::connectToHost(const QHostAddress &addr,uint16_t port,
 				 const QString &pwd)
 {
-  lwrp_connection_hostname=hostname;
-  lwrp_hostname=hostname;
+  lwrp_host_address=addr;
   lwrp_port=port;
   lwrp_password=pwd;
-  lwrp_socket->connectToHost(hostname,port);
+  lwrp_socket->connectToHost(addr.toString(),port);
 }
 
 
@@ -354,24 +362,41 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
     QStringList f1=cmds[i].split(":");
     if(f1[0]=="DEVN") {
       lwrp_device_name=f1[1].replace("\"","");
+      lwrp_node->setDeviceName(f1[1].replace("\"",""));
     }
     if(f1[0]=="NSRC") {
       QStringList f2=f1[1].split("/");
       for(int i=0;i<f2[0].toInt();i++) {
 	lwrp_sources.push_back(new SySource());
       }
+      lwrp_node->setSrcSlotQuantity(f2[0].toInt());
     }
     if(f1[0]=="NDST") {
       QStringList f2=f1[1].split("/");
       for(int i=0;i<f2[0].toInt();i++) {
 	lwrp_destinations.push_back(new SyDestination());
       }
+      lwrp_node->setDstSlotQuantity(f2[0].toInt());
     }
     if(f1[0]=="NGPI") {
       lwrp_gpis=f1[1].toUInt();
+      lwrp_node->setGpiSlotQuantity(f1[1].toUInt());
     }
     if(f1[0]=="NGPO") {
       lwrp_gpos=f1[1].toUInt();
+      lwrp_node->setGpoSlotQuantity(f1[1].toUInt());
+    }
+    if(f1[0]=="LWRP") {
+      lwrp_node->setLwrpVersion(f1[1].replace("\"",""));
+    }
+    if(f1[0]=="PRODUCT") {
+      lwrp_node->setProduct(f1[1].replace("\"",""));
+    }
+    if(f1[0]=="MODEL") {
+      lwrp_node->setModel(f1[1].replace("\"",""));
+    }
+    if(f1[0]=="SVER") {
+      lwrp_node->setSoftwareVersion(f1[1].replace("\"",""));
     }
   }
   SendCommand("SRC");
@@ -403,7 +428,7 @@ void SyLwrpClient::ProcessSRC(const QStringList &cmds)
       }
     }
     if(lwrp_connected) {
-      emit sourceChanged(lwrp_id,slotnum,src);
+      emit sourceChanged(lwrp_id,slotnum,lwrp_node,src);
     }
   }
 }
@@ -425,7 +450,7 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
       }
     }
     if(lwrp_connected) {
-      emit destinationChanged(lwrp_id,slotnum,dst);
+      emit destinationChanged(lwrp_id,slotnum,lwrp_node,dst);
     }
   }
 }
