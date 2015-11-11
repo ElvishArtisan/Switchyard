@@ -6,7 +6,7 @@
 //     All Rights Reserved.
 //
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 #include "syastring.h"
 #include "sylwrp_client.h"
@@ -52,13 +52,13 @@ unsigned SyLwrpClient::srcSlots() const
 
 unsigned SyLwrpClient::gpis() const
 {
-  return lwrp_gpis;
+  return lwrp_gpis.size();
 }
 
 
 unsigned SyLwrpClient::gpos() const
 {
-  return lwrp_gpos;
+  return lwrp_gpos.size();
 }
 
 
@@ -236,37 +236,56 @@ int SyLwrpClient::dstMeterLevel(int slot,int chan) const
 }
 
 
-bool SyLwrpClient::gpiState(int gpi,int line) const
+SyGpioBundle *SyLwrpClient::gpiBundle(int slot) const
 {
-  return false;
+  return lwrp_gpis[slot];
 }
 
 
-bool SyLwrpClient::gpiStateBySlot(int slot,int line) const
+void SyLwrpClient::setGpiCode(int slot,const QString &code)
 {
-  return false;
+  if(lwrp_gpis[slot]->code()!=code) {
+    SendCommand(QString().sprintf("GPI %d ",slot+1)+code);
+  }
 }
 
 
-void SyLwrpClient::setGpi(int gpi,int line,bool state,bool pulse)
+SyGpo *SyLwrpClient::gpo(int slot) const
 {
+  return lwrp_gpos[slot];
 }
 
 
-bool SyLwrpClient::gpoState(int gpo,int line) const
+void SyLwrpClient::setGpoCode(int slot,const QString &code)
 {
-  return false;
+  if(lwrp_gpis[slot]->code()!=code) {
+    SendCommand(QString().sprintf("GPO %d ",slot+1)+code);
+  }
 }
 
 
-bool SyLwrpClient::gpoStateBySlot(int slot,int line) const
+void SyLwrpClient::setGpoName(int slot,const QString &str)
 {
-  return false;
+  SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" NAME:\""+str+"\"");
 }
 
 
-void SyLwrpClient::setGpo(int gpo,int line,bool state,bool pulse)
+void SyLwrpClient::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
+				       int s_slot)
 {
+  SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" SRCA:\""+
+	      s_addr.toString()+QString().sprintf("\":%d",s_slot+1));
+}
+
+
+void SyLwrpClient::setGpoFollow(int slot,bool state)
+{
+  if(state) {
+    SendCommand(QString().sprintf("CFG GPO %d FUNC:FOLLOW",slot+1));
+  }
+  else {
+    SendCommand(QString().sprintf("CFG GPO %d FUNC:",slot+1));
+  }
 }
 
 
@@ -350,6 +369,15 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
   if(f0[0]=="DST") {
     ProcessDST(f0);
   }
+  if(f0[0]=="GPI") {
+    ProcessGPI(f0);
+  }
+  if(f0[0]=="GPO") {
+    ProcessGPO(f0);
+  }
+  if(f0[0]=="CFG") {
+    ProcessCFG(f0);
+  }
   if(f0[0]=="IP") {
     ProcessIP(f0);
   }
@@ -379,11 +407,15 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
       lwrp_node->setDstSlotQuantity(f2[0].toInt());
     }
     if(f1[0]=="NGPI") {
-      lwrp_gpis=f1[1].toUInt();
+      for(int i=0;i<f1[1].toInt();i++) {
+	lwrp_gpis.push_back(new SyGpioBundle());
+      }
       lwrp_node->setGpiSlotQuantity(f1[1].toUInt());
     }
     if(f1[0]=="NGPO") {
-      lwrp_gpos=f1[1].toUInt();
+      for(int i=0;i<f1[1].toInt();i++) {
+	lwrp_gpos.push_back(new SyGpo());
+      }
       lwrp_node->setGpoSlotQuantity(f1[1].toUInt());
     }
     if(f1[0]=="LWRP") {
@@ -399,8 +431,19 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
       lwrp_node->setSoftwareVersion(f1[1].replace("\"",""));
     }
   }
-  SendCommand("SRC");
-  SendCommand("DST");
+  if(lwrp_node->srcSlotQuantity()>0) {
+    SendCommand("SRC");
+  }
+  if(lwrp_node->dstSlotQuantity()>0) {
+    SendCommand("DST");
+  }
+  if(lwrp_node->gpiSlotQuantity()>0) {
+    SendCommand("ADD GPI");
+  }
+  if(lwrp_node->gpoSlotQuantity()>0) {
+    SendCommand("ADD GPO");
+    SendCommand("CFG GPO");
+  }
   if((lwrp_socket->peerAddress().toIPv4Address()>>24)==127) {
     SendCommand("IFC");
   }
@@ -417,6 +460,9 @@ void SyLwrpClient::ProcessSRC(const QStringList &cmds)
     SySource *src=lwrp_sources[slotnum];
     for(int i=2;i<cmds.size();i++) {
       QStringList f1=SyAString(cmds[i]).split(":","\"");
+      if(f1[0]=="NCHN") {
+	src->setChannels(f1[1].toUInt());
+      }
       if(f1[0]=="PSNM") {
 	src->setName(f1[1].replace("\"",""));
       }
@@ -426,9 +472,12 @@ void SyLwrpClient::ProcessSRC(const QStringList &cmds)
       if(f1[0]=="RTPA") {
 	src->setStreamAddress(QHostAddress(f1[1].replace("\"","")));
       }
+      if(f1[0]=="RTPP") {
+	src->setPacketSize(f1[1].toUInt());
+      }
     }
     if(lwrp_connected) {
-      emit sourceChanged(lwrp_id,slotnum,lwrp_node,src);
+      emit sourceChanged(lwrp_id,slotnum,*lwrp_node,*src);
     }
   }
 }
@@ -445,12 +494,91 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
       if(f1[0]=="NAME") {
 	dst->setName(f1[1].replace("\"",""));
       }
+      if(f1[0]=="NCHN") {
+	dst->setChannels(f1[1].toUInt());
+      }
       if(f1[0]=="ADDR") {
 	dst->setStreamAddress(f1[1].replace("\"",""));
       }
     }
     if(lwrp_connected) {
-      emit destinationChanged(lwrp_id,slotnum,lwrp_node,dst);
+      emit destinationChanged(lwrp_id,slotnum,*lwrp_node,*dst);
+    }
+  }
+}
+
+
+void SyLwrpClient::ProcessGPI(const QStringList &cmds)
+{
+  bool ok=false;
+
+  if(cmds.size()==3) {
+    unsigned slotnum=cmds[1].toUInt(&ok)-1;
+    if(ok&&(slotnum<gpis())) {
+      if(lwrp_gpis[slotnum]->code()!=cmds[2]) {
+	lwrp_gpis[slotnum]->setCode(cmds[2]);
+	if(lwrp_connected) {
+	  emit gpiChanged(lwrp_id,slotnum,*lwrp_node,*(lwrp_gpis[slotnum]));
+	}
+      }
+    }
+  }
+}
+
+
+void SyLwrpClient::ProcessGPO(const QStringList &cmds)
+{
+  bool ok=false;
+
+  if(cmds.size()==3) {
+    unsigned slotnum=cmds[1].toUInt(&ok)-1;
+    if(ok&&(slotnum<gpos())) {
+      if(lwrp_gpos[slotnum]->bundle()->code()!=cmds[2]) {
+	lwrp_gpos[slotnum]->bundle()->setCode(cmds[2]);
+	if(lwrp_connected) {
+	  emit gpoChanged(lwrp_id,slotnum,*lwrp_node,*(lwrp_gpos[slotnum]));
+	}
+      }
+    }
+  }
+}
+
+
+void SyLwrpClient::ProcessCFG(const QStringList &cmds)
+{
+  if(cmds.size()>=4) {
+    bool ok=false;
+    unsigned slotnum=cmds[2].toUInt(&ok)-1;
+    SyGpo *gpo=lwrp_gpos[slotnum];
+    for(int i=3;i<cmds.size();i++) {
+      QStringList f0=SyAString(cmds[i]).split(":","\"");
+      if(f0.size()==2) {
+	if(f0[0]=="NAME") {
+	  gpo->setName(f0[1]);
+	}
+	if(f0[0]=="SRCA") {
+	  unsigned srcnum=f0[1].toUInt(&ok);
+	  if(ok) {  // Source number
+	    // FIXME: This breaks with surround sound!
+	    gpo->setSourceAddress(SyRouting::streamAddress(SyRouting::Stereo,
+							   srcnum),-1);
+	  }
+	  else {  // IP address
+	    QStringList f1=f0[1].replace("\"","").split("/");
+	    int s_slot=-1;
+	    if(f1.size()==2) {
+	      s_slot=f1[1].toInt()-1;
+	    }
+	    gpo->setSourceAddress(QHostAddress(f1[0]),s_slot);
+	  }
+	}
+	if(f0[0]=="FUNC") {
+	  gpo->setFollow(f0[1].toLower()=="follow");
+	}
+      }
+    }
+    if(lwrp_connected) {
+      emit gpoChanged(lwrp_id,slotnum,*lwrp_node,*gpo);
     }
   }
 }

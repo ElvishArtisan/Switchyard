@@ -12,8 +12,8 @@
 #ifndef SYLWRP_CLIENTCONNECTION_H
 #define SYLWRP_CLIENTCONNECTION_H
 
-#include <QtCore/QtCore>
-#include <QtNetwork/QtNetwork>
+#include <QString>
+#include <QTcpSocket>
 
 class SyLwrpClientConnection
 {

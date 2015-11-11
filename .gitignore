@@ -27,5 +27,6 @@ moc_*
 rc.syd
 tests/sycapture
 tests/syd
+tests/synodetest
 tests/syplay
 tests/sytone

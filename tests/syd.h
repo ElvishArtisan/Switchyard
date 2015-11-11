@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include <sy/syadv_server.h>
 #include <sy/syconfig.h>

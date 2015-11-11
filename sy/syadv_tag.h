@@ -10,9 +10,9 @@
 #ifndef SYADV_TAG_H
 #define SYADV_TAG_H
 
-#include <QtCore/QString>
-#include <QtCore/QVariant>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QString>
+#include <QVariant>
 
 class SyTag
 {

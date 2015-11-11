@@ -19,8 +19,8 @@
 #endif  // WIN32
 #include <pthread.h>
 
-#include <QtCore/QObject>
-#include <QtCore/QTimer>
+#include <QObject>
+#include <QTimer>
 
 #include <sy/syrouting.h>
 

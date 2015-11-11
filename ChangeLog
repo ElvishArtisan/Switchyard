@@ -316,3 +316,11 @@
 	* Added a 'const SyNode *' parameter to the
 	'LwrpClient::sourceChanged()' and 'LwrpClient::destinationChanged()'
 	signals in 'sy/synode.cpp' and 'sy/synode.h'.
+2015-11-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SyLwrpClient::gpiChanged()' and 'SwLwryClient::gpoChanged()'
+	signals in 'sy/sylwrp_client.cpp' and 'sy/sylwrp_client.h'.
+	* Added an 'SyGpioBundle' class in 'sy/sygpiobundle.cpp' and
+	'sy/sygpoiobundle.h'.
+	* Added an 'SyGpo' class in 'sy/sygpo.cpp' and 'sy/sygpo.h'.
+	* Added a test harness for 'SyLwrpClient in 'tests/synodetest.cpp'
+	and 'tests/synodetest.h'.

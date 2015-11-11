@@ -6,9 +6,9 @@
 //     All Rights Reserved.
 //
 
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
-#include <QtCore/QStringList>
+#include <QFile>
+#include <QStringList>
+#include <QTextStream>
 
 #include "syprofile.h"
 

@@ -27,9 +27,9 @@
 #include <ifaddrs.h>
 #endif  // OSX
 
-#include <QtCore/QDir>
-#include <QtCore/QSettings>
-#include <QtCore/QStringList>
+#include <QDir>
+#include <QSettings>
+#include <QStringList>
 
 #include "sysyslog.h"
 #include "syprofile.h"

@@ -9,8 +9,8 @@
 #ifndef SYNODE_H
 #define SYNODE_H
 
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QString>
 
 class SyNode
 {

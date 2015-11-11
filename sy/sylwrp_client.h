@@ -13,13 +13,15 @@
 
 #include <vector>
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QTcpSocket>
+#include <QHostAddress>
+#include <QObject>
+#include <QString>
+#include <QTcpSocket>
 
 #include <sy/syconfig.h>
 #include <sy/sydestination.h>
+#include <sy/sygpiobundle.h>
+#include <sy/sygpo.h>
 #include <sy/synode.h>
 #include <sy/sysource.h>
 #include <sy/syrouting.h>
@@ -61,22 +63,26 @@ class SyLwrpClient :public QObject
   unsigned dstChannels(int slot) const;
   void setDstChannels(int slot,unsigned chans);
   int dstMeterLevel(int slot,int chan) const;
-  bool gpiState(int gpi,int line) const;
-  bool gpiStateBySlot(int slot,int line) const;
-  void setGpi(int gpi,int line,bool state,bool pulse);
-  bool gpoState(int gpo,int line) const;
-  bool gpoStateBySlot(int slot,int line) const;
-  void setGpo(int gpo,int line,bool state,bool pulse);
+  SyGpioBundle *gpiBundle(int slot) const;
+  void setGpiCode(int slot,const QString &code);
+  SyGpo *gpo(int slot) const;
+  void setGpoCode(int slot,const QString &code);
+  void setGpoName(int slot,const QString &str);
+  void setGpoSourceAddress(int slot,const QHostAddress &s_addr,int s_slot);
+  void setGpoFollow(int slot,bool state);
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd);
 
  signals:
   void connected(unsigned id);
-  void sourceChanged(unsigned id,int slotnum,const SyNode *node,
-		     const SySource *src);
-  void destinationChanged(unsigned id,int slotnum,const SyNode *node,
-			  const SyDestination *dst);
+  void sourceChanged(unsigned id,int slotnum,const SyNode &node,
+		     const SySource &src);
+  void destinationChanged(unsigned id,int slotnum,const SyNode &node,
+			  const SyDestination &dst);
+  void gpiChanged(unsigned id,int slotnum,const SyNode &node,
+		  const SyGpioBundle &bundle);
+  void gpoChanged(unsigned id,int slotnum,const SyNode &node,const SyGpo &gpo);
   void nicAddressChanged(unsigned id,const QHostAddress &nicaddr);
 
  private slots:
@@ -89,10 +95,15 @@ class SyLwrpClient :public QObject
   void ProcessVER(const QStringList &cmds);
   void ProcessSRC(const QStringList &cmds);
   void ProcessDST(const QStringList &cmds);
+  void ProcessGPI(const QStringList &cmds);
+  void ProcessGPO(const QStringList &cmds);
+  void ProcessCFG(const QStringList &cmds);
   void ProcessIP(const QStringList &cmds);
   void ProcessIFC(const QStringList &cmds);
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
+  std::vector<SyGpioBundle *> lwrp_gpis;
+  std::vector<SyGpo *> lwrp_gpos;
   SyNode *lwrp_node;
   QHostAddress lwrp_host_address;
   QString lwrp_hostname;
@@ -101,8 +112,6 @@ class SyLwrpClient :public QObject
   QTcpSocket *lwrp_socket;
   QString lwrp_buffer;
   QString lwrp_device_name;
-  unsigned lwrp_gpis;
-  unsigned lwrp_gpos;
   bool lwrp_connected;
   QHostAddress lwrp_nic_address;
   unsigned lwrp_id;

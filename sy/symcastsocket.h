@@ -12,10 +12,10 @@
 
 #include <stdint.h>
 
-#include <QtCore/QByteArray>
-#include <QtCore/QObject>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QUdpSocket>
+#include <QByteArray>
+#include <QHostAddress>
+#include <QObject>
+#include <QUdpSocket>
 
 class SyMcastSocket : public QObject
 {

@@ -11,8 +11,8 @@
 
 #include <vector>
 
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QString>
 
 #include "syconfig.h"
 

@@ -8,8 +8,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir)
-LIBS = -L$(top_srcdir)/sy
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) @QT4_CFLAGS@
+LIBS = -L$(top_srcdir)/sy @QT4_LIBS@
 MOC = @MOC@
 
 #install-exec-local:	
@@ -27,6 +27,7 @@ moc_%.cpp:	%.h
 
 noinst_PROGRAMS = sycapture\
                   syd\
+                  synodetest\
                   syplay\
                   sytone
 
@@ -39,6 +40,11 @@ dist_sycapture_SOURCES = sycapture.cpp sycapture.h
 nodist_sycapture_SOURCES = moc_sycapture.cpp
 sycapture_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
 sycapture_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
+
+dist_synodetest_SOURCES = synodetest.cpp synodetest.h
+nodist_synodetest_SOURCES = moc_synodetest.cpp
+synodetest_LDADD = @SWITCHYARDLIBS@
+synodetest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_syplay_SOURCES = syplay.cpp syplay.h
 nodist_syplay_SOURCES = moc_syplay.cpp

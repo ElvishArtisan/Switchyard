@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <QtCore/QString>
+#include <QString>
 
 #include "syadv_packet.h"
 

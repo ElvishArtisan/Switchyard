@@ -11,7 +11,7 @@
 
 #include <vector>
 
-#include <QtCore/QString>
+#include <QString>
 
 class SyCmdSwitch
 {

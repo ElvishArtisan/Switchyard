@@ -9,8 +9,8 @@
 #ifndef SYSOURCE_H
 #define SYSOURCE_H
 
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QString>
 
 class SySource
 {

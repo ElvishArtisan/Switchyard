@@ -16,9 +16,9 @@
 
 #include <queue>
 
-#include <QtCore/QObject>
-#include <QtCore/QTimer>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QObject>
+#include <QTimer>
 
 #include <sy/symcastsocket.h>
 

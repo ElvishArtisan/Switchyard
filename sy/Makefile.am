@@ -8,7 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -Wno-strict-aliasing -I$(top_srcdir)
+AM_CPPFLAGS = -Wall -Wno-strict-aliasing -I$(top_srcdir) @QT4_CFLAGS@
 MOC = @MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -29,6 +29,8 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 sycmdswitch.cpp sycmdswitch.h\
                                 syconfig.h\
                                 sydestination.cpp sydestination.h\
+                                sygpo.cpp sygpo.h\
+                                sygpiobundle.cpp sygpiobundle.h\
                                 sygpio_server.cpp sygpio_server.h\
                                 sylwrp_client.cpp\
                                 sylwrp_client.h\
@@ -60,10 +62,12 @@ include_HEADERS = syadv_packet.h\
                   syadv_source.h\
                   syadv_tag.h\
                   syastring.h\
+                  sygpiobundle.h\
                   syclock.h\
                   sycmdswitch.h\
                   syconfig.h\
                   sydestination.h\
+                  sygpo.h\
                   sygpio_server.h\
                   sylwrp_client.h\
                   sylwrp_clientconnection.h\

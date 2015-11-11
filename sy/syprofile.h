@@ -11,9 +11,9 @@
 
 #include <vector>
 
-#include <QtCore/QString>
-#include <QtCore/QTime>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QString>
+#include <QTime>
 
 class SyProfileLine
 {

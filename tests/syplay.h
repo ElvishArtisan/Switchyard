@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-#include <QtCore/QObject>
+#include <QObject>
 
 #include <sndfile.h>
 

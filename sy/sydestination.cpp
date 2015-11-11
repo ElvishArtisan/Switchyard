@@ -6,7 +6,7 @@
 //     All Rights Reserved.
 //
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 #include "sydestination.h"
 

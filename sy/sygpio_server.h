@@ -15,10 +15,10 @@
 #include <vector>
 #include <map>
 
-#include <QtCore/QString>
-#include <QtCore/QDateTime>
-#include <QtNetwork/QHostAddress>
-#include <QtCore/QTimer>
+#include <QDateTime>
+#include <QHostAddress>
+#include <QString>
+#include <QTimer>
 
 #include <sy/symcastsocket.h>
 #include <sy/syrouting.h>

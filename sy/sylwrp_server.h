@@ -12,11 +12,11 @@
 
 #include <vector>
 
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
-#include <QtCore/QSignalMapper>
-#include <QtCore/QTimer>
-#include <QtNetwork/QTcpServer>
+#include <QObject>
+#include <QStringList>
+#include <QSignalMapper>
+#include <QTimer>
+#include <QTcpServer>
 
 #include <sy/syastring.h>
 #include <sy/sylwrp_clientconnection.h>

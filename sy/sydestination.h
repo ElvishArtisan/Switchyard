@@ -9,8 +9,8 @@
 #ifndef SYDESTINATION_H
 #define SYDESTINATION_H
 
-#include <QtCore/QString>
-#include <QtNetwork/QHostAddress>
+#include <QHostAddress>
+#include <QString>
 
 class SyDestination
 {

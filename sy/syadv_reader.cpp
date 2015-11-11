@@ -6,8 +6,8 @@
 //     All Rights Reserved.
 //
 
-#include <QtCore/QObject>
-#include <QtCore/QSettings>
+#include <QObject>
+#include <QSettings>
 
 #include "syadv_reader.h"
 #include "syprofile.h"

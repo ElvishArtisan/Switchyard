@@ -80,7 +80,7 @@ fi
 #
 # Check for Qt4 (Mandatory)
 #
-AC_CHECK_HEADER(QtCore/QtCore,[],[AC_MSG_ERROR([*** Qt4 not found ***])])
+PKG_CHECK_MODULES(QT4,QtCore QtNetwork,[],[AC_MSG_ERROR([*** Qt4 not found ***])])
 AC_CHECK_PROG(MOC_NAME,moc-qt4,[moc-qt4],[moc])
 AC_SUBST(MOC,$MOC_NAME)
 

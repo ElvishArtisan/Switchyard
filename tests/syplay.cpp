@@ -11,9 +11,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTimer>
+//#include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
+#include <QCoreApplication>
+#include <QTimer>
 
 #include <sy/sycmdswitch.h>
 

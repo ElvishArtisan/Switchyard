@@ -11,7 +11,7 @@
 #ifndef SYASTRING_H
 #define SYASTRING_H
 
-#include <QtCore/QString>
+#include <QString>
 
 class SyAString : public QString
 {

@@ -6,7 +6,6 @@
 //     All Rights Reserved.
 //
 
-
 #ifndef SYRINGBUFFER_H
 #define SYRINGBUFFER_H
 

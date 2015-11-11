@@ -15,8 +15,8 @@
 #include <Winsock2.h>
 #endif  // WIN32
 
-#include <QtCore/QSettings>
-#include <QtCore/QStringList>
+#include <QSettings>
+#include <QStringList>
 
 #include "syadv_server.h"
 #include "sysyslog.h"

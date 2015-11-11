@@ -10,9 +10,9 @@
 #ifndef SYADV_SOURCE_H
 #define SYADV_SOURCE_H
 
-#include <QtCore/QString>
-#include <QtCore/QDateTime>
-#include <QtNetwork/QHostAddress>
+#include <QDateTime>
+#include <QHostAddress>
+#include <QString>
 
 class SyAdvSource
 {

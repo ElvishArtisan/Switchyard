@@ -12,10 +12,10 @@
 
 #include <vector>
 
-#include <QtCore/QString>
-#include <QtCore/QDateTime>
-#include <QtNetwork/QHostAddress>
-#include <QtCore/QTimer>
+#include <QDateTime>
+#include <QHostAddress>
+#include <QString>
+#include <QTimer>
 
 #include <sy/syadv_packet.h>
 #include <sy/syadv_source.h>
