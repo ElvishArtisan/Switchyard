@@ -273,8 +273,20 @@ void SyLwrpClient::setGpoName(int slot,const QString &str)
 void SyLwrpClient::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 				       int s_slot)
 {
-  SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" SRCA:\""+
-	      s_addr.toString()+QString().sprintf("\":%d",s_slot+1));
+  if(s_addr.isNull()) {
+    SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" SRCA: FUNC:");
+  }
+  else {
+    if(s_slot<0) {
+      SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" SRCA:\""+
+		  s_addr.toString()+"\" FUNC:");
+    }
+    else {
+      SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" SRCA:\""+
+		  s_addr.toString()+QString().sprintf("\"/%d",s_slot+1)+
+		  " FUNC:FOLLOW");
+    }
+  }
 }
 
 
@@ -588,6 +600,8 @@ void SyLwrpClient::ProcessIP(const QStringList &cmds)
 {
   if(cmds.size()==9) {
     lwrp_hostname=cmds[8];
+    lwrp_node->setHostName(cmds[8]);
+    lwrp_node->setHostAddress(QHostAddress(cmds[2]));
   }
   lwrp_connected=true;
   emit connected(lwrp_id);

@@ -544,8 +544,31 @@ QHostAddress SyRouting::streamAddress(SyRouting::Realm realm,uint16_t lw_num)
 }
 
 
+QString SyRouting::sourceString(const QHostAddress &s_addr,int s_slot)
+{
+  QString ret;
+
+  if(s_addr.isNull()) {
+    ret=QString().sprintf("%d",s_slot);
+  }
+  else {
+    ret=s_addr.toString();
+    if(s_slot>=0) {
+      ret+=QString().sprintf("/%d",s_slot+1);
+    }
+  }
+
+  return ret;
+}
+
+
 unsigned SyRouting::livewireNumber(const QHostAddress &addr)
 {
+  uint32_t srcmask=0xFFFF0000&addr.toIPv4Address();
+
+  if((srcmask!=0xEFC00000)&&(srcmask!=0xEFC10000)&&(srcmask!=0xEFC40000)) {
+    return 0;
+  }
   return 0xFFFF&addr.toIPv4Address();
 }
 
