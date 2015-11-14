@@ -569,19 +569,20 @@ void SyLwrpClient::ProcessCFG(const QStringList &cmds)
 	  gpo->setName(f0[1]);
 	}
 	if(f0[0]=="SRCA") {
-	  unsigned srcnum=f0[1].toUInt(&ok);
+	  QStringList f1=f0[1].split(" ");
+	  unsigned srcnum=f1[0].replace("\"","").toUInt(&ok);
 	  if(ok) {  // Source number
 	    // FIXME: This breaks with surround sound!
 	    gpo->setSourceAddress(SyRouting::streamAddress(SyRouting::Stereo,
 							   srcnum),-1);
 	  }
 	  else {  // IP address
-	    QStringList f1=f0[1].replace("\"","").split("/");
+	    QStringList f2=f1[0].replace("\"","").split("/");
 	    int s_slot=-1;
-	    if(f1.size()==2) {
-	      s_slot=f1[1].toInt()-1;
+	    if(f2.size()==2) {
+	      s_slot=f2[1].toInt()-1;
 	    }
-	    gpo->setSourceAddress(QHostAddress(f1[0]),s_slot);
+	    gpo->setSourceAddress(QHostAddress(f2[0]),s_slot);
 	  }
 	}
 	if(f0[0]=="FUNC") {

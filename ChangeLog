@@ -330,3 +330,6 @@
 2015-11-13 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyRouting::sourceString()' method in 'sy/syrouting.cpp'
 	and 'sy/syrouting.h'.
+2015-11-14 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/sylwrp_client.cpp' that caused GPO source
+	addresses to be incorrect when the node entry included the name field.
