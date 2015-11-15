@@ -258,7 +258,7 @@ SyGpo *SyLwrpClient::gpo(int slot) const
 
 void SyLwrpClient::setGpoCode(int slot,const QString &code)
 {
-  if(lwrp_gpis[slot]->code()!=code) {
+  if(lwrp_gpos[slot]->bundle()->code()!=code) {
     SendCommand(QString().sprintf("GPO %d ",slot+1)+code);
   }
 }
