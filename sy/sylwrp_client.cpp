@@ -10,6 +10,7 @@
 
 #include "syastring.h"
 #include "sylwrp_client.h"
+#include "sysyslog.h"
 
 SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   : QObject(parent)
@@ -370,28 +371,48 @@ void SyLwrpClient::SendCommand(const QString &cmd)
 
 void SyLwrpClient::ProcessCommand(const QString &cmd)
 {
+  bool handled=false;
   QStringList f0=SyAString(cmd).split(" ","\"");
 
   if(f0[0]=="VER") {
     ProcessVER(f0);
+    handled=true;
   }
   if(f0[0]=="SRC") {
     ProcessSRC(f0);
+    handled=true;
   }
   if(f0[0]=="DST") {
     ProcessDST(f0);
+    handled=true;
   }
   if(f0[0]=="GPI") {
     ProcessGPI(f0);
+    handled=true;
   }
   if(f0[0]=="GPO") {
     ProcessGPO(f0);
+    handled=true;
   }
   if(f0[0]=="CFG") {
     ProcessCFG(f0);
+    handled=true;
   }
   if(f0[0]=="IP") {
     ProcessIP(f0);
+    handled=true;
+  }
+  if((f0[0]=="BEGIN")||(f0[0]=="END")) {
+    handled=true;
+  }
+  if(f0[0]=="ERROR") {
+    SySyslog(LOG_WARNING,QString("received error response from ")+
+	     lwrp_host_address.toString()+": \""+cmd+"\"");
+    handled=true;
+  }
+  if(!handled) {
+    SySyslog(LOG_DEBUG,QString("unhandled LWRP response received from ")+
+	     lwrp_host_address.toString()+": \""+cmd+"\"");
   }
 }
 
