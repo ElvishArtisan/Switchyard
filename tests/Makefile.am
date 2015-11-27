@@ -27,6 +27,7 @@ moc_%.cpp:	%.h
 
 noinst_PROGRAMS = sycapture\
                   syd\
+                  sygpiotest\
                   synodetest\
                   syplay\
                   sytone
@@ -40,6 +41,11 @@ dist_sycapture_SOURCES = sycapture.cpp sycapture.h
 nodist_sycapture_SOURCES = moc_sycapture.cpp
 sycapture_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
 sycapture_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
+
+dist_sygpiotest_SOURCES = sygpiotest.cpp sygpiotest.h
+nodist_sygpiotest_SOURCES = moc_sygpiotest.cpp
+sygpiotest_LDADD = @SWITCHYARDLIBS@
+sygpiotest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_synodetest_SOURCES = synodetest.cpp synodetest.h
 nodist_synodetest_SOURCES = moc_synodetest.cpp

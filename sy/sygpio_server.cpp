@@ -23,6 +23,7 @@ SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   gpio_gpi_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
   connect(gpio_gpi_socket,SIGNAL(readyRead()),
 	  this,SLOT(gpiReadyReadData()));
+
   //
   // GPO Socket
   //

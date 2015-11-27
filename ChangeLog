@@ -338,3 +338,7 @@
 	'SyLwrpClient::setGpiCode()' method to fail intermittently.
 2015-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added syslog calls in 'sy/sylwrp_client.cpp'.
+2015-11-27 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/symcastsocket.cpp' that broke reception of
+	multicast datagrams.
+	* Added sygpiotest(1) in 'tests/'.

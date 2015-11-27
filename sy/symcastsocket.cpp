@@ -67,7 +67,7 @@ SyMcastSocket::Mode SyMcastSocket::mode() const
 bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 {
   if(mcast_recv_socket!=NULL) {
-    if(!mcast_recv_socket->bind(addr,port,SYMCASTSOCKET_BIND_MODE)) {
+    if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
       SySyslog(LOG_ERR,QString().
 	       sprintf("unable to bind port %u for reading [%s]",
 		       port,strerror(errno)));
