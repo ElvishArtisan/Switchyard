@@ -342,3 +342,6 @@
 	* Fixed a bug in 'sy/symcastsocket.cpp' that broke reception of
 	multicast datagrams.
 	* Added sygpiotest(1) in 'tests/'.
+2015-11-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyLwrpClient::close()' method in 'sy/sylwrp_client.cpp'
+	and 'sy/sylwrp_client.h'.

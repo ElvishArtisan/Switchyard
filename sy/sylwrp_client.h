@@ -73,6 +73,7 @@ class SyLwrpClient :public QObject
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd);
+  void close();
 
  signals:
   void connected(unsigned id);

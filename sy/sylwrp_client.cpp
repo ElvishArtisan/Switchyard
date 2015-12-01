@@ -325,6 +325,12 @@ void SyLwrpClient::connectToHost(const QHostAddress &addr,uint16_t port,
 }
 
 
+void SyLwrpClient::close()
+{
+  lwrp_socket->close();
+}
+
+
 void SyLwrpClient::connectedData()
 {
   QString cmd="LOGIN";
