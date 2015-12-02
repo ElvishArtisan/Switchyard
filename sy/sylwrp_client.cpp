@@ -21,6 +21,19 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+  connect(lwrp_socket,SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+
+  //
+  // Connection Timer
+  //
+  lwrp_connection_timer=new QTimer(this);
+  lwrp_connection_timer->setSingleShot(true);
+  connect(lwrp_connection_timer,SIGNAL(timeout()),
+	  this,SLOT(connectionTimeoutData()));
+
+  // DEBUG
+  connect(lwrp_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
 
   lwrp_node=new SyNode();
 }
@@ -340,6 +353,20 @@ void SyLwrpClient::connectedData()
   }
   SendCommand(cmd);
   SendCommand("VER");
+  lwrp_connection_timer->start(SWITCHYARD_LWRP_CONNECTION_TIMEOUT);
+}
+
+
+void SyLwrpClient::disconnectedData()
+{
+  // DEBUG
+  //  printf("disconnectedData() - %s\n",(const char *)lwrp_host_address.toString().toUtf8());
+}
+
+
+void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
+{
+  emit connectionError(err);
 }
 
 
@@ -350,6 +377,8 @@ void SyLwrpClient::readyReadData()
 
   while((n=lwrp_socket->read(data,1500))>0) {
     data[n]=0;
+    //printf("%s: |%s|\n",(const char *)lwrp_host_address.toString().toUtf8(),
+    //	   data);
     for(int i=0;i<n;i++) {
       switch(0xFF&data[i]) {
       case 0x0A:
@@ -369,6 +398,12 @@ void SyLwrpClient::readyReadData()
 }
 
 
+void SyLwrpClient::connectionTimeoutData()
+{
+  emit connectionError(QAbstractSocket::SocketTimeoutError);
+}
+
+
 void SyLwrpClient::SendCommand(const QString &cmd)
 {
   lwrp_socket->write((const char *)(cmd+"\r\n").toAscii());
@@ -381,6 +416,7 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
   QStringList f0=SyAString(cmd).split(" ","\"");
 
   if(f0[0]=="VER") {
+    lwrp_connection_timer->stop();
     ProcessVER(f0);
     handled=true;
   }

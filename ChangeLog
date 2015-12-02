@@ -349,3 +349,6 @@
 	* Modified the 'SyMcastSocket::subscribe()' and
 	'SyMcastSocket::unsubscribe()' methods to use the IP_PROTO
 	level when calling setsockopt() instead of IP_SOL under Linux.
+2015-12-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyLwrpClient::connectionError()'
+	signal in 'src/sy/sylwpr_client.cpp' and 'src/sy/sylwpr_client.h'.

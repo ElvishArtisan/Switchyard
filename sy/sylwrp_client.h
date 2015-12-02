@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QString>
 #include <QTcpSocket>
+#include <QTimer>
 
 #include <sy/syconfig.h>
 #include <sy/sydestination.h>
@@ -77,6 +78,7 @@ class SyLwrpClient :public QObject
 
  signals:
   void connected(unsigned id);
+  void connectionError(QAbstractSocket::SocketError err);
   void sourceChanged(unsigned id,int slotnum,const SyNode &node,
 		     const SySource &src);
   void destinationChanged(unsigned id,int slotnum,const SyNode &node,
@@ -88,7 +90,10 @@ class SyLwrpClient :public QObject
 
  private slots:
   void connectedData();
+  void disconnectedData();
+  void errorData(QAbstractSocket::SocketError err);
   void readyReadData();
+  void connectionTimeoutData();
 
  private:
   void SendCommand(const QString &cmd);
@@ -116,6 +121,7 @@ class SyLwrpClient :public QObject
   bool lwrp_connected;
   QHostAddress lwrp_nic_address;
   unsigned lwrp_id;
+  QTimer *lwrp_connection_timer;
 };
 
 
