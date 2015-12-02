@@ -345,3 +345,7 @@
 2015-11-30 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyLwrpClient::close()' method in 'sy/sylwrp_client.cpp'
 	and 'sy/sylwrp_client.h'.
+2015-12-02 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'SyMcastSocket::subscribe()' and
+	'SyMcastSocket::unsubscribe()' methods to use the IP_PROTO
+	level when calling setsockopt() instead of IP_SOL under Linux.

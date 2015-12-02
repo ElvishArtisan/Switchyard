@@ -167,13 +167,8 @@ void SyMcastSocket::subscribe(const QHostAddress &addr)
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=htonl(mcast_iface_address.toIPv4Address());
   mreq.imr_ifindex=0;
-#ifdef OSX
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
     IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#else
-  if(setsockopt(mcast_recv_socket->socketDescriptor(),SOL_IP,
-    IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#endif  // OSX
     SySyslog(LOG_ERR,QString().
       sprintf("unable to subscribe to group %s [%s]",
         (const char *)addr.toString().toAscii(),strerror(errno)));
@@ -216,13 +211,8 @@ void SyMcastSocket::unsubscribe(const QHostAddress &addr)
   mreq.imr_multiaddr.s_addr=htonl(addr.toIPv4Address());
   mreq.imr_address.s_addr=htonl(mcast_iface_address.toIPv4Address());
   mreq.imr_ifindex=0;
-#ifdef OSX
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
 		IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#else
-    if(setsockopt(mcast_recv_socket->socketDescriptor(),SOL_IP,
-		  IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-#endif  // OSX
       SySyslog(LOG_ERR,QString().
 	       sprintf("unable to unsubscribe from group %s [%s]",
 		      (const char *)addr.toString().toAscii(),strerror(errno)));
