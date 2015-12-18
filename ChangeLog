@@ -359,3 +359,6 @@
 	* Added an 'unsigned id' parameter to the
 	'LwrpClient::connectionError()' signal in 'sy/sylwrp_client.cpp' and
 	'sy/sylwrp_client.h'.
+2015-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'SyLwrpClient' class to do an automatic disconnect after
+	receiving a network error.

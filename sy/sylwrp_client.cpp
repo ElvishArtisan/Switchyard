@@ -390,6 +390,8 @@ void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
     lwrp_connection_error=err;
     emit connectionError(lwrp_id,err);
   }
+  lwrp_socket->disconnect();
+  emit connected(lwrp_id,false);
   if(lwrp_persistent) {
     watchdogRetryData();
   }
@@ -429,6 +431,9 @@ void SyLwrpClient::connectionTimeoutData()
   if(lwrp_connection_error!=QAbstractSocket::SocketTimeoutError) {
     lwrp_connection_error=QAbstractSocket::SocketTimeoutError;
     emit connectionError(lwrp_id,QAbstractSocket::SocketTimeoutError);
+    if(lwrp_persistent) {
+      lwrp_watchdog_retry_timer->start(0);
+    }
   }
 }
 
@@ -437,13 +442,13 @@ void SyLwrpClient::watchdogIntervalData()
 {
   SendCommand("VER");
   lwrp_watchdog_retry_timer->start(SWITCHYARD_LWRP_WATCHDOG_RETRY);
-  fprintf(stderr,"sending watchdog\n");
+  //  fprintf(stderr,"sending watchdog\n");
 }
 
 
 void SyLwrpClient::watchdogRetryData()
 {
-  fprintf(stderr,"watchdog failure detected!\n");
+  //  fprintf(stderr,"watchdog failure detected!\n");
 
   //
   // Reset Connection
@@ -602,9 +607,11 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
     SendCommand("IP");
   }
   else {  // Watchdog response
-    lwrp_watchdog_retry_timer->stop();
-    lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
-    fprintf(stderr,"receiving watchdog\n");
+    if(lwrp_persistent) {
+      lwrp_watchdog_retry_timer->stop();
+      lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
+    }
+    //    fprintf(stderr,"receiving watchdog\n");
   }
 }
 
