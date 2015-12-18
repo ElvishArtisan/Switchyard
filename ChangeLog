@@ -362,3 +362,8 @@
 2015-12-18 Fred Gleason <fredg@paravelsystems.com>
 	* Modified 'SyLwrpClient' class to do an automatic disconnect after
 	receiving a network error.
+2015-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Changed SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MIN value in
+	'sy/syconfig.h' to 60000.0.
+	* Changed SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX value in
+	'sy/syconfig.h' to 180000.0.
