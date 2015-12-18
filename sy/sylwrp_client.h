@@ -73,12 +73,13 @@ class SyLwrpClient :public QObject
   void setGpoFollow(int slot,bool state);
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
-  void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd);
+  void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
+		     bool persistent=false);
   void close();
 
  signals:
-  void connected(unsigned id);
-  void connectionError(QAbstractSocket::SocketError err);
+  void connected(unsigned id,bool state);
+  void connectionError(unsigned id,QAbstractSocket::SocketError err);
   void sourceChanged(unsigned id,int slotnum,const SyNode &node,
 		     const SySource &src);
   void destinationChanged(unsigned id,int slotnum,const SyNode &node,
@@ -95,6 +96,9 @@ class SyLwrpClient :public QObject
   void readyReadData();
   void connectionTimeoutData();
 
+  void watchdogIntervalData();
+  void watchdogRetryData();
+
  private:
   void SendCommand(const QString &cmd);
   void ProcessCommand(const QString &cmd);
@@ -106,6 +110,7 @@ class SyLwrpClient :public QObject
   void ProcessCFG(const QStringList &cmds);
   void ProcessIP(const QStringList &cmds);
   void ProcessIFC(const QStringList &cmds);
+  int GetWatchdogInterval() const;
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
   std::vector<SyGpioBundle *> lwrp_gpis;
@@ -115,6 +120,7 @@ class SyLwrpClient :public QObject
   QString lwrp_hostname;
   uint16_t lwrp_port;
   QString lwrp_password;
+  bool lwrp_persistent;
   QTcpSocket *lwrp_socket;
   QString lwrp_buffer;
   QString lwrp_device_name;
@@ -122,6 +128,10 @@ class SyLwrpClient :public QObject
   QHostAddress lwrp_nic_address;
   unsigned lwrp_id;
   QTimer *lwrp_connection_timer;
+  QTimer *lwrp_watchdog_interval_timer;
+  QTimer *lwrp_watchdog_retry_timer;
+  bool lwrp_watchdog_state;
+  QAbstractSocket::SocketError lwrp_connection_error;
 };
 
 

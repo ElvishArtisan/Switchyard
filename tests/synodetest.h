@@ -22,7 +22,8 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
-  void connectedData(unsigned id);
+  void connectedData(unsigned id,bool state);
+  void connectionErrorData(unsigned id,QAbstractSocket::SocketError err);
   void sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 			 const SySource &src);
   void destinationChangedData(unsigned id,int slotnum,const SyNode &node,

@@ -352,3 +352,10 @@
 2015-12-02 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyLwrpClient::connectionError()'
 	signal in 'src/sy/sylwpr_client.cpp' and 'src/sy/sylwpr_client.h'.
+2015-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'bool persistent' parameter to the
+	'LwrpClient::connectToHost()' method in 'sy/sylwrp_client.cpp' and
+	'sy/sylwrp_client.h'.
+	* Added an 'unsigned id' parameter to the
+	'LwrpClient::connectionError()' signal in 'sy/sylwrp_client.cpp' and
+	'sy/sylwrp_client.h'.

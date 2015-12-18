@@ -16,7 +16,9 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   : QObject(parent)
 {
   lwrp_connected=false;
+  lwrp_watchdog_state=false;
   lwrp_id=id;
+  lwrp_persistent=false;
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
@@ -32,6 +34,19 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   connect(lwrp_connection_timer,SIGNAL(timeout()),
 	  this,SLOT(connectionTimeoutData()));
 
+  //
+  // Watchdog Timers
+  //
+  lwrp_watchdog_retry_timer=new QTimer(this);
+  lwrp_watchdog_retry_timer->setSingleShot(true);
+  connect(lwrp_watchdog_retry_timer,SIGNAL(timeout()),
+	  this,SLOT(watchdogRetryData()));
+
+  lwrp_watchdog_interval_timer=new QTimer(this);
+  lwrp_watchdog_interval_timer->setSingleShot(true);
+  connect(lwrp_watchdog_interval_timer,SIGNAL(timeout()),
+	  this,SLOT(watchdogIntervalData()));
+
   // DEBUG
   connect(lwrp_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
 
@@ -43,6 +58,9 @@ SyLwrpClient::~SyLwrpClient()
 {
   delete lwrp_node;
   delete lwrp_socket;
+  delete lwrp_watchdog_interval_timer;
+  delete lwrp_watchdog_retry_timer;
+  delete lwrp_connection_timer;
 }
 
 
@@ -329,11 +347,12 @@ void SyLwrpClient::setNicAddress(const QHostAddress &addr)
 
 
 void SyLwrpClient::connectToHost(const QHostAddress &addr,uint16_t port,
-				 const QString &pwd)
+				 const QString &pwd,bool persistent)
 {
   lwrp_host_address=addr;
   lwrp_port=port;
   lwrp_password=pwd;
+  lwrp_persistent=persistent;
   lwrp_socket->connectToHost(addr.toString(),port);
 }
 
@@ -348,6 +367,7 @@ void SyLwrpClient::connectedData()
 {
   QString cmd="LOGIN";
 
+  lwrp_connection_error=(QAbstractSocket::SocketError)-2;
   if(!lwrp_password.isEmpty()) {
     cmd+=" "+lwrp_password;
   }
@@ -366,7 +386,13 @@ void SyLwrpClient::disconnectedData()
 
 void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
 {
-  emit connectionError(err);
+  if(lwrp_connection_error!=err) {
+    lwrp_connection_error=err;
+    emit connectionError(lwrp_id,err);
+  }
+  if(lwrp_persistent) {
+    watchdogRetryData();
+  }
 }
 
 
@@ -400,7 +426,57 @@ void SyLwrpClient::readyReadData()
 
 void SyLwrpClient::connectionTimeoutData()
 {
-  emit connectionError(QAbstractSocket::SocketTimeoutError);
+  if(lwrp_connection_error!=QAbstractSocket::SocketTimeoutError) {
+    lwrp_connection_error=QAbstractSocket::SocketTimeoutError;
+    emit connectionError(lwrp_id,QAbstractSocket::SocketTimeoutError);
+  }
+}
+
+
+void SyLwrpClient::watchdogIntervalData()
+{
+  SendCommand("VER");
+  lwrp_watchdog_retry_timer->start(SWITCHYARD_LWRP_WATCHDOG_RETRY);
+  fprintf(stderr,"sending watchdog\n");
+}
+
+
+void SyLwrpClient::watchdogRetryData()
+{
+  fprintf(stderr,"watchdog failure detected!\n");
+
+  //
+  // Reset Connection
+  //
+  lwrp_socket->close();
+  delete lwrp_socket;
+  for(unsigned i=0;i<lwrp_sources.size();i++) {
+    delete lwrp_sources[i];
+  }
+  lwrp_sources.clear();
+  for(unsigned i=0;i<lwrp_destinations.size();i++) {
+    delete lwrp_destinations[i];
+  }
+  lwrp_destinations.clear();
+  for(unsigned i=0;i<lwrp_gpis.size();i++) {
+    delete lwrp_gpis[i];
+  }
+  lwrp_gpis.clear();
+  for(unsigned i=0;i<lwrp_gpos.size();i++) {
+    delete lwrp_gpos[i];
+  }
+  lwrp_gpos.clear();
+  lwrp_connected=false;
+
+  lwrp_socket=new QTcpSocket(this);
+  connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
+  connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+  connect(lwrp_socket,SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+
+  emit connected(lwrp_id,false);
+
+  connectToHost(lwrp_host_address,lwrp_port,lwrp_password,true);
 }
 
 
@@ -416,7 +492,6 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
   QStringList f0=SyAString(cmd).split(" ","\"");
 
   if(f0[0]=="VER") {
-    lwrp_connection_timer->stop();
     ProcessVER(f0);
     handled=true;
   }
@@ -461,68 +536,76 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
 
 void SyLwrpClient::ProcessVER(const QStringList &cmds)
 {
-  for(int i=1;i<cmds.size();i++) {
-    QStringList f1=cmds[i].split(":");
-    if(f1[0]=="DEVN") {
-      lwrp_device_name=f1[1].replace("\"","");
-      lwrp_node->setDeviceName(f1[1].replace("\"",""));
-    }
-    if(f1[0]=="NSRC") {
-      QStringList f2=f1[1].split("/");
-      for(int i=0;i<f2[0].toInt();i++) {
-	lwrp_sources.push_back(new SySource());
+  if(lwrp_connection_timer->isActive()) {  // Initial connection
+    lwrp_connection_timer->stop();
+    for(int i=1;i<cmds.size();i++) {
+      QStringList f1=cmds[i].split(":");
+      if(f1[0]=="DEVN") {
+	lwrp_device_name=f1[1].replace("\"","");
+	lwrp_node->setDeviceName(f1[1].replace("\"",""));
       }
-      lwrp_node->setSrcSlotQuantity(f2[0].toInt());
-    }
-    if(f1[0]=="NDST") {
-      QStringList f2=f1[1].split("/");
-      for(int i=0;i<f2[0].toInt();i++) {
-	lwrp_destinations.push_back(new SyDestination());
+      if(f1[0]=="NSRC") {
+	QStringList f2=f1[1].split("/");
+	for(int i=0;i<f2[0].toInt();i++) {
+	  lwrp_sources.push_back(new SySource());
+	}
+	lwrp_node->setSrcSlotQuantity(f2[0].toInt());
       }
-      lwrp_node->setDstSlotQuantity(f2[0].toInt());
-    }
-    if(f1[0]=="NGPI") {
-      for(int i=0;i<f1[1].toInt();i++) {
-	lwrp_gpis.push_back(new SyGpioBundle());
+      if(f1[0]=="NDST") {
+	QStringList f2=f1[1].split("/");
+	for(int i=0;i<f2[0].toInt();i++) {
+	  lwrp_destinations.push_back(new SyDestination());
+	}
+	lwrp_node->setDstSlotQuantity(f2[0].toInt());
       }
-      lwrp_node->setGpiSlotQuantity(f1[1].toUInt());
-    }
-    if(f1[0]=="NGPO") {
-      for(int i=0;i<f1[1].toInt();i++) {
-	lwrp_gpos.push_back(new SyGpo());
+      if(f1[0]=="NGPI") {
+	for(int i=0;i<f1[1].toInt();i++) {
+	  lwrp_gpis.push_back(new SyGpioBundle());
+	}
+	lwrp_node->setGpiSlotQuantity(f1[1].toUInt());
       }
-      lwrp_node->setGpoSlotQuantity(f1[1].toUInt());
+      if(f1[0]=="NGPO") {
+	for(int i=0;i<f1[1].toInt();i++) {
+	  lwrp_gpos.push_back(new SyGpo());
+	}
+	lwrp_node->setGpoSlotQuantity(f1[1].toUInt());
+      }
+      if(f1[0]=="LWRP") {
+	lwrp_node->setLwrpVersion(f1[1].replace("\"",""));
+      }
+      if(f1[0]=="PRODUCT") {
+	lwrp_node->setProduct(f1[1].replace("\"",""));
+      }
+      if(f1[0]=="MODEL") {
+	lwrp_node->setModel(f1[1].replace("\"",""));
+      }
+      if(f1[0]=="SVER") {
+	lwrp_node->setSoftwareVersion(f1[1].replace("\"",""));
+      }
     }
-    if(f1[0]=="LWRP") {
-      lwrp_node->setLwrpVersion(f1[1].replace("\"",""));
+    if(lwrp_node->srcSlotQuantity()>0) {
+      SendCommand("SRC");
     }
-    if(f1[0]=="PRODUCT") {
-      lwrp_node->setProduct(f1[1].replace("\"",""));
+    if(lwrp_node->dstSlotQuantity()>0) {
+      SendCommand("DST");
     }
-    if(f1[0]=="MODEL") {
-      lwrp_node->setModel(f1[1].replace("\"",""));
+    if(lwrp_node->gpiSlotQuantity()>0) {
+      SendCommand("ADD GPI");
     }
-    if(f1[0]=="SVER") {
-      lwrp_node->setSoftwareVersion(f1[1].replace("\"",""));
+    if(lwrp_node->gpoSlotQuantity()>0) {
+      SendCommand("ADD GPO");
+      SendCommand("CFG GPO");
     }
+    if((lwrp_socket->peerAddress().toIPv4Address()>>24)==127) {
+      SendCommand("IFC");
+    }
+    SendCommand("IP");
   }
-  if(lwrp_node->srcSlotQuantity()>0) {
-    SendCommand("SRC");
+  else {  // Watchdog response
+    lwrp_watchdog_retry_timer->stop();
+    lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
+    fprintf(stderr,"receiving watchdog\n");
   }
-  if(lwrp_node->dstSlotQuantity()>0) {
-    SendCommand("DST");
-  }
-  if(lwrp_node->gpiSlotQuantity()>0) {
-    SendCommand("ADD GPI");
-  }
-  if(lwrp_node->gpoSlotQuantity()>0) {
-    SendCommand("ADD GPO");
-    SendCommand("CFG GPO");
-  }
-  if((lwrp_socket->peerAddress().toIPv4Address()>>24)==127) {
-    SendCommand("IFC");
-  }
-  SendCommand("IP");
 }
 
 
@@ -668,7 +751,11 @@ void SyLwrpClient::ProcessIP(const QStringList &cmds)
     lwrp_node->setHostAddress(QHostAddress(cmds[2]));
   }
   lwrp_connected=true;
-  emit connected(lwrp_id);
+  lwrp_watchdog_state=true;
+  if(lwrp_persistent) {
+    lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
+  }
+  emit connected(lwrp_id,true);
 }
 
 
@@ -688,4 +775,12 @@ void SyLwrpClient::ProcessIFC(const QStringList &cmds)
       }
     }
   }
+}
+
+
+int SyLwrpClient::GetWatchdogInterval() const
+{
+  int interval=((double)random()/(double)RAND_MAX)*(SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX-SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MIN)+SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MIN;
+  fprintf(stderr,"watchdog interval: %d\n",interval);
+  return interval;
 }
