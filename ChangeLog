@@ -367,3 +367,5 @@
 	'sy/syconfig.h' to 60000.0.
 	* Changed SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX value in
 	'sy/syconfig.h' to 180000.0.
+2015-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Removed debugging printf from 'sy/sylwprclient.cpp'.

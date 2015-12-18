@@ -788,6 +788,6 @@ void SyLwrpClient::ProcessIFC(const QStringList &cmds)
 int SyLwrpClient::GetWatchdogInterval() const
 {
   int interval=((double)random()/(double)RAND_MAX)*(SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX-SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MIN)+SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MIN;
-  fprintf(stderr,"watchdog interval: %d\n",interval);
+  //  fprintf(stderr,"watchdog interval: %d\n",interval);
   return interval;
 }
