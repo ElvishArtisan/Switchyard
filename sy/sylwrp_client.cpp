@@ -386,12 +386,11 @@ void SyLwrpClient::disconnectedData()
 
 void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
 {
-  if(lwrp_connection_error!=err) {
-    lwrp_connection_error=err;
-    emit connectionError(lwrp_id,err);
+  emit connectionError(lwrp_id,err);
+  if(lwrp_socket->state()==QAbstractSocket::ConnectedState) {
+    lwrp_socket->disconnect();
+    emit connected(lwrp_id,false);
   }
-  lwrp_socket->disconnect();
-  emit connected(lwrp_id,false);
   if(lwrp_persistent) {
     watchdogRetryData();
   }

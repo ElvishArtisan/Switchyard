@@ -369,3 +369,6 @@
 	'sy/syconfig.h' to 180000.0.
 2015-12-18 Fred Gleason <fredg@paravelsystems.com>
 	* Removed debugging printf from 'sy/sylwprclient.cpp'.
+2015-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/sylwrp_client.cpp' that broke the
+	'SyLwrpClient::connectionError()' signal.
