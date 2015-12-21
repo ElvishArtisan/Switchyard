@@ -378,3 +378,15 @@
 	* Added a 'SyLwrpClient::meterUpdate()' signal in
 	'sy/sylwrp_client.cpp' and 'sy/sylwrp_client.h'.
 	* Added an symetertest(1) program in 'tests/'.
+2015-12-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SyLwrpClient::silenceThreshold()',
+	'SyLwrpClient::setSilenceThreshold()',
+	'SyLwrpClient::silenceTimeout()', 'SyLwrpClient::setSilenceTimeout()',
+	'SyLwrpClient::clipThreshold()', 'SyLwrpClient::setClipThreshold()',
+	'SyLwrpClient::clipTimeout()' and 'SyLwrpClient::setClipTimeout()'
+	methods in 'sy/sylwrp_client.cpp' and 'sy/sylwrpclient.h'.
+	* Added 'SyLwrpClient::audioClipAlarm()' and
+	'SyLwrpClient::AudioSilenceAlarm()' signals in 'sy/sylwrp_client.cpp'
+	and 'sy/sylwrp_client.h'.
+	* Added a 'StatusLight' class in 'tests/statuslight.cpp' and
+	'tests/statuslight.h'.

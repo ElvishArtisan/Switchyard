@@ -13,10 +13,12 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QSpinBox>
 
 #include <sy/sylwrp_client.h>
 
 #include "playmeter.h"
+#include "statuslight.h"
 
 #define SYMETERTEST_USAGE "--node=<hostname>\n"
 
@@ -31,6 +33,15 @@ class MainWidget : public QMainWindow
   void connectedData(unsigned id,bool state);
   void meterUpdateData(unsigned id,SyLwrpClient::MeterType type,
 		       unsigned slotnum,int16_t *peak_lvls,int16_t *rms_lvls);
+  void audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
+			  unsigned slotnum,int chan,bool state);
+  void audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
+			     unsigned slotnum,int chan,bool state);
+  void clipThresholdChangedData(int db);
+  void clipTimeoutChangedData(int secs);
+  void silenceThresholdChangedData(int db);
+  void silenceTimeoutChangedData(int secs);
+  
 
  protected:
   void resizeEvent(QResizeEvent *e);
@@ -38,12 +49,28 @@ class MainWidget : public QMainWindow
  private:
   SyLwrpClient *meter_node;
   QLabel *meter_input_label;
+  QLabel *meter_input_clip_label;
+  QLabel *meter_input_silence_label;
   std::vector<QLabel *> meter_input_labels;
   std::vector<PlayMeter *> meter_input_meters;
+  std::vector<StatusLight *> meter_input_clip_lights;
+  std::vector<StatusLight *> meter_input_silence_lights;
   QLabel *meter_output_label;
+  QLabel *meter_output_clip_label;
+  QLabel *meter_output_silence_label;
   std::vector<QLabel *> meter_output_labels;
   std::vector<PlayMeter *> meter_output_meters;
+  std::vector<StatusLight *> meter_output_clip_lights;
+  std::vector<StatusLight *> meter_output_silence_lights;
   QFont meter_label_font;
+  QLabel *meter_clip_threshold_label;
+  QSpinBox *meter_clip_threshold_spin;
+  QLabel *meter_clip_timeout_label;
+  QSpinBox *meter_clip_timeout_spin;
+  QLabel *meter_silence_threshold_label;
+  QSpinBox *meter_silence_threshold_spin;
+  QLabel *meter_silence_timeout_label;
+  QSpinBox *meter_silence_timeout_spin;
 };
 
 

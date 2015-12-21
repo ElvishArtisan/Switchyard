@@ -49,8 +49,10 @@ sygpiotest_LDADD = @SWITCHYARDLIBS@
 sygpiotest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_symetertest_SOURCES = playmeter.cpp playmeter.h\
+                           statuslight.cpp statuslight.h\
                            symetertest.cpp symetertest.h
 nodist_symetertest_SOURCES = moc_playmeter.cpp\
+                             moc_statuslight.cpp\
                              moc_symetertest.cpp
 symetertest_LDADD = @SWITCHYARDLIBS@ @QT4GUI_LIBS@
 symetertest_LDFLAGS = @SWITCHYARDFLAGS@

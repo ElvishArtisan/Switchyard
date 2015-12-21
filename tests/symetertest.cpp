@@ -44,13 +44,58 @@ MainWidget::MainWidget(QWidget *parent)
   meter_label_font=QFont("helvetica",20,QFont::Bold);
   meter_label_font.setPixelSize(20);
 
+  meter_clip_threshold_label=new QLabel(tr("Clip Threshold"),this);
+  meter_clip_threshold_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  meter_clip_threshold_spin=new QSpinBox(this);
+  meter_clip_threshold_spin->setRange(-100,0);
+  meter_clip_threshold_spin->setSuffix(tr("dBFS"));
+  connect(meter_clip_threshold_spin,SIGNAL(valueChanged(int)),
+	  this,SLOT(clipThresholdChangedData(int)));
+
+  meter_clip_timeout_label=new QLabel(tr("Clip Timeout"),this);
+  meter_clip_timeout_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  meter_clip_timeout_spin=new QSpinBox(this);
+  meter_clip_timeout_spin->setRange(0,60);
+  meter_clip_timeout_spin->setSuffix(tr("S"));
+  connect(meter_clip_timeout_spin,SIGNAL(valueChanged(int)),
+	  this,SLOT(clipTimeoutChangedData(int)));
+
   meter_input_label=new QLabel(tr("Input Levels"),this);
   meter_input_label->setFont(meter_label_font);
   meter_input_label->setAlignment(Qt::AlignCenter);
 
+  meter_input_clip_label=new QLabel(tr("Clip"),this);
+  meter_input_clip_label->setAlignment(Qt::AlignCenter);
+
+  meter_input_silence_label=new QLabel(tr("Silence"),this);
+  meter_input_silence_label->setAlignment(Qt::AlignCenter);
+
+
+  meter_silence_threshold_label=new QLabel(tr("Silence Threshold"),this);
+  meter_silence_threshold_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  meter_silence_threshold_spin=new QSpinBox(this);
+  meter_silence_threshold_spin->setRange(-100,0);
+  meter_silence_threshold_spin->setSuffix(tr("dBFS"));
+  connect(meter_silence_threshold_spin,SIGNAL(valueChanged(int)),
+	  this,SLOT(silenceThresholdChangedData(int)));
+
+  meter_silence_timeout_label=new QLabel(tr("Silence Timeout"),this);
+  meter_silence_timeout_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  meter_silence_timeout_spin=new QSpinBox(this);
+  meter_silence_timeout_spin->setRange(0,60);
+  meter_silence_timeout_spin->setSuffix(tr("S"));
+  connect(meter_silence_timeout_spin,SIGNAL(valueChanged(int)),
+	  this,SLOT(silenceTimeoutChangedData(int)));
+
   meter_output_label=new QLabel(tr("Output Levels"),this);
   meter_output_label->setFont(meter_label_font);
   meter_output_label->setAlignment(Qt::AlignCenter);
+
+  meter_output_clip_label=new QLabel(tr("Clip"),this);
+  meter_output_clip_label->setAlignment(Qt::AlignCenter);
+
+  meter_output_silence_label=new QLabel(tr("Silence"),this);
+  meter_output_silence_label->setAlignment(Qt::AlignCenter);
 
   meter_node=new SyLwrpClient(0,this);
   connect(meter_node,SIGNAL(connected(unsigned,bool)),
@@ -59,6 +104,19 @@ MainWidget::MainWidget(QWidget *parent)
 					unsigned,int16_t *,int16_t *)),
 	  this,SLOT(meterUpdateData(unsigned,SyLwrpClient::MeterType,
 				    unsigned,int16_t *,int16_t *)));
+  connect(meter_node,SIGNAL(audioClipAlarm(unsigned,SyLwrpClient::MeterType,
+					   unsigned,int,bool)),
+	  this,SLOT(audioClipAlarmData(unsigned,SyLwrpClient::MeterType,
+				       unsigned,int,bool)));
+  connect(meter_node,SIGNAL(audioSilenceAlarm(unsigned,SyLwrpClient::MeterType,
+					      unsigned,int,bool)),
+	  this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
+					  unsigned,int,bool)));
+  meter_clip_threshold_spin->setValue(meter_node->clipThreshold());
+  meter_clip_timeout_spin->setValue(meter_node->clipTimeout());
+  meter_silence_threshold_spin->setValue(meter_node->silenceThreshold());
+  meter_silence_timeout_spin->setValue(meter_node->silenceTimeout());
+
   meter_node->connectToHost(QHostAddress(node),SWITCHYARD_LWRP_PORT,"",true);
 
   setWindowTitle(tr("Meter Test")+" - "+node);
@@ -71,7 +129,7 @@ QSize MainWidget::sizeHint() const
   if(meter_output_labels.size()>slotnum) {
     slotnum=meter_output_labels.size();
   }
-  return QSize(810,60+20*slotnum);
+  return QSize(1120,90+30*slotnum);
 }
 
 
@@ -92,6 +150,8 @@ void MainWidget::connectedData(unsigned id,bool state)
     meter_input_meters.back()->setHighThreshold(-160);
     meter_input_meters.back()->setClipThreshold(-40);
     meter_input_meters.back()->show();
+    meter_input_clip_lights.push_back(new StatusLight(this));
+    meter_input_silence_lights.push_back(new StatusLight(this));
   }
   for(unsigned i=0;i<(meter_node->srcSlots()*SWITCHYARD_MAX_CHANNELS);i+=2) {
     meter_input_meters[i]->setLabel("L");
@@ -114,6 +174,8 @@ void MainWidget::connectedData(unsigned id,bool state)
     meter_output_meters.back()->setHighThreshold(-160);
     meter_output_meters.back()->setClipThreshold(-40);
     meter_output_meters.back()->show();
+    meter_output_clip_lights.push_back(new StatusLight(this));
+    meter_output_silence_lights.push_back(new StatusLight(this));
   }
   for(unsigned i=0;i<(meter_node->dstSlots()*SWITCHYARD_MAX_CHANNELS);i+=2) {
     meter_output_meters[i]->setLabel("L");
@@ -154,27 +216,109 @@ void MainWidget::meterUpdateData(unsigned id,SyLwrpClient::MeterType type,
 }
 
 
+void MainWidget::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
+				    unsigned slotnum,int chan,bool state)
+{
+  //  printf("audioClipAlarm(%u,%u,%u,%u,%u)\n",
+  //	 id,type,slotnum,chan,state);
+  switch(type) {
+  case SyLwrpClient::InputMeter:
+    meter_input_clip_lights[2*slotnum+chan]->setStatus(state);
+    break;
+
+  case SyLwrpClient::OutputMeter:
+    meter_output_clip_lights[2*slotnum+chan]->setStatus(state);
+    break;
+
+  case SyLwrpClient::LastTypeMeter:
+    break;
+  }
+}
+
+
+void MainWidget::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
+				       unsigned slotnum,int chan,bool state)
+{
+  switch(type) {
+  case SyLwrpClient::InputMeter:
+    meter_input_silence_lights[2*slotnum+chan]->setStatus(state);
+    break;
+
+  case SyLwrpClient::OutputMeter:
+    meter_output_silence_lights[2*slotnum+chan]->setStatus(state);
+    break;
+
+  case SyLwrpClient::LastTypeMeter:
+    break;
+  }
+}
+
+
+void MainWidget::clipThresholdChangedData(int db)
+{
+  meter_node->setClipThreshold(db*10);
+}
+
+
+void MainWidget::clipTimeoutChangedData(int secs)
+{
+  meter_node->setClipTimeout(secs*1000);
+}
+
+
+void MainWidget::silenceThresholdChangedData(int db)
+{
+  meter_node->setSilenceThreshold(db*10);
+}
+
+
+void MainWidget::silenceTimeoutChangedData(int secs)
+{
+  meter_node->setSilenceTimeout(secs*1000);
+}
+
+
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
+  meter_clip_threshold_label->setGeometry(10,10,100,20);
+  meter_clip_threshold_spin->setGeometry(115,10,100,20);
+
+  meter_clip_timeout_label->setGeometry(310,10,100,20);
+  meter_clip_timeout_spin->setGeometry(415,10,100,20);
+
+  meter_silence_threshold_label->setGeometry(560,10,150,20);
+  meter_silence_threshold_spin->setGeometry(715,10,100,20);
+
+  meter_silence_timeout_label->setGeometry(890,10,120,20);
+  meter_silence_timeout_spin->setGeometry(1015,10,100,20);
+
   //
   // Input Meters
   //
-  meter_input_label->setGeometry(10,10,380,20);
+  meter_input_label->setGeometry(10,40,380,20);
+  meter_input_clip_label->setGeometry(405,40,50,20);
+  meter_input_silence_label->setGeometry(460,40,50,20);
   for(unsigned i=0;i<meter_input_meters.size();i+=SWITCHYARD_MAX_CHANNELS) {
-    meter_input_labels[i/2]->setGeometry(10,35+i*11,20,20);
+    meter_input_labels[i/2]->setGeometry(10,65+i*15,20,20);
     for(unsigned j=0;j<SWITCHYARD_MAX_CHANNELS;j++) {
-      meter_input_meters[i+j]->setGeometry(40,35+i*11+j*10,350,10);
+      meter_input_meters[i+j]->setGeometry(40,65+i*15+j*10,350,10);
+      meter_input_clip_lights[i+j]->setGeometry(420,61+i*15+j*12,15,15);
+      meter_input_silence_lights[i+j]->setGeometry(480,61+i*15+j*12,15,15);
     }
   }
 
   //
   // Output Meters
   //
-  meter_output_label->setGeometry(410,10,380,20);
+  meter_output_label->setGeometry(610,40,380,20);
+  meter_output_clip_label->setGeometry(1005,40,50,20);
+  meter_output_silence_label->setGeometry(1060,40,50,20);
   for(unsigned i=0;i<meter_output_meters.size();i+=SWITCHYARD_MAX_CHANNELS) {
-    meter_output_labels[i/2]->setGeometry(410,35+i*11,20,20);
+    meter_output_labels[i/2]->setGeometry(610,65+i*15,20,20);
     for(unsigned j=0;j<SWITCHYARD_MAX_CHANNELS;j++) {
-      meter_output_meters[i+j]->setGeometry(440,35+i*11+j*10,350,10);
+      meter_output_meters[i+j]->setGeometry(640,65+i*15+j*10,350,10);
+      meter_output_clip_lights[i+j]->setGeometry(1020,61+i*15+j*12,15,15);
+      meter_output_silence_lights[i+j]->setGeometry(1080,61+i*15+j*12,15,15);
     }
   }
 }

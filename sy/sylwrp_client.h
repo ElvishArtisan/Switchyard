@@ -76,11 +76,21 @@ class SyLwrpClient :public QObject
   void setGpoFollow(int slot,bool state);
   void startMeter(MeterType type);
   void stopMeter(MeterType type);
+  int silenceThreshold() const;
+  int silenceTimeout() const;
+  int clipThreshold() const;
+  int clipTimeout() const;
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
 		     bool persistent=false);
   void close();
+
+ public slots:
+  void setSilenceThreshold(int lvl);
+  void setSilenceTimeout(int msec);
+  void setClipThreshold(int lvl);
+  void setClipTimeout(int msec);
 
  signals:
   void connected(unsigned id,bool state);
@@ -95,6 +105,10 @@ class SyLwrpClient :public QObject
   void nicAddressChanged(unsigned id,const QHostAddress &nicaddr);
   void meterUpdate(unsigned id,SyLwrpClient::MeterType type,unsigned slotnum,
 		   int16_t *peak_lvls,int16_t *rms_lvls);
+  void audioClipAlarm(unsigned id,SyLwrpClient::MeterType type,
+		      unsigned slotnum,int chan,bool state);
+  void audioSilenceAlarm(unsigned id,SyLwrpClient::MeterType type,
+			 unsigned slotnum,int chan,bool state);
 
  private slots:
   void connectedData();
@@ -119,6 +133,7 @@ class SyLwrpClient :public QObject
   void ProcessIP(const QStringList &cmds);
   void ProcessIFC(const QStringList &cmds);
   void ProcessMTR(const QStringList &cmds);
+  void ProcessLVL(const QStringList &cmds);
   int GetWatchdogInterval() const;
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
@@ -142,6 +157,10 @@ class SyLwrpClient :public QObject
   bool lwrp_watchdog_state;
   QAbstractSocket::SocketError lwrp_connection_error;
   QTimer *lwrp_meter_timers[SyLwrpClient::LastTypeMeter];
+  int lwrp_silence_threshold;
+  int lwrp_silence_timeout;
+  int lwrp_clip_threshold;
+  int lwrp_clip_timeout;
 };
 
 
