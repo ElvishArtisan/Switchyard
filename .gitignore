@@ -28,6 +28,7 @@ rc.syd
 tests/sycapture
 tests/syd
 tests/sygpiotest
+tests/symetertest
 tests/synodetest
 tests/syplay
 tests/sytone

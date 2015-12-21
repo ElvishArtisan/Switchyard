@@ -8,7 +8,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) @QT4_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) @QT4_CFLAGS@ @QT4GUI_CFLAGS@
 LIBS = -L$(top_srcdir)/sy @QT4_LIBS@
 MOC = @MOC@
 
@@ -28,6 +28,7 @@ moc_%.cpp:	%.h
 noinst_PROGRAMS = sycapture\
                   syd\
                   sygpiotest\
+                  symetertest\
                   synodetest\
                   syplay\
                   sytone
@@ -46,6 +47,13 @@ dist_sygpiotest_SOURCES = sygpiotest.cpp sygpiotest.h
 nodist_sygpiotest_SOURCES = moc_sygpiotest.cpp
 sygpiotest_LDADD = @SWITCHYARDLIBS@
 sygpiotest_LDFLAGS = @SWITCHYARDFLAGS@
+
+dist_symetertest_SOURCES = playmeter.cpp playmeter.h\
+                           symetertest.cpp symetertest.h
+nodist_symetertest_SOURCES = moc_playmeter.cpp\
+                             moc_symetertest.cpp
+symetertest_LDADD = @SWITCHYARDLIBS@ @QT4GUI_LIBS@
+symetertest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_synodetest_SOURCES = synodetest.cpp synodetest.h
 nodist_synodetest_SOURCES = moc_synodetest.cpp

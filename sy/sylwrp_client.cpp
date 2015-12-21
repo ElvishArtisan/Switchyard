@@ -35,6 +35,17 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
 	  this,SLOT(connectionTimeoutData()));
 
   //
+  // Meter Timers
+  //
+  lwrp_meter_timers[SyLwrpClient::InputMeter]=new QTimer(this);
+  connect(lwrp_meter_timers[SyLwrpClient::InputMeter],SIGNAL(timeout()),
+	  this,SLOT(inputMeterData()));
+  lwrp_meter_timers[SyLwrpClient::OutputMeter]=new QTimer(this);
+  connect(lwrp_meter_timers[SyLwrpClient::OutputMeter],SIGNAL(timeout()),
+	  this,SLOT(outputMeterData()));
+
+
+  //
   // Watchdog Timers
   //
   lwrp_watchdog_retry_timer=new QTimer(this);
@@ -56,6 +67,8 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
 
 SyLwrpClient::~SyLwrpClient()
 {
+  delete lwrp_meter_timers[SyLwrpClient::InputMeter];
+  delete lwrp_meter_timers[SyLwrpClient::OutputMeter];
   delete lwrp_node;
   delete lwrp_socket;
   delete lwrp_watchdog_interval_timer;
@@ -333,6 +346,18 @@ void SyLwrpClient::setGpoFollow(int slot,bool state)
 }
 
 
+void SyLwrpClient::startMeter(MeterType type)
+{
+  lwrp_meter_timers[type]->start(SYLWRP_CLIENT_METER_INTERVAL);
+}
+
+
+void SyLwrpClient::stopMeter(MeterType type)
+{
+  lwrp_meter_timers[type]->stop();
+}
+
+
 QHostAddress SyLwrpClient::nicAddress() const
 {
   return lwrp_nic_address;
@@ -484,6 +509,22 @@ void SyLwrpClient::watchdogRetryData()
 }
 
 
+void SyLwrpClient::inputMeterData()
+{
+  if(lwrp_connected) {
+    SendCommand("MTR ICH");
+  }
+}
+
+
+void SyLwrpClient::outputMeterData()
+{
+  if(lwrp_connected) {
+    SendCommand("MTR OCH");
+  }
+}
+
+
 void SyLwrpClient::SendCommand(const QString &cmd)
 {
   lwrp_socket->write((const char *)(cmd+"\r\n").toAscii());
@@ -521,6 +562,10 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
   }
   if(f0[0]=="IP") {
     ProcessIP(f0);
+    handled=true;
+  }
+  if(f0[0]=="MTR") {
+    ProcessMTR(f0);
     handled=true;
   }
   if((f0[0]=="BEGIN")||(f0[0]=="END")) {
@@ -778,6 +823,41 @@ void SyLwrpClient::ProcessIFC(const QStringList &cmds)
       }
       else {
 	lwrp_nic_address=addr;
+      }
+    }
+  }
+}
+
+
+void SyLwrpClient::ProcessMTR(const QStringList &cmds)
+{
+  QHostAddress addr;
+  unsigned slotnum;
+  bool ok=false;
+  int16_t peak_lvls[SWITCHYARD_MAX_CHANNELS];
+  int16_t rms_lvls[SWITCHYARD_MAX_CHANNELS];
+  QStringList f0;
+
+  if(cmds.size()==5) {
+    slotnum=cmds[2].toUInt(&ok)-1;
+    if(ok) {
+      f0=cmds[3].split(":");
+      if(f0.size()==3) {
+	peak_lvls[0]=f0[1].toInt();
+	peak_lvls[1]=f0[2].toInt();
+      }
+      f0=cmds[4].split(":");
+      if(f0.size()==3) {
+	rms_lvls[0]=f0[1].toInt();
+	rms_lvls[1]=f0[2].toInt();
+      }
+      if(cmds[1]=="ICH") {
+	emit meterUpdate(lwrp_id,SyLwrpClient::InputMeter,slotnum,
+			 peak_lvls,rms_lvls);
+      }
+      if(cmds[1]=="OCH") {
+	emit meterUpdate(lwrp_id,SyLwrpClient::OutputMeter,slotnum,
+			 peak_lvls,rms_lvls);
       }
     }
   }

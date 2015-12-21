@@ -27,10 +27,13 @@
 #include <sy/sysource.h>
 #include <sy/syrouting.h>
 
+#define SYLWRP_CLIENT_METER_INTERVAL 100
+
 class SyLwrpClient :public QObject
 {
   Q_OBJECT;
  public:
+  enum MeterType {InputMeter=0,OutputMeter=1,LastTypeMeter=2};
   SyLwrpClient(unsigned id,QObject *parent=0);
   ~SyLwrpClient();
   QString deviceName() const;
@@ -71,6 +74,8 @@ class SyLwrpClient :public QObject
   void setGpoName(int slot,const QString &str);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,int s_slot);
   void setGpoFollow(int slot,bool state);
+  void startMeter(MeterType type);
+  void stopMeter(MeterType type);
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
@@ -88,6 +93,8 @@ class SyLwrpClient :public QObject
 		  const SyGpioBundle &bundle);
   void gpoChanged(unsigned id,int slotnum,const SyNode &node,const SyGpo &gpo);
   void nicAddressChanged(unsigned id,const QHostAddress &nicaddr);
+  void meterUpdate(unsigned id,SyLwrpClient::MeterType type,unsigned slotnum,
+		   int16_t *peak_lvls,int16_t *rms_lvls);
 
  private slots:
   void connectedData();
@@ -95,9 +102,10 @@ class SyLwrpClient :public QObject
   void errorData(QAbstractSocket::SocketError err);
   void readyReadData();
   void connectionTimeoutData();
-
   void watchdogIntervalData();
   void watchdogRetryData();
+  void inputMeterData();
+  void outputMeterData();
 
  private:
   void SendCommand(const QString &cmd);
@@ -110,6 +118,7 @@ class SyLwrpClient :public QObject
   void ProcessCFG(const QStringList &cmds);
   void ProcessIP(const QStringList &cmds);
   void ProcessIFC(const QStringList &cmds);
+  void ProcessMTR(const QStringList &cmds);
   int GetWatchdogInterval() const;
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
@@ -132,6 +141,7 @@ class SyLwrpClient :public QObject
   QTimer *lwrp_watchdog_retry_timer;
   bool lwrp_watchdog_state;
   QAbstractSocket::SocketError lwrp_connection_error;
+  QTimer *lwrp_meter_timers[SyLwrpClient::LastTypeMeter];
 };
 
 
