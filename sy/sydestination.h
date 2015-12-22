@@ -12,7 +12,9 @@
 #include <QHostAddress>
 #include <QString>
 
-class SyDestination
+#include <sy/syendpoint.h>
+
+class SyDestination : public SyEndPoint
 {
  public:
   SyDestination();

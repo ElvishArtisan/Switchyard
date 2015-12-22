@@ -93,8 +93,8 @@ void StatusLight::paintEvent(QPaintEvent *e)
       p->setBrush(Qt::green);
     }
     else {
-      p->setPen(Qt::red);
-      p->setBrush(Qt::red);
+      p->setPen(Qt::lightGray);
+      p->setBrush(Qt::lightGray);
     }
   }
   else {

@@ -37,11 +37,8 @@ class MainWidget : public QMainWindow
 			  unsigned slotnum,int chan,bool state);
   void audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 			     unsigned slotnum,int chan,bool state);
-  void clipThresholdChangedData(int db);
-  void clipTimeoutChangedData(int secs);
-  void silenceThresholdChangedData(int db);
-  void silenceTimeoutChangedData(int secs);
-  
+  void clipChangedData(int n);
+  void silenceChangedData(int n);
 
  protected:
   void resizeEvent(QResizeEvent *e);

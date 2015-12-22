@@ -390,3 +390,15 @@
 	and 'sy/sylwrp_client.h'.
 	* Added a 'StatusLight' class in 'tests/statuslight.cpp' and
 	'tests/statuslight.h'.
+2015-12-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'SyEndPoint' class in 'sy/syendpoint.cpp' and
+	'sy/syendpoint.h'.
+	* Removed 'SyLwrpClient::silenceThreshold()',
+	'SyLwrpClient::setSilenceThreshold()',
+	'SyLwrpClient::silenceTimeout()', 'SyLwrpClient::setSilenceTimeout()',
+	'SyLwrpClient::clipThreshold()', 'SyLwrpClient::setClipThreshold()',
+	'SyLwrpClient::clipTimeout()' and 'SyLwrpClient::setClipTimeout()'
+	methods in 'sy/sylwrp_client.cpp' and 'sy/sylwrpclient.h'.
+	* Added 'SyLwrpClient::setClipMonitor()' and
+	'SyLwrpClient::setSilenceMonitor()' methods in
+	methods in 'sy/sylwrp_client.cpp' and 'sy/sylwrpclient.h'.

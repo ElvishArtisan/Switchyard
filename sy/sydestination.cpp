@@ -11,6 +11,7 @@
 #include "sydestination.h"
 
 SyDestination::SyDestination()
+  : SyEndPoint()
 {
   dst_channels=2;
 }

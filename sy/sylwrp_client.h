@@ -74,23 +74,15 @@ class SyLwrpClient :public QObject
   void setGpoName(int slot,const QString &str);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,int s_slot);
   void setGpoFollow(int slot,bool state);
+  void setClipMonitor(int slot,MeterType type,int lvl,int msec);
+  void setSilenceMonitor(int slot,MeterType type,int lvl,int msec);
   void startMeter(MeterType type);
   void stopMeter(MeterType type);
-  int silenceThreshold() const;
-  int silenceTimeout() const;
-  int clipThreshold() const;
-  int clipTimeout() const;
   QHostAddress nicAddress() const;
   void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
 		     bool persistent=false);
   void close();
-
- public slots:
-  void setSilenceThreshold(int lvl);
-  void setSilenceTimeout(int msec);
-  void setClipThreshold(int lvl);
-  void setClipTimeout(int msec);
 
  signals:
   void connected(unsigned id,bool state);
@@ -157,10 +149,6 @@ class SyLwrpClient :public QObject
   bool lwrp_watchdog_state;
   QAbstractSocket::SocketError lwrp_connection_error;
   QTimer *lwrp_meter_timers[SyLwrpClient::LastTypeMeter];
-  int lwrp_silence_threshold;
-  int lwrp_silence_timeout;
-  int lwrp_clip_threshold;
-  int lwrp_clip_timeout;
 };
 
 

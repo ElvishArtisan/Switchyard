@@ -12,7 +12,9 @@
 #include <QHostAddress>
 #include <QString>
 
-class SySource
+#include <sy/syendpoint.h>
+
+class SySource : public SyEndPoint
 {
  public:
   SySource(const QHostAddress &s_addr,const QString &name,bool enabled);

@@ -9,6 +9,7 @@
 #include "sysource.h"
 
 SySource::SySource(const QHostAddress &s_addr,const QString &name,bool enabled)
+  : SyEndPoint()
 {
   src_stream_address=s_addr;
   src_name=name;
@@ -20,6 +21,7 @@ SySource::SySource(const QHostAddress &s_addr,const QString &name,bool enabled)
 
 
 SySource::SySource()
+  : SyEndPoint()
 {
 }
 

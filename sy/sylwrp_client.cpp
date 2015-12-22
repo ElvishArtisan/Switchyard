@@ -19,10 +19,6 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_watchdog_state=false;
   lwrp_id=id;
   lwrp_persistent=false;
-  lwrp_silence_threshold=0;
-  lwrp_silence_timeout=0;
-  lwrp_clip_threshold=0;
-  lwrp_clip_timeout=0;
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
@@ -350,6 +346,54 @@ void SyLwrpClient::setGpoFollow(int slot,bool state)
 }
 
 
+void SyLwrpClient::setClipMonitor(int slot,SyLwrpClient::MeterType type,
+				  int lvl,int msec)
+{
+  switch(type) {
+  case SyLwrpClient::InputMeter:
+    lwrp_sources[slot]->setClipThreshold(lvl);
+    lwrp_sources[slot]->setClipTimeout(msec);
+    SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME: %d",
+				  slot+1,lvl,msec));
+    break;
+
+  case SyLwrpClient::OutputMeter:
+    lwrp_destinations[slot]->setClipThreshold(lvl);
+    lwrp_destinations[slot]->setClipTimeout(msec);
+    SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME: %d",
+				  slot+1,lvl,msec));
+    break;
+
+  case SyLwrpClient::LastTypeMeter:
+    break;
+  }
+}
+
+
+void SyLwrpClient::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
+				     int lvl,int msec)
+{
+  switch(type) {
+  case SyLwrpClient::InputMeter:
+    lwrp_sources[slot]->setSilenceThreshold(lvl);
+    lwrp_sources[slot]->setSilenceTimeout(msec);
+    SendCommand(QString().sprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME:%d",
+				  slot+1,lvl,msec));
+    break;
+
+  case SyLwrpClient::OutputMeter:
+    lwrp_destinations[slot]->setSilenceThreshold(lvl);
+    lwrp_destinations[slot]->setSilenceTimeout(msec);
+    SendCommand(QString().sprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME:%d",
+				  slot+1,lvl,msec));
+    break;
+
+  case SyLwrpClient::LastTypeMeter:
+    break;
+  }
+}
+
+
 void SyLwrpClient::startMeter(MeterType type)
 {
   lwrp_meter_timers[type]->start(SYLWRP_CLIENT_METER_INTERVAL);
@@ -359,30 +403,6 @@ void SyLwrpClient::startMeter(MeterType type)
 void SyLwrpClient::stopMeter(MeterType type)
 {
   lwrp_meter_timers[type]->stop();
-}
-
-
-int SyLwrpClient::silenceThreshold() const
-{
-  return lwrp_silence_threshold;
-}
-
-
-int SyLwrpClient::silenceTimeout() const
-{
-  return lwrp_silence_timeout;
-}
-
-
-int SyLwrpClient::clipThreshold() const
-{
-  return lwrp_clip_threshold;
-}
-
-
-int SyLwrpClient::clipTimeout() const
-{
-  return lwrp_clip_timeout;
 }
 
 
@@ -413,94 +433,6 @@ void SyLwrpClient::connectToHost(const QHostAddress &addr,uint16_t port,
 void SyLwrpClient::close()
 {
   lwrp_socket->close();
-}
-
-
-void SyLwrpClient::setSilenceThreshold(int lvl)
-{
-  if(lvl!=lwrp_silence_threshold) {
-    lwrp_silence_threshold=lvl;
-    if(lwrp_silence_threshold!=0) {
-      for(unsigned i=0;i<lwrp_node->srcSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME: %d",
-				      i+1,
-				      lwrp_silence_threshold,
-				      lwrp_silence_timeout));
-      }
-      for(unsigned i=0;i<lwrp_node->dstSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME: %d",
-				      i+1,
-				      lwrp_silence_threshold,
-				      lwrp_silence_timeout));
-      }
-    }
-  }
-}
-
-
-void SyLwrpClient::setSilenceTimeout(int msec)
-{
-  if(msec!=lwrp_silence_timeout) {
-    lwrp_silence_timeout=msec;
-    if(lwrp_silence_threshold!=0) {
-      for(unsigned i=0;i<lwrp_node->srcSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME: %d",
-				      i+1,
-				      lwrp_silence_threshold,
-				      lwrp_silence_timeout));
-      }
-      for(unsigned i=0;i<lwrp_node->dstSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME: %d",
-				      i+1,
-				      lwrp_silence_threshold,
-				      lwrp_silence_timeout));
-      }
-    }
-  }
-}
-
-
-void SyLwrpClient::setClipThreshold(int lvl)
-{
-  if(lvl!=lwrp_clip_threshold) {
-    lwrp_clip_threshold=lvl;
-    if(lwrp_clip_threshold!=0) {
-      for(unsigned i=0;i<lwrp_node->srcSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				      i+1,
-				      lwrp_clip_threshold,
-				      lwrp_clip_timeout));
-      }
-      for(unsigned i=0;i<lwrp_node->dstSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				      i+1,
-				      lwrp_clip_threshold,
-				      lwrp_clip_timeout));
-      }
-    }
-  }
-}
-
-
-void SyLwrpClient::setClipTimeout(int msec)
-{
-  if(msec!=lwrp_clip_timeout) {
-    lwrp_clip_timeout=msec;
-    if(lwrp_clip_threshold!=0) {
-      for(unsigned i=0;i<lwrp_node->srcSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				      i+1,
-				      lwrp_clip_threshold,
-				      lwrp_clip_timeout));
-      }
-      for(unsigned i=0;i<lwrp_node->dstSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				      i+1,
-				      lwrp_clip_threshold,
-				      lwrp_clip_timeout));
-      }
-    }
-  }
 }
 
 
@@ -771,32 +703,30 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
     }
     SendCommand("IP");
 
-    if(lwrp_silence_threshold!=0) {
-      for(unsigned i=0;i<lwrp_node->srcSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME: %d",
-				      i+1,
-				      lwrp_silence_threshold,
-				      lwrp_silence_timeout));
+    for(unsigned i=0;i<lwrp_sources.size();i++) {
+      SySource *src=lwrp_sources[i];
+      if(src->clipThreshold()!=0) {
+	SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d",
+				      i+1,src->clipThreshold(),
+				      src->clipTimeout()));
       }
-      for(unsigned i=0;i<lwrp_node->dstSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME: %d",
-				      i+1,
-				      lwrp_silence_threshold,
-				      lwrp_silence_timeout));
+      if(src->silenceThreshold()!=0) {
+	SendCommand(QString().sprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME:%d",
+				      i+1,src->silenceThreshold(),
+				      src->silenceTimeout()));
       }
     }
-    if(lwrp_clip_threshold!=0) {
-      for(unsigned i=0;i<lwrp_node->srcSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				      i+1,
-				      lwrp_clip_threshold,
-				      lwrp_clip_timeout));
+    for(unsigned i=0;i<lwrp_destinations.size();i++) {
+      SyDestination *dst=lwrp_destinations[i];
+      if(dst->clipThreshold()!=0) {
+	SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d",
+				      i+1,dst->clipThreshold(),
+				      dst->clipTimeout()));
       }
-      for(unsigned i=0;i<lwrp_node->dstSlotQuantity();i++) {
-	SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				      i+1,
-				      lwrp_clip_threshold,
-				      lwrp_clip_timeout));
+      if(dst->silenceThreshold()!=0) {
+	SendCommand(QString().sprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME:%d",
+				      i+1,dst->silenceThreshold(),
+				      dst->silenceTimeout()));
       }
     }
   }

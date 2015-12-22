@@ -50,7 +50,7 @@ MainWidget::MainWidget(QWidget *parent)
   meter_clip_threshold_spin->setRange(-100,0);
   meter_clip_threshold_spin->setSuffix(tr("dBFS"));
   connect(meter_clip_threshold_spin,SIGNAL(valueChanged(int)),
-	  this,SLOT(clipThresholdChangedData(int)));
+	  this,SLOT(clipChangedData(int)));
 
   meter_clip_timeout_label=new QLabel(tr("Clip Timeout"),this);
   meter_clip_timeout_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -58,7 +58,7 @@ MainWidget::MainWidget(QWidget *parent)
   meter_clip_timeout_spin->setRange(0,60);
   meter_clip_timeout_spin->setSuffix(tr("S"));
   connect(meter_clip_timeout_spin,SIGNAL(valueChanged(int)),
-	  this,SLOT(clipTimeoutChangedData(int)));
+	  this,SLOT(clipChangedData(int)));
 
   meter_input_label=new QLabel(tr("Input Levels"),this);
   meter_input_label->setFont(meter_label_font);
@@ -77,7 +77,7 @@ MainWidget::MainWidget(QWidget *parent)
   meter_silence_threshold_spin->setRange(-100,0);
   meter_silence_threshold_spin->setSuffix(tr("dBFS"));
   connect(meter_silence_threshold_spin,SIGNAL(valueChanged(int)),
-	  this,SLOT(silenceThresholdChangedData(int)));
+	  this,SLOT(silenceChangedData(int)));
 
   meter_silence_timeout_label=new QLabel(tr("Silence Timeout"),this);
   meter_silence_timeout_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -85,7 +85,7 @@ MainWidget::MainWidget(QWidget *parent)
   meter_silence_timeout_spin->setRange(0,60);
   meter_silence_timeout_spin->setSuffix(tr("S"));
   connect(meter_silence_timeout_spin,SIGNAL(valueChanged(int)),
-	  this,SLOT(silenceTimeoutChangedData(int)));
+	  this,SLOT(silenceChangedData(int)));
 
   meter_output_label=new QLabel(tr("Output Levels"),this);
   meter_output_label->setFont(meter_label_font);
@@ -112,10 +112,6 @@ MainWidget::MainWidget(QWidget *parent)
 					      unsigned,int,bool)),
 	  this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
 					  unsigned,int,bool)));
-  meter_clip_threshold_spin->setValue(meter_node->clipThreshold());
-  meter_clip_timeout_spin->setValue(meter_node->clipTimeout());
-  meter_silence_threshold_spin->setValue(meter_node->silenceThreshold());
-  meter_silence_timeout_spin->setValue(meter_node->silenceTimeout());
 
   meter_node->connectToHost(QHostAddress(node),SWITCHYARD_LWRP_PORT,"",true);
 
@@ -254,27 +250,33 @@ void MainWidget::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 }
 
 
-void MainWidget::clipThresholdChangedData(int db)
+void MainWidget::clipChangedData(int n)
 {
-  meter_node->setClipThreshold(db*10);
+  for(unsigned i=0;i<meter_node->srcSlots();i++) {
+    meter_node->setClipMonitor(i,SyLwrpClient::InputMeter,
+			       10*meter_clip_threshold_spin->value(),
+			       1000*meter_clip_timeout_spin->value());
+  }
+  for(unsigned i=0;i<meter_node->dstSlots();i++) {
+    meter_node->setClipMonitor(i,SyLwrpClient::OutputMeter,
+			       10*meter_clip_threshold_spin->value(),
+			       1000*meter_clip_timeout_spin->value());
+  }
 }
 
 
-void MainWidget::clipTimeoutChangedData(int secs)
+void MainWidget::silenceChangedData(int n)
 {
-  meter_node->setClipTimeout(secs*1000);
-}
-
-
-void MainWidget::silenceThresholdChangedData(int db)
-{
-  meter_node->setSilenceThreshold(db*10);
-}
-
-
-void MainWidget::silenceTimeoutChangedData(int secs)
-{
-  meter_node->setSilenceTimeout(secs*1000);
+  for(unsigned i=0;i<meter_node->srcSlots();i++) {
+    meter_node->setSilenceMonitor(i,SyLwrpClient::InputMeter,
+			       10*meter_silence_threshold_spin->value(),
+			       1000*meter_silence_timeout_spin->value());
+  }
+  for(unsigned i=0;i<meter_node->dstSlots();i++) {
+    meter_node->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
+			       10*meter_silence_threshold_spin->value(),
+			       1000*meter_silence_timeout_spin->value());
+  }
 }
 
 

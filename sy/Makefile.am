@@ -29,6 +29,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 sycmdswitch.cpp sycmdswitch.h\
                                 syconfig.h\
                                 sydestination.cpp sydestination.h\
+                                syendpoint.cpp syendpoint.h\
                                 sygpo.cpp sygpo.h\
                                 sygpiobundle.cpp sygpiobundle.h\
                                 sygpio_server.cpp sygpio_server.h\
