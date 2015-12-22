@@ -13,6 +13,7 @@ SySource::SySource(const QHostAddress &s_addr,const QString &name,bool enabled)
 {
   src_stream_address=s_addr;
   src_name=name;
+  src_label="";
   src_enabled=enabled;
   src_channels=2;
   src_packet_size=240;
@@ -47,6 +48,18 @@ QString SySource::name() const
 void SySource::setName(const QString &name)
 {
   src_name=name;
+}
+
+
+QString SySource::label() const
+{
+  return src_label;
+}
+
+
+void SySource::setLabel(const QString &str)
+{
+  src_label=str;
 }
 
 

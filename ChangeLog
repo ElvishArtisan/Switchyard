@@ -402,3 +402,8 @@
 	* Added 'SyLwrpClient::setClipMonitor()' and
 	'SyLwrpClient::setSilenceMonitor()' methods in
 	methods in 'sy/sylwrp_client.cpp' and 'sy/sylwrpclient.h'.
+2015-12-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SySource::label()' and 'SySource::setLabel()' methods in
+	'sy/sysource.cpp' and 'sy/sysource.h'.
+	* Added 'SyLwrpClient::srcLabel()' and 'SyLwrpClient::setSrcLabel()'
+	methods in 'sy/sylwrp_client.cpp' and 'sy/sylwrpclient.h'.

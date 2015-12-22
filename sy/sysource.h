@@ -23,6 +23,8 @@ class SySource : public SyEndPoint
   void setStreamAddress(const QHostAddress &addr);
   QString name() const;
   void setName(const QString &name);
+  QString label() const;
+  void setLabel(const QString &str);
   bool enabled() const;
   void setEnabled(bool state);
   unsigned channels() const;
@@ -35,6 +37,7 @@ class SySource : public SyEndPoint
  private:
   QHostAddress src_stream_address;
   QString src_name;
+  QString src_label;
   bool src_enabled;
   unsigned src_channels;
   unsigned src_packet_size;

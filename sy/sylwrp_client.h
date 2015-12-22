@@ -50,6 +50,8 @@ class SyLwrpClient :public QObject
   void setSrcAddress(int slot,const QString &addr);
   QString srcName(int slot) const;
   void setSrcName(int slot,const QString &str);
+  QString srcLabel(int slot) const;
+  void setSrcLabel(int slot,const QString &str);
   bool srcEnabled(int slot) const;
   void setSrcEnabled(int slot,bool state);
   unsigned srcChannels(int slot) const;

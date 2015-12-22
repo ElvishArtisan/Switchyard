@@ -165,6 +165,20 @@ void SyLwrpClient::setSrcName(int slot,const QString &str)
 }
 
 
+QString SyLwrpClient::srcLabel(int slot) const
+{
+  return lwrp_sources[slot]->label();
+}
+
+
+void SyLwrpClient::setSrcLabel(int slot,const QString &str)
+{
+  QString cmd=QString().sprintf("SRC %d ",slot+1)+
+    "LABL:\""+str+"\"";
+  SendCommand(cmd);
+}
+
+
 bool SyLwrpClient::srcEnabled(int slot) const
 {
   return lwrp_sources[slot]->enabled();
@@ -754,6 +768,9 @@ void SyLwrpClient::ProcessSRC(const QStringList &cmds)
       }
       if(f1[0]=="PSNM") {
 	src->setName(f1[1].replace("\"",""));
+      }
+      if(f1[0]=="LABL") {
+	src->setLabel(f1[1].replace("\"",""));
       }
       if(f1[0]=="RTPE") {
 	src->setEnabled(f1[1]=="1");
