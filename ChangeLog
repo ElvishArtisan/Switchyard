@@ -407,3 +407,6 @@
 	'sy/sysource.cpp' and 'sy/sysource.h'.
 	* Added 'SyLwrpClient::srcLabel()' and 'SyLwrpClient::setSrcLabel()'
 	methods in 'sy/sylwrp_client.cpp' and 'sy/sylwrpclient.h'.
+2015-12-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'sy/syendpoint.h' to the 'include_HEADERS' rule in
+	'sy/Makefile.am'.

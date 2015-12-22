@@ -63,6 +63,7 @@ include_HEADERS = syadv_packet.h\
                   syadv_source.h\
                   syadv_tag.h\
                   syastring.h\
+                  syendpoint.h\
                   sygpiobundle.h\
                   syclock.h\
                   sycmdswitch.h\
