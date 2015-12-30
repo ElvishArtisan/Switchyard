@@ -410,3 +410,6 @@
 2015-12-22 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'sy/syendpoint.h' to the 'include_HEADERS' rule in
 	'sy/Makefile.am'.
+2015-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 3:0:0.
+	* Incremented the package version to 0.11.0.
