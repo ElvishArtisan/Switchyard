@@ -473,13 +473,20 @@ void SyLwrpClient::disconnectedData()
 
 void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
 {
-  emit connectionError(lwrp_id,err);
+  if(lwrp_connection_error!=err) {
+    emit connectionError(lwrp_id,err);
+    lwrp_connection_error=err;
+  }
   if(lwrp_socket->state()==QAbstractSocket::ConnectedState) {
     lwrp_socket->disconnect();
-    emit connected(lwrp_id,false);
+    if(!lwrp_connected) {
+      lwrp_connected=false;
+      emit connected(lwrp_id,false);
+    }
   }
   if(lwrp_persistent) {
-    watchdogRetryData();
+    lwrp_watchdog_retry_timer->stop();
+    lwrp_watchdog_retry_timer->start(0);
   }
 }
 
@@ -557,15 +564,17 @@ void SyLwrpClient::watchdogRetryData()
     delete lwrp_gpos[i];
   }
   lwrp_gpos.clear();
-  lwrp_connected=false;
+  //  lwrp_connected=false;
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
   connect(lwrp_socket,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
-
-  emit connected(lwrp_id,false);
+  if(lwrp_connected) {
+    lwrp_connected=false;
+    emit connected(lwrp_id,false);
+  }
 
   connectToHost(lwrp_host_address,lwrp_port,lwrp_password,true);
 }
@@ -898,12 +907,15 @@ void SyLwrpClient::ProcessIP(const QStringList &cmds)
     lwrp_node->setHostName(cmds[8]);
     lwrp_node->setHostAddress(QHostAddress(cmds[2]));
   }
-  lwrp_connected=true;
+  //  lwrp_connected=true;
   lwrp_watchdog_state=true;
   if(lwrp_persistent) {
     lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
   }
-  emit connected(lwrp_id,true);
+  if(!lwrp_connected) {
+    lwrp_connected=true;
+    emit connected(lwrp_id,true);
+  }
 }
 
 
