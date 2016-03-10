@@ -12,6 +12,7 @@
 #include <QCoreApplication>
 
 #include <sy/sycmdswitch.h>
+#include <sy/symcastsocket.h>
 #include <sy/syrouting.h>
 
 #include "synodetest.h"
@@ -153,7 +154,8 @@ void MainObject::connectedData(unsigned id,bool state)
 
 void MainObject::connectionErrorData(unsigned id,QAbstractSocket::SocketError err)
 {
-  fprintf(stderr,"SIGNAL: connectionError(%u,%u)\n",id,err);
+  fprintf(stderr,"SIGNAL: connectionError(%u,%u) [%s]\n",id,err,
+	  (const char *)SyMcastSocket::socketErrorText(err).toUtf8());
 }
 
 

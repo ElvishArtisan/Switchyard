@@ -416,3 +416,6 @@
 2016-03-10 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'sy/sylwrp_client.cpp' that threw a segfault when
 	a node disconnected.
+2016-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyMcastSocket::socketErrorText()' static method in
+	'sy/symcastsocket.cpp' and 'sy/symcastsocket.h'.

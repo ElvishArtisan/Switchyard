@@ -228,6 +228,59 @@ void SyMcastSocket::unsubscribe(const QString &addr)
 }
 
 
+QString SyMcastSocket::socketErrorText(QAbstractSocket::SocketError err)
+{
+  QString ret=tr("Unknown socket error")+QString().sprintf(" [%u]",err);
+
+  switch(err) {
+  case QAbstractSocket::ConnectionRefusedError:
+    ret=tr("connection refused");
+    break;
+
+  case QAbstractSocket::RemoteHostClosedError:
+    ret=tr("remote host closed connection");
+    break;
+
+  case QAbstractSocket::HostNotFoundError:
+    ret=tr("host not found");
+    break;
+
+  case QAbstractSocket::SocketAccessError:
+    ret=tr("socket access error");
+    break;
+
+  case QAbstractSocket::SocketTimeoutError:
+    ret=tr("operation timed out");
+    break;
+
+  case QAbstractSocket::DatagramTooLargeError:
+    ret=tr("datagram too large");
+    break;
+
+  case QAbstractSocket::NetworkError:
+    ret=tr("network error");
+    break;
+
+  case QAbstractSocket::AddressInUseError:
+    ret=tr("address in use");
+    break;
+
+  case QAbstractSocket::SocketAddressNotAvailableError:
+    ret=tr("address not available");
+    break;
+
+  case QAbstractSocket::UnsupportedSocketOperationError:
+    ret=tr("unsupported socket operation");
+    break;
+
+  default:
+    break;
+  }
+
+  return ret;
+}
+
+
 void SyMcastSocket::readyReadData()
 {
   emit readyRead();

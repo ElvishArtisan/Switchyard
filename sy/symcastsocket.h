@@ -37,6 +37,7 @@ class SyMcastSocket : public QObject
   void subscribe(const QString &addr);
   void unsubscribe(const QHostAddress &addr);
   void unsubscribe(const QString &addr);
+  static QString socketErrorText(QAbstractSocket::SocketError err);
 
  signals:
   void readyRead();
