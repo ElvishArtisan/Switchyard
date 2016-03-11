@@ -419,3 +419,6 @@
 2016-03-10 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyMcastSocket::socketErrorText()' static method in
 	'sy/symcastsocket.cpp' and 'sy/symcastsocket.h'.
+2016-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 4:0:1.
+	* Incremented the package version to 0.11.1.
