@@ -19,6 +19,7 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_watchdog_state=false;
   lwrp_id=id;
   lwrp_persistent=false;
+  lwrp_connection_error=(QAbstractSocket::SocketError)-2;
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
