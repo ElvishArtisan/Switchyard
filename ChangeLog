@@ -425,3 +425,6 @@
 2016-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'sy/sylwrp_client.cpp' that caused an infinite loop
 	when the LWRP connection attempt was refused by the remote device.
+2016-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 4:1:1.
+	* Incremented the package version to 0.11.2.
