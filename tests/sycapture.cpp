@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-//#include <QApplication>  // So we get qApp with Qt<=4.2
+#include <QApplication>  // So we get qApp with Qt<=4.2
 #include <QCoreApplication>
 #include <QTimer>
 

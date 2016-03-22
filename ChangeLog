@@ -428,3 +428,5 @@
 2016-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 4:1:1.
 	* Incremented the package version to 0.11.2.
+2016-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed various bugs that broke the build under RHEL 5.
