@@ -19,6 +19,7 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_watchdog_state=false;
   lwrp_id=id;
   lwrp_persistent=false;
+  lwrp_timeout_interval=-1;
   lwrp_connection_error=(QAbstractSocket::SocketError)-2;
 
   lwrp_socket=new QTcpSocket(this);
@@ -45,6 +46,12 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   connect(lwrp_meter_timers[SyLwrpClient::OutputMeter],SIGNAL(timeout()),
 	  this,SLOT(outputMeterData()));
 
+  //
+  // Timeout Timer
+  //
+  lwrp_timeout_timer=new QTimer(this);
+  lwrp_timeout_timer->setSingleShot(true);
+  connect(lwrp_timeout_timer,SIGNAL(timeout()),this,SLOT(timeoutData()));
 
   //
   // Watchdog Timers
@@ -72,6 +79,7 @@ SyLwrpClient::~SyLwrpClient()
   delete lwrp_meter_timers[SyLwrpClient::OutputMeter];
   delete lwrp_node;
   delete lwrp_socket;
+  delete lwrp_timeout_timer;
   delete lwrp_watchdog_interval_timer;
   delete lwrp_watchdog_retry_timer;
   delete lwrp_connection_timer;
@@ -442,6 +450,21 @@ void SyLwrpClient::connectToHost(const QHostAddress &addr,uint16_t port,
   lwrp_password=pwd;
   lwrp_persistent=persistent;
   lwrp_socket->connectToHost(addr.toString(),port);
+  if(lwrp_timeout_interval>0) {
+    lwrp_timeout_timer->start(lwrp_timeout_interval);
+  }
+}
+
+
+int SyLwrpClient::timeoutInterval() const
+{
+  return lwrp_timeout_interval;
+}
+
+
+void SyLwrpClient::setTimeoutInterval(int msec)
+{
+  lwrp_timeout_interval=msec;
 }
 
 
@@ -455,6 +478,7 @@ void SyLwrpClient::connectedData()
 {
   QString cmd="LOGIN";
 
+  lwrp_timeout_timer->stop();
   lwrp_connection_error=(QAbstractSocket::SocketError)-2;
   if(!lwrp_password.isEmpty()) {
     cmd+=" "+lwrp_password;
@@ -489,6 +513,12 @@ void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
     lwrp_watchdog_retry_timer->stop();
     lwrp_watchdog_retry_timer->start(0);
   }
+}
+
+
+void SyLwrpClient::timeoutData()
+{
+  errorData(QAbstractSocket::SocketTimeoutError);
 }
 
 

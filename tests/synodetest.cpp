@@ -43,6 +43,7 @@ MainObject::MainObject(QObject *parent)
   }
 
   node_node=new SyLwrpClient(0,this);
+  node_node->setTimeoutInterval(10000);
   connect(node_node,SIGNAL(connected(unsigned,bool)),
 	  this,SLOT(connectedData(unsigned,bool)));
   connect(node_node,

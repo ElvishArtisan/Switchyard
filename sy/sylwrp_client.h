@@ -84,6 +84,8 @@ class SyLwrpClient :public QObject
   void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
 		     bool persistent=false);
+  int timeoutInterval() const;
+  void setTimeoutInterval(int msec);
   void close();
 
  signals:
@@ -108,6 +110,7 @@ class SyLwrpClient :public QObject
   void connectedData();
   void disconnectedData();
   void errorData(QAbstractSocket::SocketError err);
+  void timeoutData();
   void readyReadData();
   void connectionTimeoutData();
   void watchdogIntervalData();
@@ -151,6 +154,8 @@ class SyLwrpClient :public QObject
   bool lwrp_watchdog_state;
   QAbstractSocket::SocketError lwrp_connection_error;
   QTimer *lwrp_meter_timers[SyLwrpClient::LastTypeMeter];
+  int lwrp_timeout_interval;
+  QTimer *lwrp_timeout_timer;
 };
 
 
