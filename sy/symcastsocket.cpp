@@ -66,12 +66,14 @@ SyMcastSocket::Mode SyMcastSocket::mode() const
 
 bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 {
+  bool ret=true;
+
   if(mcast_recv_socket!=NULL) {
     if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
       SySyslog(LOG_ERR,QString().
 	       sprintf("unable to bind port %u for reading [%s]",
 		       port,strerror(errno)));
-      exit(256);
+      ret=false;
     }    
   }
 
@@ -80,30 +82,32 @@ bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
       SySyslog(LOG_ERR,QString().
 	       sprintf("unable to bind port %u for writing [%s]",
 		       port,strerror(errno)));
-      exit(256);
+      ret=false;
     }
   }
   mcast_iface_address=addr;
-  return true;
+  return ret;
 }
 
 
 bool SyMcastSocket::bind(uint16_t port)
 {
+  bool ret=true;
+
   if(mcast_send_socket!=NULL) {
     SySyslog(LOG_ERR,
      "you must provide an interface address when binding a socket for writing");
-    exit(256);
+    ret=false;
   }
   if(mcast_recv_socket!=NULL) {
     if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
       SySyslog(LOG_ERR,QString().
 	       sprintf("unable to bind port %u for reading [%s]",
 		       port,strerror(errno)));
-      exit(256);
+      ret=false;
     }    
   }
-  return true;
+  return ret;
 }
 
 
