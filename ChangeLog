@@ -444,3 +444,6 @@
 	* Fixed a bug in the 'SyMcastSocket::bind()' methods in
 	'sy/symcastsocket.cpp' that caused the process to exit if the
 	bind() call failed.
+2016-05-11 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 5:1:2.
+	* Incremented the package version to 0.11.5.
