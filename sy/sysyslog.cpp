@@ -6,6 +6,8 @@
 //     All Rights Reserved
 //
 
+#include <stdio.h>
+
 #include "sysyslog.h"
 
 void SyOpenLog(const QString &ident,int option,int facility)
@@ -21,6 +23,8 @@ void SySyslog(int priority,const QString &msg)
 #ifdef WIN32
   fprintf(stderr,"%s\n",(const char *)msg.toAscii());
 #else
-  syslog(priority,"%s",(const char *)msg.toAscii());
+  if(getenv("SWITCHYARD_SUPPRESS_DEBUG")==NULL) {
+    syslog(priority,"%s",(const char *)msg.toAscii());
+  }
 #endif  // WIN32
 }

@@ -3,3 +3,8 @@ This is the README file for the Switchyard package.
 This software comes with ABSOLUTELY NO WARRANTY.  See the file COPYING for
 details.
 
+USEFUL ENVIRONMENTAL VARIABLES
+------------------------------
+
+SWITCHYARD_SUPPRESS_DEBUG=1
+Suppress LOG_DEBUG level messages from Switchyard.
