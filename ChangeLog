@@ -453,3 +453,6 @@
 2016-12-07 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 5:2:2.
 	* Incremented the package version to 0.11.6.
+2016-12-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/sysyslog.cpp' that broke the build on
+	RHEL 6.
