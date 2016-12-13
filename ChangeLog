@@ -472,3 +472,6 @@
 	* Added sygpiotest(1) to the set of installed programs.
 2016-12-13 Fred Gleason <fredg@paravelsystems.com>
 	* Removed syslog calls for GPIO events in 'sy/sygpio_server.cpp'.
+2016-12-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 6:0:3.
+	* Incremented the package version to 0.11.8.
