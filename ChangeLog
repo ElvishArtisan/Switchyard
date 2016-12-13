@@ -477,3 +477,6 @@
 	* Incremented the package version to 0.11.8.
 2016-12-13 Fred Gleason <fredg@paravelsystems.com>
 	* Removed syslog calls for GPIO send events in 'sy/sygpio_server.cpp'.
+2016-12-13 Fred Gleason <fredg@paravelsystems.com>
+	* Removed support for a 'SWITCHYARD_SUPPRESS_DEBUG' environmental
+	variable.

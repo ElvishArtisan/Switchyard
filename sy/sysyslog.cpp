@@ -24,8 +24,6 @@ void SySyslog(int priority,const QString &msg)
 #ifdef WIN32
   fprintf(stderr,"%s\n",(const char *)msg.toAscii());
 #else
-  if(getenv("SWITCHYARD_SUPPRESS_DEBUG")==NULL) {
-    syslog(priority,"%s",(const char *)msg.toAscii());
-  }
+  syslog(priority,"%s",(const char *)msg.toAscii());
 #endif  // WIN32
 }
