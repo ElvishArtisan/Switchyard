@@ -23,8 +23,7 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
-  void gpiReceivedData(int gpi,int line,bool state,bool pulse);
-  void gpoReceivedData(int gpo,int line,bool state,bool pulse);
+  void gpioReceivedData(SyGpioEvent *e);
 
  private:
   SyRouting *gpio_routing;

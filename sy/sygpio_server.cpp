@@ -10,6 +10,64 @@
 #include "sygpio_server.h"
 #include "sysyslog.h"
 
+SyGpioEvent::SyGpioEvent(SyGpioEvent::Type type,const QHostAddress &orig_addr,
+			 uint16_t orig_port,int srcnum,int line,bool state,
+			 bool pulse)
+{
+  event_type=type;
+  event_origin_address=orig_addr;
+  event_origin_port=orig_port;
+  event_source_number=srcnum;
+  event_line=line;
+  event_state=state;
+  event_pulse=pulse;
+}
+
+
+SyGpioEvent::Type SyGpioEvent::type() const
+{
+  return event_type;
+}
+
+
+QHostAddress SyGpioEvent::originAddress() const
+{
+  return event_origin_address;
+}
+
+
+uint16_t SyGpioEvent::originPort() const
+{
+  return event_origin_port;
+}
+
+
+int SyGpioEvent::sourceNumber() const
+{
+  return event_source_number;
+}
+
+
+int SyGpioEvent::line() const
+{
+  return event_line;
+}
+
+
+bool SyGpioEvent::state() const
+{
+  return event_state;
+}
+
+
+bool SyGpioEvent::isPulse() const
+{
+  return event_pulse;
+}
+
+
+
+
 SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   : QObject(parent)
 {
@@ -151,8 +209,10 @@ void SyGpioServer::gpiReadyReadData()
   int n;
   uint32_t serial;
   QHostAddress addr;
+  uint16_t port=0;
+  SyGpioEvent *e=NULL;
 
-  while((n=gpio_gpi_socket->readDatagram(data,1500,&addr))>0) {
+  while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
     //printf("received %d bytes from %s\n",n,
     //   (const char *)addr.toString().toAscii());
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
@@ -164,14 +224,23 @@ void SyGpioServer::gpiReadyReadData()
       //        We assume not here (even though there is a place for one
       //        in the Switchyard API).
       //
+      e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,
+			((0xFF&data[23])<<8)+(0xFF&data[24]),
+		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
+      emit gpioReceived(e);
+      emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+      gpio_routing->setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+      /*
       emit gpiReceived(((0xFF&data[23])<<8)+(0xFF&data[24]),
 		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
       gpio_routing->setGpi(((0xFF&data[23])<<8)+(0xFF&data[24]),
 			   0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
+      */
       SySyslog(LOG_DEBUG,QString().
 	       sprintf("received gpi: src: %d  line: %d  state: %d  pulse: %d",
 		       ((0xFF&data[23])<<8)+(0xFF&data[24]),
 		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false));
+      delete e;
     }
     
   }
@@ -184,20 +253,31 @@ void SyGpioServer::gpoReadyReadData()
   int n;
   uint32_t serial;
   QHostAddress addr;
+  uint16_t port=0;
+  SyGpioEvent *e=NULL;
 
-  while((n=gpio_gpo_socket->readDatagram(data,1500,&addr))>0) {
+  while((n=gpio_gpo_socket->readDatagram(data,1500,&addr,&port))>0) {
     //printf("received %d bytes from %s\n",n,
     //   (const char *)addr.toString().toAscii());
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
     if(gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1)) {
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
+      e=new SyGpioEvent(SyGpioEvent::TypeGpo,addr,port,
+			((0xFF&data[23])<<8)+(0xFF&data[24]),
+			0x08-(0xff&data[25]),(data[27]&0x40)!=0,
+			(data[27]&0x0A)!=0);
+      emit gpioReceived(e);
+      emit gpoReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+      gpio_routing->setGpo(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+      /*
       emit gpoReceived(((0xFF&data[23])<<8)+(0xFF&data[24]),
 		       0x08-(0xff&data[25]),(data[27]&0x40)!=0,
 		       (data[27]&0x0A)!=0);
       gpio_routing->setGpo(((0xFF&data[23])<<8)+(0xFF&data[24]),
 			   0x08-(0xff&data[25]),(data[27]&0x40)!=0,
 			   (data[27]&0x0A)!=0);
+      */
       SySyslog(LOG_DEBUG,QString().
 	       sprintf("received gpo: src: %d  line: %d  state: %d  pulse: %d",
 		       ((0xFF&data[23])<<8)+(0xFF&data[24]),

@@ -15,24 +15,32 @@ MainObject::MainObject(QObject *parent)
   gpio_routing=new SyRouting(0,0,1,1);
 
   gpio_server=new SyGpioServer(gpio_routing,this);
-  connect(gpio_server,SIGNAL(gpiReceived(int,int,bool,bool)),
-	  this,SLOT(gpiReceivedData(int,int,bool,bool)));
-  connect(gpio_server,SIGNAL(gpoReceived(int,int,bool,bool)),
-	  this,SLOT(gpoReceivedData(int,int,bool,bool)));
+  connect(gpio_server,SIGNAL(gpioReceived(SyGpioEvent *)),
+	  this,SLOT(gpioReceivedData(SyGpioEvent *)));
 }
 
 
-void MainObject::gpiReceivedData(int gpi,int line,bool state,bool pulse)
+void MainObject::gpioReceivedData(SyGpioEvent *e)
 {
-  printf("GPI: gpi: %d  line: %d  state: %d  pulse: %u\n",
-	 gpi,line,state,pulse);
-}
+  switch(e->type()) {
+  case SyGpioEvent::TypeGpi:
+    printf("GPI: ");
+    break;
 
+  case SyGpioEvent::TypeGpo:
+    printf("GPO: ");
+    break;
 
-void MainObject::gpoReceivedData(int gpo,int line,bool state,bool pulse)
-{
-  printf("GPO: gpo: %d  line: %d  state: %d  pulse: %u\n",
-	 gpo,line,state,pulse);
+  default:
+    printf("UNKNOWN: ");
+    break;
+  }
+  printf("origin: %s:%u  ",(const char *)e->originAddress().toString().toUtf8(),
+	 0xFFFF&e->originPort());
+  printf("srcnum: %d  ",e->sourceNumber());
+  printf("line: %d  ",e->line());
+  printf("state: %d  ",e->state());
+  printf("pulse: %d\n",e->isPulse());
 }
 
 

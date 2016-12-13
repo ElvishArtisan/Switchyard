@@ -23,6 +23,33 @@
 #include <sy/symcastsocket.h>
 #include <sy/syrouting.h>
 
+class SyGpioEvent
+{
+ public:
+  enum Type {TypeGpi=0,TypeGpo=1};
+  SyGpioEvent(Type type,const QHostAddress &orig_addr,uint16_t orig_port,
+	      int srcnum,int line,bool state,bool pulse);
+  Type type() const;
+  QHostAddress originAddress() const;
+  uint16_t originPort() const;
+  int sourceNumber() const;
+  int line() const;
+  bool state() const;
+  bool isPulse() const;
+
+ private:
+  Type event_type;
+  QHostAddress event_origin_address;
+  uint16_t event_origin_port;
+  int event_source_number;
+  int event_line;
+  bool event_state;
+  bool event_pulse;
+};
+
+
+
+
 class SyGpioServer : public QObject
 {
   Q_OBJECT;
@@ -35,6 +62,7 @@ class SyGpioServer : public QObject
   void sendGpo(int gpo,int line,bool state,bool pulse);
 
  signals:
+  void gpioReceived(SyGpioEvent *e);
   void gpiReceived(int gpi,int line,bool state,bool pulse);
   void gpoReceived(int gpo,int line,bool state,bool pulse);
 
