@@ -102,10 +102,6 @@ SyGpioServer::~SyGpioServer()
 
 void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
 {
-  SySyslog(LOG_DEBUG,QString().
-	   sprintf("sending gpi: src: %d  line: %d  state: %d  pulse: %d",
-		   gpi,line,state,pulse));
-
   uint8_t data[28]={0x03,0x00,0x02,0x07,0xC6,0x04,0x55,0x1E,
 		    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 		    'I','N','D','I',0x00,0x01,0x00,0x00,
@@ -144,10 +140,6 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
 
 void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
 {
-  SySyslog(LOG_DEBUG,QString().
-	   sprintf("sending gpo: src: %d  line: %d  state: %d  pulse: %d",
-		   gpo,line,state,pulse));
-
   uint8_t data[60]={0x03,0x00,0x02,0x07,0x36,0x0B,0x97,0xA9,
 		    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 		    'W','R','N','I',0x00,0x04,0x00,0x03,0xF6,

@@ -475,3 +475,5 @@
 2016-12-13 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 6:0:3.
 	* Incremented the package version to 0.11.8.
+2016-12-13 Fred Gleason <fredg@paravelsystems.com>
+	* Removed syslog calls for GPIO send events in 'sy/sygpio_server.cpp'.
