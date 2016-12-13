@@ -63,12 +63,15 @@ ldconfig
 
 
 %files devel
+%{_bindir}/sygpiotest
 %{_includedir}/sy/*.h
 %{_libdir}/pkgconfig/switchyard.pc
 %{_libdir}/libSwitchyard.a
 %{_libdir}/libSwitchyard.la
 
 %changelog
+* Tue Dec 13 2016 Fred Gleason <fredg@paravelsystems.com>
+-- Added sygpiotest(1).
 * Sun Mar 22 2015 Fred Gleason <fredg@paravelsystems.com>
 -- Removed syd(8).
 * Wed Jan 28 2015 Fred Gleason <fredg@paravelsystems.com>

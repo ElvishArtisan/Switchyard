@@ -27,11 +27,12 @@ moc_%.cpp:	%.h
 
 noinst_PROGRAMS = sycapture\
                   syd\
-                  sygpiotest\
                   symetertest\
                   synodetest\
                   syplay\
                   sytone
+
+bin_PROGRAMS = sygpiotest
 
 dist_syd_SOURCES = syd.cpp syd.h
 nodist_syd_SOURCES = moc_syd.cpp
