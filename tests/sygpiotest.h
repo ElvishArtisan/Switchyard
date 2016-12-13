@@ -14,7 +14,7 @@
 #include <sy/sygpio_server.h>
 #include <sy/syrouting.h>
 
-#define SYGPIOTEST_USAGE "\n"
+#define SYGPIOTEST_USAGE "--log\n"
 
 class MainObject : public QObject
 {
@@ -28,6 +28,7 @@ class MainObject : public QObject
  private:
   SyRouting *gpio_routing;
   SyGpioServer *gpio_server;
+  bool gpio_log;
 };
 
 

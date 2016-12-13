@@ -466,3 +466,5 @@
 	'src/sy/sygpio_server.cpp' and 'src/sy/sygpio_server.h'.
 	* Refactored gpio_test(1) to use the 'SyGpioServer::gpioReceived()'
 	signal in 'tests/gpio_test.cpp' and 'tests/gpio_test.h'.
+2016-12-13 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--log' switch to sygpiotest(1).

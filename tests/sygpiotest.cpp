@@ -6,12 +6,34 @@
 //     All Rights Reserved.
 //
 
+#include <syslog.h>
+
 #include <QCoreApplication>
+
+#include <sy/sycmdswitch.h>
 
 #include "sygpiotest.h"
 
 MainObject::MainObject(QObject *parent)
 {
+  gpio_log=false;
+  SyCmdSwitch *cmd=new SyCmdSwitch(qApp->argc(),qApp->argv(),"sygpiotest",
+				   VERSION,SYGPIOTEST_USAGE);
+  for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--log") {
+      gpio_log=true;
+      cmd->setProcessed(i,true);
+    }
+    if(!cmd->processed(i)) {
+      fprintf(stderr,"sygpiotest: unknown option\n");
+      exit(256);
+    }
+  }
+
+  if(gpio_log) {
+    openlog("sygpiotest",0,LOG_USER);
+  }
+
   gpio_routing=new SyRouting(0,0,1,1);
 
   gpio_server=new SyGpioServer(gpio_routing,this);
@@ -22,25 +44,31 @@ MainObject::MainObject(QObject *parent)
 
 void MainObject::gpioReceivedData(SyGpioEvent *e)
 {
+  QString msg;
+
   switch(e->type()) {
   case SyGpioEvent::TypeGpi:
-    printf("GPI: ");
+    msg+=QString().sprintf("GPI: ");
     break;
 
   case SyGpioEvent::TypeGpo:
-    printf("GPO: ");
+    msg+=QString().sprintf("GPO: ");
     break;
 
   default:
-    printf("UNKNOWN: ");
+    msg+=QString().sprintf("UNKNOWN: ");
     break;
   }
-  printf("origin: %s:%u  ",(const char *)e->originAddress().toString().toUtf8(),
-	 0xFFFF&e->originPort());
-  printf("srcnum: %d  ",e->sourceNumber());
-  printf("line: %d  ",e->line());
-  printf("state: %d  ",e->state());
-  printf("pulse: %d\n",e->isPulse());
+  msg+="origin: "+e->originAddress().toString()+
+    QString().sprintf(":%u  ",0xFFFF&e->originPort());
+  msg+=QString().sprintf("srcnum: %d  ",e->sourceNumber());
+  msg+=QString().sprintf("line: %d  ",e->line());
+  msg+=QString().sprintf("state: %d  ",e->state());
+  msg+=QString().sprintf("pulse: %d",e->isPulse());
+  printf("%s\n",(const char *)msg.toUtf8());
+  if(gpio_log) {
+    syslog(LOG_INFO,"%s",(const char *)msg.toUtf8());
+  }
 }
 
 
