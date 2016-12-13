@@ -213,8 +213,6 @@ void SyGpioServer::gpiReadyReadData()
   SyGpioEvent *e=NULL;
 
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
-    //printf("received %d bytes from %s\n",n,
-    //   (const char *)addr.toString().toAscii());
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
     if(gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1)) {
@@ -230,16 +228,6 @@ void SyGpioServer::gpiReadyReadData()
       emit gpioReceived(e);
       emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
       gpio_routing->setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-      /*
-      emit gpiReceived(((0xFF&data[23])<<8)+(0xFF&data[24]),
-		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
-      gpio_routing->setGpi(((0xFF&data[23])<<8)+(0xFF&data[24]),
-			   0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
-      */
-      SySyslog(LOG_DEBUG,QString().
-	       sprintf("received gpi: src: %d  line: %d  state: %d  pulse: %d",
-		       ((0xFF&data[23])<<8)+(0xFF&data[24]),
-		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false));
       delete e;
     }
     
@@ -257,8 +245,6 @@ void SyGpioServer::gpoReadyReadData()
   SyGpioEvent *e=NULL;
 
   while((n=gpio_gpo_socket->readDatagram(data,1500,&addr,&port))>0) {
-    //printf("received %d bytes from %s\n",n,
-    //   (const char *)addr.toString().toAscii());
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
     if(gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1)) {
@@ -270,19 +256,6 @@ void SyGpioServer::gpoReadyReadData()
       emit gpioReceived(e);
       emit gpoReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
       gpio_routing->setGpo(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-      /*
-      emit gpoReceived(((0xFF&data[23])<<8)+(0xFF&data[24]),
-		       0x08-(0xff&data[25]),(data[27]&0x40)!=0,
-		       (data[27]&0x0A)!=0);
-      gpio_routing->setGpo(((0xFF&data[23])<<8)+(0xFF&data[24]),
-			   0x08-(0xff&data[25]),(data[27]&0x40)!=0,
-			   (data[27]&0x0A)!=0);
-      */
-      SySyslog(LOG_DEBUG,QString().
-	       sprintf("received gpo: src: %d  line: %d  state: %d  pulse: %d",
-		       ((0xFF&data[23])<<8)+(0xFF&data[24]),
-		       0x08-(0xff&data[25]),(data[27]&0x40)!=0,
-		       (data[27]&0x0A)!=0));
     }
   }
 }
