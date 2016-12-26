@@ -485,3 +485,6 @@
 	'sy/sygpio_server.h'.
 	* Added a 'SyProfile::sectionNames()' method in 'sy/syprofile.cpp'
 	and 'sy/syprofile.h'.
+2016-12-26 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 7:0:4.
+	* Incremented the package version to 0.11.9.
