@@ -480,3 +480,8 @@
 2016-12-13 Fred Gleason <fredg@paravelsystems.com>
 	* Removed support for a 'SWITCHYARD_SUPPRESS_DEBUG' environmental
 	variable.
+2016-12-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyGpioEvent::dump()' method in 'sy/sygpio_server.cpp' and
+	'sy/sygpio_server.h'.
+	* Added a 'SyProfile::sectionNames()' method in 'sy/syprofile.cpp'
+	and 'sy/syprofile.h'.

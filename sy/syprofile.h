@@ -2,7 +2,7 @@
 //
 // Class for reading INI configuration files.
 //
-// (C) Copyright 2013 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2013,2016 Fred Gleason <fredg@paravelsystems.com>
 //     All Rights Reserved.
 //
 
@@ -13,6 +13,7 @@
 
 #include <QHostAddress>
 #include <QString>
+#include <QStringList>
 #include <QTime>
 
 class SyProfileLine
@@ -51,6 +52,7 @@ class SyProfile
 {
  public:
   SyProfile();
+  QStringList sectionNames() const;
   QString source() const;
   bool setSource(const QString &filename);
   bool setSource(std::vector<QString> *values);

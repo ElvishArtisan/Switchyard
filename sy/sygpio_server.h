@@ -36,6 +36,7 @@ class SyGpioEvent
   int line() const;
   bool state() const;
   bool isPulse() const;
+  QString dump() const;
 
  private:
   Type event_type;

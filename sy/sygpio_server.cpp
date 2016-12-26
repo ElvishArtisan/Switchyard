@@ -66,6 +66,26 @@ bool SyGpioEvent::isPulse() const
 }
 
 
+QString SyGpioEvent::dump() const
+{
+  QString str="GPIO Event\n";
+  if(type()==SyGpioEvent::TypeGpi) {
+    str+="Type: GPI\n";
+  }
+  else {
+    str+="Type: GPO\n";
+  }
+  str+=QString().sprintf("Source Number: %d\n",sourceNumber());
+  str+=QString().sprintf("Line: %d\n",line()+1);
+  str+=QString().sprintf("State: %d\n",state());
+  str+=QString().sprintf("isPulse: %d\n",isPulse());
+  str+=QString().sprintf("Origin: %s:%d\n",
+			 (const char *)originAddress().toString().toUtf8(),
+			 originPort());
+  return str;
+}
+
+
 
 
 SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)

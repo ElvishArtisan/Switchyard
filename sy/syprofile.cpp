@@ -2,7 +2,7 @@
 //
 // A container class for profile lines.
 //
-// (C) Copyright 2013 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2013,2016 Fred Gleason <fredg@paravelsystems.com>
 //     All Rights Reserved.
 //
 
@@ -99,6 +99,20 @@ SyProfile::SyProfile()
 }
 
 
+QStringList SyProfile::sectionNames() const
+{
+  QStringList names;
+
+  for(unsigned i=0;i<profile_section.size();i++) {
+    if(!profile_section.at(i).name().isEmpty()) {
+      names.push_back(profile_section.at(i).name());
+    }
+  }
+
+  return names;
+}
+
+
 QString SyProfile::source() const
 {
   return profile_source;
@@ -129,7 +143,6 @@ bool SyProfile::setSource(const QString &filename)
 	profile_section.back().setName(section);
       }
       else if(((offset=line.indexOf('='))!=-1)) {
-//      else if(((offset=line.indexOf('='))!=-1)&&(!section.isEmpty())) {
 	profile_section.back().
 	  addValue(line.left(offset),
 		   line.right(line.length()-offset-1).trimmed());
