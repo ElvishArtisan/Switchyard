@@ -488,3 +488,8 @@
 2016-12-26 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 7:0:4.
 	* Incremented the package version to 0.11.9.
+2016-01-17 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'SyLwprClient' to detect hostname and host address for
+	xNode devices.
+	* Fixed a bug in 'tests/synodetest.cpp' that displayed the incorrect
+	host address value.

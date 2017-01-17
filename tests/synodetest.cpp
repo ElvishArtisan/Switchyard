@@ -83,8 +83,8 @@ void MainObject::connectedData(unsigned id,bool state)
 	   0xFFFF&node_node->port());
     printf("\n");
     printf("Hostname: %s\n",(const char *)node_node->hostName().toUtf8());
-    printf("NIC Address: %s\n",
-	   (const char *)node_node->nicAddress().toString().toUtf8());
+    printf("Host Address: %s\n",
+	   (const char *)node_node->hostAddress().toString().toUtf8());
     printf("Source Slots: %u\n",node_node->srcSlots());
     printf("Destination Slots: %u\n",node_node->dstSlots());
     printf("GPI Slots: %u\n",node_node->gpis());

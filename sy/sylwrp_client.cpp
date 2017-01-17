@@ -933,19 +933,46 @@ void SyLwrpClient::ProcessCFG(const QStringList &cmds)
 
 void SyLwrpClient::ProcessIP(const QStringList &cmds)
 {
+  bool processed=false;
+
+  //
+  // 'Old-style' IP Payload
+  //
   if(cmds.size()==9) {
     lwrp_hostname=cmds[8];
     lwrp_node->setHostName(cmds[8]);
+    lwrp_host_address.setAddress(cmds.at(2));
     lwrp_node->setHostAddress(QHostAddress(cmds[2]));
+    processed=true;
   }
-  //  lwrp_connected=true;
-  lwrp_watchdog_state=true;
-  if(lwrp_persistent) {
-    lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
+
+  //
+  // 'New-style' IP Payload
+  //
+  if(cmds.size()==3) {
+    if(cmds.at(1).toLower()=="hostname") {
+      lwrp_hostname=cmds.at(2);
+      lwrp_node->setHostName(cmds.at(2));
+      processed=true;
+    }
+    else {
+      QStringList f0=cmds.at(1).split(":");
+      if((f0.size()==2)&&(f0.at(0)=="ADDR")) {
+	lwrp_host_address.setAddress(f0.at(1));
+	lwrp_node->setHostAddress(QHostAddress(f0.at(1)));
+      }
+    }
   }
-  if(!lwrp_connected) {
-    lwrp_connected=true;
-    emit connected(lwrp_id,true);
+
+  if(processed) {
+    lwrp_watchdog_state=true;
+    if(lwrp_persistent) {
+      lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
+    }
+    if(!lwrp_connected) {
+      lwrp_connected=true;
+      emit connected(lwrp_id,true);
+    }
   }
 }
 
