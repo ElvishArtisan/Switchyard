@@ -227,7 +227,7 @@ void SyGpioServer::gpiReadyReadData()
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
-    if(gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1)) {
+    if(gpio_src_addr_serials[addr.toIPv4Address()]!=serial) {
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
       //
       // FIXME: Is there actually a 'pulse' component for a GPI event?
@@ -259,7 +259,13 @@ void SyGpioServer::gpoReadyReadData()
   while((n=gpio_gpo_socket->readDatagram(data,1500,&addr,&port))>0) {
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
-    if(gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1)) {
+    /*
+    printf("%s  received GPO %u from %s, serial: %u\n",
+	   (const char *)QTime::currentTime().toString("hh:mm:ss").toUtf8(),
+	   ((0xFF&data[23])<<8)+(0xFF&data[24]),
+	   (const char *)addr.toString().toUtf8(),serial);
+    */
+    if(gpio_src_addr_serials[addr.toIPv4Address()]!=serial) {
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
       e=new SyGpioEvent(SyGpioEvent::TypeGpo,addr,port,
 			((0xFF&data[23])<<8)+(0xFF&data[24]),
@@ -269,5 +275,10 @@ void SyGpioServer::gpoReadyReadData()
       emit gpoReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
       gpio_routing->setGpo(e->sourceNumber(),e->line(),e->state(),e->isPulse());
     }
+    /*
+    else {
+      printf("*** IGNORED!!! ***\n");
+    }
+    */
   }
 }
