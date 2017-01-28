@@ -499,3 +499,6 @@
 2016-01-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a fencepost error in processing serial numbers for
 	multicast GPIO messages in 'sy/sygpio_server.cpp'.
+2016-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 7:2:4.
+	* Incremented the package version to 0.11.11.
