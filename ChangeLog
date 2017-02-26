@@ -502,3 +502,6 @@
 2017-01-28 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 7:2:4.
 	* Incremented the package version to 0.11.11.
+2017-02-26 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'SyGpioServer' in 'sy/sygpio_server.cpp' to use
+	double signalling for GPIO events.
