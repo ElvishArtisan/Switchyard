@@ -134,7 +134,6 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
   data[5]=0xFF&(gpio_serial>>16);
   data[6]=0xFF&(gpio_serial>>8);
   data[7]=0xFF&gpio_serial;
-  gpio_serial++;
 
   //
   // Livewire Number
@@ -152,9 +151,21 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
   //
   data[27]=0xFF&state;
 
+  //
+  // Send Packets
+  //
   gpio_gpi_socket->writeDatagram((const char *)data,28,
 				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
 				 SWITCHYARD_GPIO_GPI_PORT);
+  gpio_serial++;
+  data[4]=0xFF&(gpio_serial>>24);
+  data[5]=0xFF&(gpio_serial>>16);
+  data[6]=0xFF&(gpio_serial>>8);
+  data[7]=0xFF&gpio_serial;
+  gpio_gpi_socket->writeDatagram((const char *)data,28,
+				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
+				 SWITCHYARD_GPIO_GPI_PORT);
+  gpio_serial+=2;
 }
 
 
@@ -176,7 +187,6 @@ void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
   data[5]=0xFF&(gpio_serial>>16);
   data[6]=0xFF&(gpio_serial>>8);
   data[7]=0xFF&gpio_serial;
-  gpio_serial++;
 
   //
   // Livewire Number
@@ -209,9 +219,21 @@ void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
     data[27]&=~0x0A;
   }
 
+  //
+  // Send Packets
+  //
   gpio_gpo_socket->writeDatagram((const char *)data,60,
 				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
 				 SWITCHYARD_GPIO_GPO_PORT);
+  gpio_serial++;
+  data[4]=0xFF&(gpio_serial>>24);
+  data[5]=0xFF&(gpio_serial>>16);
+  data[6]=0xFF&(gpio_serial>>8);
+  data[7]=0xFF&gpio_serial;
+  gpio_gpo_socket->writeDatagram((const char *)data,60,
+				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
+				 SWITCHYARD_GPIO_GPO_PORT);
+  gpio_serial+=2;
 }
 
 
@@ -227,7 +249,8 @@ void SyGpioServer::gpiReadyReadData()
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
-    if(gpio_src_addr_serials[addr.toIPv4Address()]!=serial) {
+    if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
+       (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))){
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
       //
       // FIXME: Is there actually a 'pulse' component for a GPI event?
@@ -237,6 +260,7 @@ void SyGpioServer::gpiReadyReadData()
       e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,
 			((0xFF&data[23])<<8)+(0xFF&data[24]),
 		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
+      printf("emit 1\n");
       emit gpioReceived(e);
       emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
       gpio_routing->setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
@@ -265,12 +289,14 @@ void SyGpioServer::gpoReadyReadData()
 	   ((0xFF&data[23])<<8)+(0xFF&data[24]),
 	   (const char *)addr.toString().toUtf8(),serial);
     */
-    if(gpio_src_addr_serials[addr.toIPv4Address()]!=serial) {
+    if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
+       (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))){
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
       e=new SyGpioEvent(SyGpioEvent::TypeGpo,addr,port,
 			((0xFF&data[23])<<8)+(0xFF&data[24]),
 			0x08-(0xff&data[25]),(data[27]&0x40)!=0,
 			(data[27]&0x0A)!=0);
+      printf("emit 2  serial: %d\n",serial);
       emit gpioReceived(e);
       emit gpoReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
       gpio_routing->setGpo(e->sourceNumber(),e->line(),e->state(),e->isPulse());
