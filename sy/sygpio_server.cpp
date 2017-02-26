@@ -296,7 +296,6 @@ void SyGpioServer::gpoReadyReadData()
 			((0xFF&data[23])<<8)+(0xFF&data[24]),
 			0x08-(0xff&data[25]),(data[27]&0x40)!=0,
 			(data[27]&0x0A)!=0);
-      printf("emit 2  serial: %d\n",serial);
       emit gpioReceived(e);
       emit gpoReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
       gpio_routing->setGpo(e->sourceNumber(),e->line(),e->state(),e->isPulse());
