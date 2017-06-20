@@ -144,7 +144,7 @@ qint64 SyMcastSocket::writeDatagram(const QByteArray &datagram,
 }
 
 
-void SyMcastSocket::subscribe(const QHostAddress &addr)
+bool SyMcastSocket::subscribe(const QHostAddress &addr)
 {
   if(mcast_recv_socket==NULL) {
     SySyslog(LOG_ERR,"cannot subscribe on a write-only socket");
@@ -159,10 +159,7 @@ void SyMcastSocket::subscribe(const QHostAddress &addr)
   imr.imr_interface.s_addr=htonl(mcast_iface_address.toIPv4Address());
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
 		IP_ADD_MEMBERSHIP,(char *)&imr,sizeof(imr))<0) {
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to subscribe to group %s [%s]",
-		     (const char *)addr.toString().toAscii(),strerror(errno)));
-    exit(256);
+    return false;
   }
 #else
   struct ip_mreqn mreq;
@@ -173,26 +170,23 @@ void SyMcastSocket::subscribe(const QHostAddress &addr)
   mreq.imr_ifindex=0;
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
     IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-    SySyslog(LOG_ERR,QString().
-      sprintf("unable to subscribe to group %s [%s]",
-        (const char *)addr.toString().toAscii(),strerror(errno)));
-    exit(256);
+    return false;
   }
 #endif // WIN32
+  return true;
 }
 
 
-void SyMcastSocket::subscribe(const QString &addr)
+bool SyMcastSocket::subscribe(const QString &addr)
 {
-  subscribe(QHostAddress(addr));
+  return subscribe(QHostAddress(addr));
 }
 
 
-void SyMcastSocket::unsubscribe(const QHostAddress &addr)
+bool SyMcastSocket::unsubscribe(const QHostAddress &addr)
 {
   if(mcast_recv_socket==NULL) {
-    SySyslog(LOG_ERR,"cannot unsubscribe on a write-only socket");
-    exit(256);
+    return false;
   }
 
 #ifdef WIN32
@@ -203,10 +197,7 @@ void SyMcastSocket::unsubscribe(const QHostAddress &addr)
   imr.imr_interface.s_addr=htonl(mcast_iface_address.toIPv4Address());
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
 		IP_DROP_MEMBERSHIP,(char *)&imr,sizeof(imr))<0) {
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to subscribe to group %s [%s]",
-		     (const char *)addr.toString().toAscii(),strerror(errno)));
-    exit(256);
+    return false;
   }
 #else
   struct ip_mreqn mreq;
@@ -217,18 +208,16 @@ void SyMcastSocket::unsubscribe(const QHostAddress &addr)
   mreq.imr_ifindex=0;
   if(setsockopt(mcast_recv_socket->socketDescriptor(),IPPROTO_IP,
 		IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq))<0) {
-      SySyslog(LOG_ERR,QString().
-	       sprintf("unable to unsubscribe from group %s [%s]",
-		      (const char *)addr.toString().toAscii(),strerror(errno)));
-    exit(256);
+    return false;
   }
 #endif  // WIN32
+  return true;
 }
 
 
-void SyMcastSocket::unsubscribe(const QString &addr)
+bool SyMcastSocket::unsubscribe(const QString &addr)
 {
-  unsubscribe(QHostAddress(addr));
+  return unsubscribe(QHostAddress(addr));
 }
 
 

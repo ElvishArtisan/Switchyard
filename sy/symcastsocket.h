@@ -33,10 +33,10 @@ class SyMcastSocket : public QObject
 			const QHostAddress &addr,quint16 port);
   qint64 writeDatagram(const QByteArray &datagram,
 			const QHostAddress &addr,quint16 port);
-  void subscribe(const QHostAddress &addr);
-  void subscribe(const QString &addr);
-  void unsubscribe(const QHostAddress &addr);
-  void unsubscribe(const QString &addr);
+  bool subscribe(const QHostAddress &addr);
+  bool subscribe(const QString &addr);
+  bool unsubscribe(const QHostAddress &addr);
+  bool unsubscribe(const QString &addr);
   static QString socketErrorText(QAbstractSocket::SocketError err);
 
  signals:
