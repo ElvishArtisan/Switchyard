@@ -511,3 +511,7 @@
 2017-06-20 Fred Gleason <fredg@paravelsystems.com>
 	* Changed return type of 'SyMcastSocket::subscribe()' and
 	'SyMcastSocket::unsubscribe()' methods from 'void' to 'bool'.
+2017-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyEthMonitor' class in 'sy/syethmonitor.cpp' and
+	'sy/syethmonitor.h'.
+	* Added 'syethmonitortest' in 'tests/'.
