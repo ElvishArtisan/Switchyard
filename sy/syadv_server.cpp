@@ -35,6 +35,7 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   : QObject(parent)
 {
   adv_routing=r;
+  adv_eth_monitor=NULL;
 
   //
   // Initialize Advertisment Socket
@@ -50,42 +51,38 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
   ctrl_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
   connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readData()));
 
+  Initialize(read_only);
+}
+
+
+SyAdvServer::SyAdvServer(SyRouting *r,SyEthMonitor *ethmon,bool read_only,
+			 QObject *parent)
+  : QObject(parent)
+{
+  adv_routing=r;
+  adv_eth_monitor=ethmon;
+  connect(adv_eth_monitor,SIGNAL(startedRunning()),
+	  this,SLOT(interfaceStartedData()));
+  connect(adv_eth_monitor,SIGNAL(stoppedRunning()),
+	  this,SLOT(interfaceStopeedData()));
+
   //
-  // Start Advertising
+  // Initialize Advertisment Socket
   //
-#ifdef WIN32
-  srand(static_cast<unsigned int> (time(NULL)));
-  ctrl_advert_seqno=rand();
-#else
-  srandom(time(NULL));
-  ctrl_advert_seqno=random();
-#endif  // WIN32
-  ctrl_advert_timer0=new QTimer(this);
-  ctrl_advert_timer2=new QTimer(this);
-  ctrl_advert_timer1=new QTimer(this);
-  ctrl_advert_timer1->setSingleShot(true);
-  if(!read_only) {
-    connect(ctrl_advert_timer0,SIGNAL(timeout()),this,SLOT(sendAdvert0Data()));
-    ctrl_advert_timer0->start(10000);
-    connect(ctrl_advert_timer1,SIGNAL(timeout()),this,SLOT(sendAdvert1Data()));
-    ctrl_advert_timer1->start(GetAdvertInterval());
-    connect(ctrl_advert_timer2,SIGNAL(timeout()),this,SLOT(sendAdvert2Data()));
-    ctrl_advert_timer2->start(150000);
+  if(read_only) {
+    ctrl_advert_socket=new SyMcastSocket(SyMcastSocket::ReadOnly,this);
+    ctrl_advert_socket->bind(SWITCHYARD_ADVERTS_PORT);
   }
+  else {
+    ctrl_advert_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
+    ctrl_advert_socket->bind(r->nicAddress(),SWITCHYARD_ADVERTS_PORT);
+  }
+  if(adv_eth_monitor->isRunning()) {
+    ctrl_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+  }
+  connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readData()));
 
-  //
-  // Start Timers
-  //
-  ctrl_expire_timer=new QTimer(this);
-  connect(ctrl_expire_timer,SIGNAL(timeout()),this,SLOT(expireData()));
-  ctrl_expire_timer->start(30000);
-
-  ctrl_savesources_timer=new QTimer(this);
-  ctrl_savesources_timer->setSingleShot(true);
-  connect(ctrl_savesources_timer,SIGNAL(timeout()),
-	  this,SLOT(saveSourcesData()));
-
-  SendSourceUpdate(SyAdvServer::Type2);
+  Initialize(read_only);
 }
 
 
@@ -289,6 +286,18 @@ void SyAdvServer::saveSourcesData()
 	   QString().sprintf("saved sources list to \"%s\"",
 			     SWITCHYARD_SOURCES_FILE));
 #endif  // WIN32
+}
+
+
+void SyAdvServer::interfaceStartedData()
+{
+  ctrl_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+}
+
+
+void SyAdvServer::interfaceStoppedData()
+{
+  ctrl_advert_socket->unsubscribe(SWITCHYARD_ADVERTS_ADDRESS);
 }
 
 
@@ -604,4 +613,45 @@ void SyAdvServer::ScheduleSourceSave()
 {
   ctrl_savesources_timer->stop();
   ctrl_savesources_timer->start(SWITCHYARD_SAVESOURCES_INTERVAL);
+}
+
+
+void SyAdvServer::Initialize(bool read_only)
+{
+  //
+  // Start Advertising
+  //
+#ifdef WIN32
+  srand(static_cast<unsigned int> (time(NULL)));
+  ctrl_advert_seqno=rand();
+#else
+  srandom(time(NULL));
+  ctrl_advert_seqno=random();
+#endif  // WIN32
+  ctrl_advert_timer0=new QTimer(this);
+  ctrl_advert_timer2=new QTimer(this);
+  ctrl_advert_timer1=new QTimer(this);
+  ctrl_advert_timer1->setSingleShot(true);
+  if(!read_only) {
+    connect(ctrl_advert_timer0,SIGNAL(timeout()),this,SLOT(sendAdvert0Data()));
+    ctrl_advert_timer0->start(10000);
+    connect(ctrl_advert_timer1,SIGNAL(timeout()),this,SLOT(sendAdvert1Data()));
+    ctrl_advert_timer1->start(GetAdvertInterval());
+    connect(ctrl_advert_timer2,SIGNAL(timeout()),this,SLOT(sendAdvert2Data()));
+    ctrl_advert_timer2->start(150000);
+  }
+
+  //
+  // Start Timers
+  //
+  ctrl_expire_timer=new QTimer(this);
+  connect(ctrl_expire_timer,SIGNAL(timeout()),this,SLOT(expireData()));
+  ctrl_expire_timer->start(30000);
+
+  ctrl_savesources_timer=new QTimer(this);
+  ctrl_savesources_timer->setSingleShot(true);
+  connect(ctrl_savesources_timer,SIGNAL(timeout()),
+	  this,SLOT(saveSourcesData()));
+
+  SendSourceUpdate(SyAdvServer::Type2);
 }

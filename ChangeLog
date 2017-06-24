@@ -518,3 +518,6 @@
 2017-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SyGpioServer(SyRouting *,SyEthMonitor *,QObject *)'
 	constructor to the 'SyGpioServer' class.
+2017-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'SyAdvServer(SyRouting *,SyEthMonitor *,bool,QObject *)'
+	constructor to the 'SyAdvServer' class.

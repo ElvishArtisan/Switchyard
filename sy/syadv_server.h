@@ -21,6 +21,7 @@
 #include <sy/syadv_source.h>
 #include <sy/syadv_tag.h>
 #include <sy/syastring.h>
+#include <sy/syethmonitor.h>
 #include <sy/symcastsocket.h>
 #include <sy/syrouting.h>
 
@@ -30,6 +31,8 @@ class SyAdvServer : public QObject
  public:
   enum AdvertType {Type0=0,Type1=1,Type2=2,TypeLast=3};
   SyAdvServer(SyRouting *r,bool read_only=false,QObject *parent=0);
+  SyAdvServer(SyRouting *r,SyEthMonitor *ethmon,bool read_only=false,
+	      QObject *parent=0);
   ~SyAdvServer();
 
  private slots:
@@ -39,6 +42,8 @@ class SyAdvServer : public QObject
   void sendAdvert1Data();
   void sendAdvert2Data();
   void saveSourcesData();
+  void interfaceStartedData();
+  void interfaceStoppedData();
 
  private:
   void SendSourceUpdate(AdvertType type);
@@ -49,12 +54,14 @@ class SyAdvServer : public QObject
   SyAdvSource *GetSource(const QHostAddress &node_addr,unsigned slot);
   int TagIsSource(const SyTag *tag) const;
   void ScheduleSourceSave();
+  void Initialize(bool read_only);
   SyMcastSocket *ctrl_advert_socket;
   QTimer *ctrl_advert_timer0;
   QTimer *ctrl_advert_timer1;
   QTimer *ctrl_advert_timer2;
   uint32_t ctrl_advert_seqno;
   SyRouting *adv_routing;
+  SyEthMonitor *adv_eth_monitor;
   QTimer *ctrl_expire_timer;
   QTimer *ctrl_savesources_timer;
   std::vector<SyAdvSource *>ctrl_sources;
