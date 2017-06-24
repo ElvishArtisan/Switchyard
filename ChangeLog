@@ -521,3 +521,6 @@
 2017-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SyAdvServer(SyRouting *,SyEthMonitor *,bool,QObject *)'
 	constructor to the 'SyAdvServer' class.
+2017-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 8:0:5.
+	* Incremented the package version to 0.12.0.
