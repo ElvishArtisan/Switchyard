@@ -21,6 +21,7 @@
 #include <QTimer>
 
 #include <sy/symcastsocket.h>
+#include <sy/syethmonitor.h>
 #include <sy/syrouting.h>
 
 class SyGpioEvent
@@ -56,6 +57,7 @@ class SyGpioServer : public QObject
   Q_OBJECT;
  public:
   SyGpioServer(SyRouting *r,QObject *parent=0);
+  SyGpioServer(SyRouting *r,SyEthMonitor *ethmon,QObject *parent=0);
   ~SyGpioServer();
 
  public slots:
@@ -68,6 +70,8 @@ class SyGpioServer : public QObject
   void gpoReceived(int gpo,int line,bool state,bool pulse);
 
  private slots:
+  void interfaceStartedData();
+  void interfaceStoppedData();
   void gpiReadyReadData();
   void gpoReadyReadData();
 
@@ -77,6 +81,7 @@ class SyGpioServer : public QObject
   SyRouting *gpio_routing;
   uint32_t gpio_serial;
   std::map<uint32_t,uint32_t> gpio_src_addr_serials;
+  SyEthMonitor *gpio_eth_monitor;
 };
 
 

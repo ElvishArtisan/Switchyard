@@ -92,6 +92,7 @@ SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   : QObject(parent)
 {
   gpio_routing=r;
+  gpio_eth_monitor=NULL;
 
   //
   // GPI Socket
@@ -108,6 +109,40 @@ SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
   gpio_gpo_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
   gpio_gpo_socket->bind(r->nicAddress(),SWITCHYARD_GPIO_GPO_PORT);
   gpio_gpo_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+  connect(gpio_gpo_socket,SIGNAL(readyRead()),
+	  this,SLOT(gpoReadyReadData()));
+}
+
+
+SyGpioServer::SyGpioServer(SyRouting *r,SyEthMonitor *ethmon,QObject *parent)
+  : QObject(parent)
+{
+  gpio_routing=r;
+  gpio_eth_monitor=ethmon;
+  connect(gpio_eth_monitor,SIGNAL(startedRunning()),
+	  this,SLOT(interfaceStartedData()));
+  connect(gpio_eth_monitor,SIGNAL(stoppedRunning()),
+	  this,SLOT(interfaceStoppedData()));
+
+  //
+  // GPI Socket
+  //
+  gpio_gpi_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
+  gpio_gpi_socket->bind(r->nicAddress(),SWITCHYARD_GPIO_GPI_PORT);
+  if(gpio_eth_monitor->isRunning()) {
+    gpio_gpi_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+  }
+  connect(gpio_gpi_socket,SIGNAL(readyRead()),
+	  this,SLOT(gpiReadyReadData()));
+
+  //
+  // GPO Socket
+  //
+  gpio_gpo_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
+  gpio_gpo_socket->bind(r->nicAddress(),SWITCHYARD_GPIO_GPO_PORT);
+  if(gpio_eth_monitor->isRunning()) {
+    gpio_gpo_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+  }
   connect(gpio_gpo_socket,SIGNAL(readyRead()),
 	  this,SLOT(gpoReadyReadData()));
 }
@@ -234,6 +269,20 @@ void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
 				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
 				 SWITCHYARD_GPIO_GPO_PORT);
   gpio_serial+=2;
+}
+
+
+void SyGpioServer::interfaceStartedData()
+{
+  gpio_gpi_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+  gpio_gpo_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
+}
+
+
+void SyGpioServer::interfaceStoppedData()
+{
+  gpio_gpi_socket->unsubscribe(SWITCHYARD_GPIO_ADDRESS);
+  gpio_gpo_socket->unsubscribe(SWITCHYARD_GPIO_ADDRESS);
 }
 
 

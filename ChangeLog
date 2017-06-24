@@ -515,3 +515,6 @@
 	* Added a 'SyEthMonitor' class in 'sy/syethmonitor.cpp' and
 	'sy/syethmonitor.h'.
 	* Added 'syethmonitortest' in 'tests/'.
+2017-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'SyGpioServer(SyRouting *,SyEthMonitor *,QObject *)'
+	constructor to the 'SyGpioServer' class.
