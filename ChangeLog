@@ -524,3 +524,6 @@
 2017-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 8:0:5.
 	* Incremented the package version to 0.12.0.
+2017-06-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyLwrpClient::id()' method in 'sy/sylwrp_client.cpp' and
+	'sy/sylwrp_client.h'.

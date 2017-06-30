@@ -36,6 +36,7 @@ class SyLwrpClient :public QObject
   enum MeterType {InputMeter=0,OutputMeter=1,LastTypeMeter=2};
   SyLwrpClient(unsigned id,QObject *parent=0);
   ~SyLwrpClient();
+  unsigned id() const;
   QString deviceName() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;

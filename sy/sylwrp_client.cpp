@@ -86,6 +86,12 @@ SyLwrpClient::~SyLwrpClient()
 }
 
 
+unsigned SyLwrpClient::id() const
+{
+  return lwrp_id;
+}
+
+
 QString SyLwrpClient::deviceName() const
 {
   return lwrp_device_name;
