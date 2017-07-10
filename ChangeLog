@@ -527,3 +527,6 @@
 2017-06-30 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyLwrpClient::id()' method in 'sy/sylwrp_client.cpp' and
 	'sy/sylwrp_client.h'.
+2017-07-10 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/sylwrp_client.cpp' that broke metering updates
+	on xNodes.

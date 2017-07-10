@@ -642,6 +642,8 @@ void SyLwrpClient::SendCommand(const QString &cmd)
 
 void SyLwrpClient::ProcessCommand(const QString &cmd)
 {
+  //  printf("ProcessCommand(\"%s\")\n",(const char *)cmd.toUtf8());
+
   bool handled=false;
   QStringList f0=SyAString(cmd).split(" ","\"");
 
@@ -1008,21 +1010,31 @@ void SyLwrpClient::ProcessMTR(const QStringList &cmds)
   unsigned slotnum;
   bool ok=false;
   int16_t peak_lvls[SWITCHYARD_MAX_CHANNELS];
-  int16_t rms_lvls[SWITCHYARD_MAX_CHANNELS];
+  int16_t rms_lvls[SWITCHYARD_MAX_CHANNELS]={1};
   QStringList f0;
 
-  if(cmds.size()==5) {
+  if((cmds.size()==4)||cmds.size()==5) {
     slotnum=cmds[2].toUInt(&ok)-1;
     if(ok) {
-      f0=cmds[3].split(":");
-      if(f0.size()==3) {
-	peak_lvls[0]=f0[1].toInt();
-	peak_lvls[1]=f0[2].toInt();
+      for(int i=3;i<cmds.size();i++) {
+	f0=cmds[3].split(":");
+	if(f0.size()==3) {
+	  if(f0[0].toLower()=="peek") {
+	    for(int i=0;i<SWITCHYARD_MAX_CHANNELS;i++) {
+	      peak_lvls[i]=f0[i+1].toInt();
+	    }
+	  }
+	  if(f0[0].toLower()=="rms") {
+	    for(int i=0;i<SWITCHYARD_MAX_CHANNELS;i++) {
+	      rms_lvls[i]=f0[i+11].toInt();
+	    }
+	  }
+	}
       }
-      f0=cmds[4].split(":");
-      if(f0.size()==3) {
-	rms_lvls[0]=f0[1].toInt();
-	rms_lvls[1]=f0[2].toInt();
+      for(int i=0;i<SWITCHYARD_MAX_CHANNELS;i++) {
+	if(rms_lvls[i]>0) {
+	  rms_lvls[i]=peak_lvls[i];
+	}
       }
       if(cmds[1]=="ICH") {
 	emit meterUpdate(lwrp_id,SyLwrpClient::InputMeter,slotnum,
