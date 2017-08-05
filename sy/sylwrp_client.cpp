@@ -382,15 +382,19 @@ void SyLwrpClient::setClipMonitor(int slot,SyLwrpClient::MeterType type,
   case SyLwrpClient::InputMeter:
     lwrp_sources[slot]->setClipThreshold(lvl);
     lwrp_sources[slot]->setClipTimeout(msec);
-    SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				  slot+1,lvl,msec));
+    SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+    				  slot+1,lvl,msec,
+				  lwrp_sources[slot]->silenceThreshold(),
+				  lwrp_sources[slot]->silenceTimeout()));
     break;
 
   case SyLwrpClient::OutputMeter:
     lwrp_destinations[slot]->setClipThreshold(lvl);
     lwrp_destinations[slot]->setClipTimeout(msec);
-    SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME: %d",
-				  slot+1,lvl,msec));
+    SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+				  slot+1,lvl,msec,
+				  lwrp_destinations[slot]->silenceThreshold(),
+				  lwrp_destinations[slot]->silenceTimeout()));
     break;
 
   case SyLwrpClient::LastTypeMeter:
@@ -406,15 +410,21 @@ void SyLwrpClient::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
   case SyLwrpClient::InputMeter:
     lwrp_sources[slot]->setSilenceThreshold(lvl);
     lwrp_sources[slot]->setSilenceTimeout(msec);
-    SendCommand(QString().sprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME:%d",
-				  slot+1,lvl,msec));
+    SendCommand(QString().sprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+				  slot+1,
+				  lwrp_sources[slot]->clipThreshold(),
+				  lwrp_sources[slot]->clipTimeout(),
+				  lvl,msec));
     break;
 
   case SyLwrpClient::OutputMeter:
     lwrp_destinations[slot]->setSilenceThreshold(lvl);
     lwrp_destinations[slot]->setSilenceTimeout(msec);
-    SendCommand(QString().sprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME:%d",
-				  slot+1,lvl,msec));
+    SendCommand(QString().sprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+				  slot+1,
+				  lwrp_destinations[slot]->clipThreshold(),
+				  lwrp_destinations[slot]->clipTimeout(),
+				  lvl,msec));
     break;
 
   case SyLwrpClient::LastTypeMeter:
@@ -1013,7 +1023,7 @@ void SyLwrpClient::ProcessMTR(const QStringList &cmds)
   int16_t rms_lvls[SWITCHYARD_MAX_CHANNELS]={1};
   QStringList f0;
 
-  if((cmds.size()==4)||cmds.size()==5) {
+  if((cmds.size()==4)||(cmds.size()==5)) {
     slotnum=cmds[2].toUInt(&ok)-1;
     if(ok) {
       for(int i=3;i<cmds.size();i++) {
