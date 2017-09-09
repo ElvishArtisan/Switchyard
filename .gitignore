@@ -5,7 +5,9 @@
 *.o
 *.pc
 *.Release
+*.rpm
 *.spec
+*.tar.gz
 .deps
 .libs
 aclocal.m4
