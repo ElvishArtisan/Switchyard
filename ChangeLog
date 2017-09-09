@@ -547,3 +547,6 @@
 	* Fixed a bug in 'sy/sylwrp_client.cpp' that caused the
 	'SyLwrpClient::nicAddress()' method to return invalid results.
 	* Added 'NIC Address' test in 'tests/synodetest.cpp'.
+2017-09-09 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.13.3.
+	* Incremented the library version to 9:3:6.
