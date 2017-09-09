@@ -543,3 +543,7 @@
 2017-08-05 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 9:2:6.
 	* Incremented the package version to 0.13.2.
+2017-09-09 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'sy/sylwrp_client.cpp' that caused the
+	'SyLwrpClient::nicAddress()' method to return invalid results.
+	* Added 'NIC Address' test in 'tests/synodetest.cpp'.

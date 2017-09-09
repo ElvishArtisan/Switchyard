@@ -681,6 +681,10 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
     ProcessCFG(f0);
     handled=true;
   }
+  if(f0[0]=="IFC") {
+    ProcessIFC(f0);
+    handled=true;
+  }
   if(f0[0]=="IP") {
     ProcessIP(f0);
     handled=true;
