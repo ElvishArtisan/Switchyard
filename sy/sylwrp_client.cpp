@@ -92,6 +92,12 @@ unsigned SyLwrpClient::id() const
 }
 
 
+SyNode *SyLwrpClient::node() const
+{
+  return lwrp_node;
+}
+
+
 QString SyLwrpClient::deviceName() const
 {
   return lwrp_device_name;
@@ -580,9 +586,10 @@ void SyLwrpClient::connectionTimeoutData()
 
 void SyLwrpClient::watchdogIntervalData()
 {
+  //  fprintf(stderr,"sending watchdog\n");
+
   SendCommand("VER");
   lwrp_watchdog_retry_timer->start(SWITCHYARD_LWRP_WATCHDOG_RETRY);
-  //  fprintf(stderr,"sending watchdog\n");
 }
 
 
@@ -611,7 +618,6 @@ void SyLwrpClient::watchdogRetryData()
     delete lwrp_gpos[i];
   }
   lwrp_gpos.clear();
-  //  lwrp_connected=false;
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
@@ -622,8 +628,9 @@ void SyLwrpClient::watchdogRetryData()
     lwrp_connected=false;
     emit connected(lwrp_id,false);
   }
-
-  connectToHost(lwrp_host_address,lwrp_port,lwrp_password,true);
+  if(lwrp_persistent) {
+    connectToHost(lwrp_host_address,lwrp_port,lwrp_password,true);
+  }
 }
 
 
@@ -807,11 +814,9 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
     }
   }
   else {  // Watchdog response
-    if(lwrp_persistent) {
-      lwrp_watchdog_retry_timer->stop();
-      lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
-    }
     //    fprintf(stderr,"receiving watchdog\n");
+    lwrp_watchdog_retry_timer->stop();
+    lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
   }
 }
 
@@ -988,9 +993,7 @@ void SyLwrpClient::ProcessIP(const QStringList &cmds)
 
   if(processed) {
     lwrp_watchdog_state=true;
-    if(lwrp_persistent) {
-      lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
-    }
+    lwrp_watchdog_interval_timer->start(GetWatchdogInterval());
     if(!lwrp_connected) {
       lwrp_connected=true;
       emit connected(lwrp_id,true);

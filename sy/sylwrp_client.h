@@ -37,6 +37,7 @@ class SyLwrpClient :public QObject
   SyLwrpClient(unsigned id,QObject *parent=0);
   ~SyLwrpClient();
   unsigned id() const;
+  SyNode *node() const;
   QString deviceName() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;

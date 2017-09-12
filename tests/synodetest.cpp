@@ -38,7 +38,7 @@ MainObject::MainObject(QObject *parent)
     }
   }
   if(node.isEmpty()) {
-    fprintf(stderr,"synodetest: you must specify a node=<hostname>\n");
+    fprintf(stderr,"synodetest: you must specify a --node=<hostname>\n");
     exit(256);
   }
 

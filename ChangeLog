@@ -550,3 +550,9 @@
 2017-09-09 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.13.3.
 	* Incremented the library version to 9:3:6.
+2017-09-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a SyLwrpClient::node()' method.
+	* Changed SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MIN to 5000.
+	* Changed SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX to 10000.
+	* Fixed a bug in SyLwrpClient that caused node connection failure
+	to not be reported when connected using 'persistent=false'.
