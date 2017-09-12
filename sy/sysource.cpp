@@ -109,3 +109,19 @@ void SySource::setShareable(bool state)
 {
   src_shareable=state;
 }
+
+
+QString SySource::dump() const
+{
+  QString ret="";
+
+  ret+="streamAddress: "+streamAddress().toString()+"\n";
+  ret+="name: "+name()+"\n";
+  ret+="label: "+label()+"\n";
+  ret+=QString().sprintf("enabled: %u\n",enabled());
+  ret+=QString().sprintf("channels: %u\n",channels());
+  ret+=QString().sprintf("packetSize: %u\n",packetSize());
+  ret+=QString().sprintf("shareable: %u\n",shareable());
+
+  return ret;
+}

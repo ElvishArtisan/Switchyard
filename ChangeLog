@@ -561,3 +561,7 @@
 	* Added a 'SyLwrpClient::dst()' method.
 	* Added syastringtest(1) in 'tests/syastringtest.cpp' and
 	'tests/syastringtest.h'.
+2017-09-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyNode::dump()' method.
+	* Added a 'SySource::dump()' method.
+	* Added a 'SyDestination::dump()' method.

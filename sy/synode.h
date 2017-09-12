@@ -38,7 +38,7 @@ class SyNode
   void setGpiSlotQuantity(unsigned slot_quan);
   unsigned gpoSlotQuantity() const;
   void setGpoSlotQuantity(unsigned slot_quan);
-
+  QString dump() const;
 
  private:
   QHostAddress node_host_address;

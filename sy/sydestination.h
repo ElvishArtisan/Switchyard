@@ -25,6 +25,7 @@ class SyDestination : public SyEndPoint
   void setName(const QString &name);
   unsigned channels() const;
   void setChannels(unsigned chans);
+  QString dump() const;
 
  private:
   QHostAddress dst_stream_address;

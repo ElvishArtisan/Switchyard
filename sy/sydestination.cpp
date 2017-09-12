@@ -58,3 +58,15 @@ void SyDestination::setChannels(unsigned chans)
 {
   dst_channels=chans;
 }
+
+
+QString SyDestination::dump() const
+{
+  QString ret="";
+
+  ret+="streamAddress: "+streamAddress().toString()+"\n";
+  ret+="name: "+name()+"\n";
+  ret+=QString().sprintf("channels: %u\n",channels());
+
+  return ret;
+}

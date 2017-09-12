@@ -33,6 +33,7 @@ class SySource : public SyEndPoint
   void setPacketSize(unsigned size);
   bool shareable() const;
   void setShareable(bool state);
+  QString dump() const;
 
  private:
   QHostAddress src_stream_address;

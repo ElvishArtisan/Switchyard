@@ -147,3 +147,23 @@ void SyNode::setGpoSlotQuantity(unsigned slot_quan)
 {
   node_gpo_slots=slot_quan;
 }
+
+
+QString SyNode::dump() const
+{
+  QString ret="";
+
+  ret+="hostAddress: "+hostAddress().toString()+"\n";
+  ret+="hostName: "+hostName()+"\n";
+  ret+="deviceName: "+deviceName()+"\n";
+  ret+="product: "+product()+"\n";
+  ret+="model: "+model()+"\n";
+  ret+="softwareVersion: "+softwareVersion()+"\n";
+  ret+="lwrpVersion: "+lwrpVersion()+"\n";
+  ret+=QString().sprintf("srcSlotQuantity: %u\n",srcSlotQuantity());
+  ret+=QString().sprintf("dstSlotQuantity: %u\n",dstSlotQuantity());
+  ret+=QString().sprintf("gpiSlotQuantity: %u\n",gpiSlotQuantity());
+  ret+=QString().sprintf("gpoSlotQuantity: %u\n",gpoSlotQuantity());
+
+  return ret;
+}
