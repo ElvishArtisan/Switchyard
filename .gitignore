@@ -27,6 +27,7 @@ Makefile.in
 missing
 moc_*
 rc.syd
+tests/syastringtest
 tests/sycapture
 tests/syd
 tests/syethmonitortest

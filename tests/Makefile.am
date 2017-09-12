@@ -25,7 +25,8 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 
-noinst_PROGRAMS = sycapture\
+noinst_PROGRAMS = syastringtest\
+                  sycapture\
                   syd\
                   syethmonitortest\
                   symetertest\
@@ -34,6 +35,11 @@ noinst_PROGRAMS = sycapture\
                   sytone
 
 bin_PROGRAMS = sygpiotest
+
+dist_syastringtest_SOURCES = syastringtest.cpp syastringtest.h
+nodist_syastringtest_SOURCES = moc_syastringtest.cpp
+syastringtest_LDADD = @SWITCHYARDLIBS@
+syastringtest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_syd_SOURCES = syd.cpp syd.h
 nodist_syd_SOURCES = moc_syd.cpp

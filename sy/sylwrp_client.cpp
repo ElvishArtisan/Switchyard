@@ -116,6 +116,18 @@ unsigned SyLwrpClient::srcSlots() const
 }
 
 
+SySource *SyLwrpClient::src(int slot) const
+{
+  return lwrp_sources.at(slot);
+}
+
+
+SyDestination *SyLwrpClient::dst(int slot) const
+{
+  return lwrp_destinations.at(slot);
+}
+
+
 unsigned SyLwrpClient::gpis() const
 {
   return lwrp_gpis.size();
@@ -659,7 +671,7 @@ void SyLwrpClient::SendCommand(const QString &cmd)
 
 void SyLwrpClient::ProcessCommand(const QString &cmd)
 {
-  //  printf("ProcessCommand(\"%s\")\n",(const char *)cmd.toUtf8());
+  //  printf("ProcessCommand(|%s|)\n",(const char *)cmd.toUtf8());
 
   bool handled=false;
   QStringList f0=SyAString(cmd).split(" ","\"");

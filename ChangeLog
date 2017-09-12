@@ -556,3 +556,8 @@
 	* Changed SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX to 10000.
 	* Fixed a bug in SyLwrpClient that caused node connection failure
 	to not be reported when connected using 'persistent=false'.
+2017-09-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyLwrpClient::src()' method.
+	* Added a 'SyLwrpClient::dst()' method.
+	* Added syastringtest(1) in 'tests/syastringtest.cpp' and
+	'tests/syastringtest.h'.

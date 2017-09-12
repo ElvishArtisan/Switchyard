@@ -41,6 +41,8 @@ class SyLwrpClient :public QObject
   QString deviceName() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;
+  SySource *src(int slot) const;
+  SyDestination *dst(int slot) const;
   unsigned gpis() const;
   unsigned gpos() const;
   QString hostName() const;
