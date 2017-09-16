@@ -34,6 +34,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 sygpo.cpp sygpo.h\
                                 sygpiobundle.cpp sygpiobundle.h\
                                 sygpio_server.cpp sygpio_server.h\
+                                syinterfaces.cpp syinterfaces.h\
                                 sylwrp_client.cpp\
                                 sylwrp_client.h\
                                 sylwrp_clientconnection.cpp\
@@ -66,14 +67,15 @@ include_HEADERS = syadv_packet.h\
                   syadv_tag.h\
                   syastring.h\
                   syendpoint.h\
-                  syethmonitor.h\
-                  sygpiobundle.h\
                   syclock.h\
                   sycmdswitch.h\
                   syconfig.h\
                   sydestination.h\
+                  syethmonitor.h\
+                  sygpiobundle.h\
                   sygpo.h\
                   sygpio_server.h\
+                  syinterfaces.h\
                   sylwrp_client.h\
                   sylwrp_clientconnection.h\
                   sylwrp_server.h\

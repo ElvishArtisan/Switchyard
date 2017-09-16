@@ -32,6 +32,7 @@ tests/sycapture
 tests/syd
 tests/syethmonitortest
 tests/sygpiotest
+tests/syinterfacestest
 tests/symetertest
 tests/synodetest
 tests/syplay

@@ -29,6 +29,7 @@ noinst_PROGRAMS = syastringtest\
                   sycapture\
                   syd\
                   syethmonitortest\
+                  syinterfacestest\
                   symetertest\
                   synodetest\
                   syplay\
@@ -55,6 +56,11 @@ dist_syethmonitortest_SOURCES = syethmonitortest.cpp syethmonitortest.h
 nodist_syethmonitortest_SOURCES = moc_syethmonitortest.cpp
 syethmonitortest_LDADD = @SWITCHYARDLIBS@
 syethmonitortest_LDFLAGS = @SWITCHYARDFLAGS@
+
+dist_syinterfacestest_SOURCES = syinterfacestest.cpp syinterfacestest.h
+nodist_syinterfacestest_SOURCES = moc_syinterfacestest.cpp
+syinterfacestest_LDADD = @SWITCHYARDLIBS@
+syinterfacestest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_sygpiotest_SOURCES = sygpiotest.cpp sygpiotest.h
 nodist_sygpiotest_SOURCES = moc_sygpiotest.cpp

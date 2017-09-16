@@ -565,3 +565,6 @@
 	* Added a 'SyNode::dump()' method.
 	* Added a 'SySource::dump()' method.
 	* Added a 'SyDestination::dump()' method.
+2017-09-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyInterfaces' class in 'sy/syinterfaces.cpp' and
+	'sy/syinterfaces.h'.
