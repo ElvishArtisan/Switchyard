@@ -15,8 +15,8 @@ SySource::SySource(const QHostAddress &s_addr,const QString &name,bool enabled)
   src_name=name;
   src_label="";
   src_enabled=enabled;
-  src_channels=2;
-  src_packet_size=240;
+  src_channels=0;
+  src_packet_size=0;
   src_shareable=false;
 }
 
@@ -24,6 +24,12 @@ SySource::SySource(const QHostAddress &s_addr,const QString &name,bool enabled)
 SySource::SySource()
   : SyEndPoint()
 {
+  src_name="";
+  src_label="";
+  src_enabled=false;
+  src_channels=0;
+  src_packet_size=0;
+  src_shareable=false;
 }
 
 

@@ -571,3 +571,6 @@
 2017-09-23 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.14.0.
 	* Incremented the library version to 10:0:7.
+2017-10-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'SySource' where internal parameters were not properly
+	initialized in the default constructor.
