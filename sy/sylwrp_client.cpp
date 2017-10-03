@@ -92,6 +92,12 @@ unsigned SyLwrpClient::id() const
 }
 
 
+bool SyLwrpClient::isConnected() const
+{
+  return lwrp_connected;
+}
+
+
 SyNode *SyLwrpClient::node() const
 {
   return lwrp_node;
