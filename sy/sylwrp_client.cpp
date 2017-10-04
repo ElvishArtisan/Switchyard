@@ -911,6 +911,7 @@ void SyLwrpClient::ProcessGPI(const QStringList &cmds)
 	if(lwrp_connected) {
 	  emit gpiChanged(lwrp_id,slotnum,*lwrp_node,*(lwrp_gpis[slotnum]));
 	}
+	lwrp_gpis[slotnum]->setCode(cmds[2].toLower());
       }
     }
   }
@@ -929,6 +930,7 @@ void SyLwrpClient::ProcessGPO(const QStringList &cmds)
 	if(lwrp_connected) {
 	  emit gpoChanged(lwrp_id,slotnum,*lwrp_node,*(lwrp_gpos[slotnum]));
 	}
+	lwrp_gpos[slotnum]->bundle()->setCode(cmds[2].toLower());
       }
     }
   }

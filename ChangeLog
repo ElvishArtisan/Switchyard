@@ -576,3 +576,6 @@
 	initialized in the default constructor.
 2017-10-03 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SyLwrpClient::isConnected()' method.
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'SyLwrpClient' that caused altered GPIO code strings
+	to remain upper-case after the update was processed.
