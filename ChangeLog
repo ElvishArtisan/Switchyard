@@ -579,3 +579,6 @@
 2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'SyLwrpClient' that caused altered GPIO code strings
 	to remain upper-case after the update was processed.
+2017-10-05 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 11:0:8.
+	* Incremented the package version to 0.15.0.
