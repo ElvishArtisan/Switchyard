@@ -399,6 +399,24 @@ void SyLwrpClient::setGpoFollow(int slot,bool state)
 }
 
 
+bool SyLwrpClient::clipAlarmActive(int slot,MeterType type,int chan) const
+{
+  if(type==SyLwrpClient::InputMeter) {
+    return lwrp_source_clip_alarms[chan][slot];
+  }
+  return lwrp_destination_clip_alarms[chan][slot];
+}
+
+
+bool SyLwrpClient::silenceAlarmActive(int slot,MeterType type,int chan) const
+{
+  if(type==SyLwrpClient::InputMeter) {
+    return lwrp_source_silence_alarms[chan][slot];
+  }
+  return lwrp_destination_silence_alarms[chan][slot];
+}
+
+
 void SyLwrpClient::setClipMonitor(int slot,SyLwrpClient::MeterType type,
 				  int lvl,int msec)
 {
@@ -628,6 +646,12 @@ void SyLwrpClient::watchdogRetryData()
     delete lwrp_destinations[i];
   }
   lwrp_destinations.clear();
+  for(int i=0;i<2;i++) {
+    lwrp_source_clip_alarms[i].clear();
+    lwrp_source_silence_alarms[i].clear();
+    lwrp_destination_clip_alarms[i].clear();
+    lwrp_destination_silence_alarms[i].clear();
+  }
   for(unsigned i=0;i<lwrp_gpis.size();i++) {
     delete lwrp_gpis[i];
   }
@@ -751,6 +775,10 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
 	QStringList f2=f1[1].split("/");
 	for(int i=0;i<f2[0].toInt();i++) {
 	  lwrp_sources.push_back(new SySource());
+	  for(int i=0;i<2;i++) {
+	    lwrp_source_clip_alarms[i].push_back(false);
+	    lwrp_source_silence_alarms[i].push_back(false);
+	  }
 	}
 	lwrp_node->setSrcSlotQuantity(f2[0].toInt());
       }
@@ -758,6 +786,10 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
 	QStringList f2=f1[1].split("/");
 	for(int i=0;i<f2[0].toInt();i++) {
 	  lwrp_destinations.push_back(new SyDestination());
+	  for(int i=0;i<2;i++) {
+	    lwrp_destination_clip_alarms[i].push_back(false);
+	    lwrp_destination_silence_alarms[i].push_back(false);
+	  }
 	}
 	lwrp_node->setDstSlotQuantity(f2[0].toInt());
       }
@@ -1108,9 +1140,21 @@ void SyLwrpClient::ProcessLVL(const QStringList &cmds)
 	}
 	f1=cmds[3].split("-");
 	if(f1[f1.size()-1]=="LOW") {
+	  if(type==SyLwrpClient::InputMeter) {
+	    lwrp_source_silence_alarms[chan][slotnum]=f1.size()==1;
+	  }
+	  else {
+	    lwrp_destination_silence_alarms[chan][slotnum]=f1.size()==1;
+	  }
 	  emit audioSilenceAlarm(lwrp_id,type,slotnum,chan,f1.size()==1);
 	}
 	if(f1[f1.size()-1]=="CLIP") {
+	  if(type==SyLwrpClient::InputMeter) {
+	    lwrp_source_clip_alarms[chan][slotnum]=f1.size()==1;
+	  }
+	  else {
+	    lwrp_destination_clip_alarms[chan][slotnum]=f1.size()==1;
+	  }
 	  emit audioClipAlarm(lwrp_id,type,slotnum,chan,f1.size()==1);
 	}
       }

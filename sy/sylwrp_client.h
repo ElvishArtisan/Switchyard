@@ -81,6 +81,8 @@ class SyLwrpClient :public QObject
   void setGpoName(int slot,const QString &str);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,int s_slot);
   void setGpoFollow(int slot,bool state);
+  bool clipAlarmActive(int slot,MeterType type,int chan) const;
+  bool silenceAlarmActive(int slot,MeterType type,int chan) const;
   void setClipMonitor(int slot,MeterType type,int lvl,int msec);
   void setSilenceMonitor(int slot,MeterType type,int lvl,int msec);
   void startMeter(MeterType type);
@@ -141,6 +143,10 @@ class SyLwrpClient :public QObject
   std::vector<SyDestination *> lwrp_destinations;
   std::vector<SyGpioBundle *> lwrp_gpis;
   std::vector<SyGpo *> lwrp_gpos;
+  std::vector<bool> lwrp_source_clip_alarms[2];
+  std::vector<bool> lwrp_source_silence_alarms[2];
+  std::vector<bool> lwrp_destination_clip_alarms[2];
+  std::vector<bool> lwrp_destination_silence_alarms[2];
   SyNode *lwrp_node;
   QHostAddress lwrp_host_address;
   QString lwrp_hostname;
