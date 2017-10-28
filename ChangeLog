@@ -585,3 +585,6 @@
 2017-10-23 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyLwrpClient::clipAlarmActive()' method.
 	* Added a 'SyLwrpClient::silenceAlarmActive()' method.
+2017-10-28 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library version to 12:0:9.
+	* Incremented the package version to 0.16.0.
