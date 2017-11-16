@@ -42,10 +42,23 @@ void SyProfileLine::setValue(QString value)
 }
 
 
+bool SyProfileLine::used() const
+{
+  return line_used;
+}
+
+
+void SyProfileLine::setUsed(bool state)
+{
+  line_used=state;
+}
+
+
 void SyProfileLine::clear()
 {
   line_tag="";
   line_value="";
+  line_used=false;
 }
 
 
@@ -79,6 +92,17 @@ bool SyProfileSection::getValue(QString tag,QString *value) const
 }
 
 
+void SyProfileSection::setValueUsed(QString tag,bool state)
+{
+  for(unsigned i=0;i<section_line.size();i++) {
+    if(section_line[i].tag()==tag) {
+      section_line[i].setUsed(state);
+      return;
+    }
+  }  
+}
+
+
 void SyProfileSection::addValue(QString tag,QString value)
 {
   section_line.push_back(SyProfileLine());
@@ -91,6 +115,20 @@ void SyProfileSection::clear()
 {
   section_name="";
   section_line.resize(0);
+}
+
+
+QStringList SyProfileSection::unusedLines() const
+{
+  QStringList ret;
+
+  for(unsigned i=0;i<section_line.size();i++) {
+    if(!section_line.at(i).used()) {
+      ret.push_back(section_line.at(i).tag()+"="+section_line.at(i).value());
+    }
+  }
+
+  return ret;
 }
 
 
@@ -184,7 +222,7 @@ bool SyProfile::setSource(std::vector<QString> *values)
 
 
 QString SyProfile::stringValue(const QString &section,const QString &tag,
-			      const QString &default_str,bool *ok) const
+			       const QString &default_str,bool *ok)
 {
   QString result;
 
@@ -194,6 +232,7 @@ QString SyProfile::stringValue(const QString &section,const QString &tag,
 	if(ok!=NULL) {
 	  *ok=true;
 	}
+	profile_section[i].setValueUsed(tag,true);
 	return result;
       }
       if(ok!=NULL) {
@@ -210,7 +249,7 @@ QString SyProfile::stringValue(const QString &section,const QString &tag,
 
 
 int SyProfile::intValue(const QString &section,const QString &tag,
-		       int default_value,bool *ok) const
+		       int default_value,bool *ok)
 {
   bool valid;
 
@@ -229,7 +268,7 @@ int SyProfile::intValue(const QString &section,const QString &tag,
 
 
 int SyProfile::hexValue(const QString &section,const QString &tag,
-		       int default_value,bool *ok) const
+		       int default_value,bool *ok)
 {
   bool valid;
 
@@ -248,7 +287,7 @@ int SyProfile::hexValue(const QString &section,const QString &tag,
 
 
 float SyProfile::floatValue(const QString &section,const QString &tag,
-			   float default_value,bool *ok) const
+			   float default_value,bool *ok)
 {
   bool valid;
 
@@ -267,7 +306,7 @@ float SyProfile::floatValue(const QString &section,const QString &tag,
 
 
 double SyProfile::doubleValue(const QString &section,const QString &tag,
-			    double default_value,bool *ok) const
+			    double default_value,bool *ok)
 {
   bool valid;
 
@@ -286,7 +325,7 @@ double SyProfile::doubleValue(const QString &section,const QString &tag,
 
 
 bool SyProfile::boolValue(const QString &section,const QString &tag,
-			 bool default_value,bool *ok) const
+			 bool default_value,bool *ok)
 {
   bool valid;
 
@@ -356,4 +395,22 @@ void SyProfile::clear()
 {
   profile_source="";
   profile_section.resize(0);
+}
+
+
+QStringList SyProfile::unusedLines() const
+{
+  QStringList ret;
+
+  for(unsigned i=0;i<profile_section.size();i++) {
+    QStringList lines=profile_section.at(i).unusedLines();
+    if(lines.size()>0) {
+      ret.push_back("["+profile_section.at(i).name()+"]");
+      for(int j=0;j<lines.size();j++) {
+	ret.push_back(lines.at(j));
+      }
+    }
+  }
+
+  return ret;
 }

@@ -588,3 +588,5 @@
 2017-10-28 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 12:0:9.
 	* Incremented the package version to 0.16.0.
+2017-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyProfile::unusedLines()' method.
