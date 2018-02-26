@@ -5,7 +5,20 @@ REM
 REM Build Switchyard for Win32.
 REM
 REM (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
-REM     All Rights Reserved.
+REM
+REM    This program is free software; you can redistribute it and/or modify
+REM    it under the terms of version 2.1 of the GNU Lesser General Public
+REM    License as published by the Free Software Foundation;
+REM
+REM    This program is distributed in the hope that it will be useful,
+REM    but WITHOUT ANY WARRANTY; without even the implied warranty of
+REM    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+REM    GNU Lesser General Public License for more details.
+REM
+REM    You should have received a copy of the GNU General Public License
+REM    along with this program; if not, write to the Free Software
+REM    Foundation, Inc., 59 Temple Place, Suite 330, 
+REM    Boston, MA  02111-1307  USA
 REM
 
 REM

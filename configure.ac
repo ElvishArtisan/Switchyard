@@ -4,7 +4,19 @@ dnl Use autoconf to process this into a configure script
 dnl
 dnl   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com dnl
 dnl
-dnl   All Rights Reserved.
+dnl    This program is free software; you can redistribute it and/or modify
+dnl    it under the terms of version 2.1 of the GNU Lesser General Public
+dnl    License as published by the Free Software Foundation;
+dnl
+dnl    This program is distributed in the hope that it will be useful,
+dnl    but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl    GNU Lesser General Public License for more details.
+dnl
+dnl    You should have received a copy of the GNU General Public License
+dnl    along with this program; if not, write to the Free Software
+dnl    Foundation, Inc., 59 Temple Place, Suite 330, 
+dnl    Boston, MA  02111-1307  USA
 dnl
 
 AC_INIT(switchyard,m4_esyscmd(cat PACKAGE_VERSION))

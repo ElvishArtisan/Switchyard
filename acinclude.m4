@@ -1,12 +1,24 @@
 dnl acinclude.m4
 dnl
-dnl Local Autoconf macro definitions for LibRHpi
+dnl Local Autoconf macro definitions
 dnl
 dnl   (C) Copyright 2006 Fred Gleason <fredg@paravelsystems.com>
 dnl
 dnl   All Rights Reserved.
 dnl
-dnl      $Id: acinclude.m4,v 1.2 2010/09/27 11:11:33 pcvs Exp $
+dnl    This program is free software; you can redistribute it and/or modify
+dnl    it under the terms of version 2.1 of the GNU Lesser General Public
+dnl    License as published by the Free Software Foundation;
+dnl
+dnl    This program is distributed in the hope that it will be useful,
+dnl    but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl    GNU Lesser General Public License for more details.
+dnl
+dnl    You should have received a copy of the GNU General Public License
+dnl    along with this program; if not, write to the Free Software
+dnl    Foundation, Inc., 59 Temple Place, Suite 330, 
+dnl    Boston, MA  02111-1307  USA
 dnl
 
 dnl AR_GCC_TARGET()

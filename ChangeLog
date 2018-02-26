@@ -593,3 +593,5 @@
 2017-12-05 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library version to 13:0:10.
 	* Incremented the package version to 0.17.0.
+2018-02-26 Fred Gleason <fredg@paravelsystems.com>
+	* Changed package licensing to LGPLv2.
