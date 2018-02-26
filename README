@@ -3,3 +3,9 @@ This is the README file for the Switchyard package.
 This software comes with ABSOLUTELY NO WARRANTY.  See the file COPYING for
 details.
 
+Switchyard is a C++ library for emulating and facilitating interaction with
+Livewire AoIP devices. Classes exist for implementing client connections
+as well as servers based upon LiveWire Routing Protocol (LWRP) as well as
+low-level interaction with the Livewire GPIO subsystem via multicast messages.
+The Library is written using Qt v4.x.
+

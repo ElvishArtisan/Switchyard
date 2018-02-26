@@ -595,3 +595,8 @@
 	* Incremented the package version to 0.17.0.
 2018-02-26 Fred Gleason <fredg@paravelsystems.com>
 	* Changed package licensing to LGPLv2.
+2018-02-26 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'README'.
+	* Updated 'INSTALL'.
+	* Updated 'NEWS'.
+	* Incremented the package version to 0.17.1.

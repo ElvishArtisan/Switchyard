@@ -1,15 +1,28 @@
 This is the installation file for the Switchyard package.
 
-Configure script invocation:
+Mandatory Prerequisites
+-----------------------
+Qt v4.x
+Cross-platform development toolkit. Available at https://www.qt.io/.
 
-./configure --prefix=/usr
+Optional Prerequisites
+----------------------
+libsndfile
+C library for reading and writing files containing sampled sound. Needed
+for building the 'sycapture' binary in 'tests/'. Available at
+http://www.mega-nerd.com/libsndfile/.
 
-Environment for building on CentOS 5 i386:
-export CPPFLAGS=-I/usr/lib/qt4/include
-export LDFLAGS=-L/usr/lib/qt4/lib
-export PATH=/usr/lib/qt4/bin:$PATH
+Building the Library
+--------------------
+Once the prereequites have been installed, the library can be built by means
+of the following commands:
 
-Environment for building on CentOS 5 x86_64:
-export CPPFLAGS=-I/usr/lib64/qt4/include
-export LDFLAGS=-L/usr/lib64/qt4/lib64
-export PATH=/usr/lib64/qt4/bin:$PATH
+./configure
+make
+make install
+
+The configure script has a number of optional switches to control what gets
+built and where things get installed. Do './configure --help' to get a list.
+
+For examples of how to use the library, see the programs in the 'test/'
+subdirectory.
