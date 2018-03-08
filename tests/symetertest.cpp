@@ -202,17 +202,13 @@ void MainWidget::meterUpdateData(unsigned id,SyLwrpClient::MeterType type,
 {
   switch(type) {
   case SyLwrpClient::InputMeter:
-    meter_input_meters[2*slotnum]->setSolidBar(rms_lvls[0]);
-    meter_input_meters[2*slotnum]->setFloatingBar(peak_lvls[0]);
-    meter_input_meters[2*slotnum+1]->setSolidBar(rms_lvls[1]);
-    meter_input_meters[2*slotnum+1]->setFloatingBar(peak_lvls[1]);
+    meter_input_meters[2*slotnum]->setSolidBar(peak_lvls[0]);
+    meter_input_meters[2*slotnum+1]->setSolidBar(peak_lvls[1]);
     break;
 
   case SyLwrpClient::OutputMeter:
-    meter_output_meters[2*slotnum]->setSolidBar(rms_lvls[0]);
-    meter_output_meters[2*slotnum]->setFloatingBar(peak_lvls[0]);
-    meter_output_meters[2*slotnum+1]->setSolidBar(rms_lvls[1]);
-    meter_output_meters[2*slotnum+1]->setFloatingBar(peak_lvls[1]);
+    meter_output_meters[2*slotnum]->setSolidBar(peak_lvls[0]);
+    meter_output_meters[2*slotnum+1]->setSolidBar(peak_lvls[1]);
     break;
 
   case SyLwrpClient::LastTypeMeter:
