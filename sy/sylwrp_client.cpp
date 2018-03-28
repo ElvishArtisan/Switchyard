@@ -717,7 +717,7 @@ void SyLwrpClient::ProcessCommand(const QString &cmd)
   //  printf("ProcessCommand(|%s|)\n",(const char *)cmd.toUtf8());
 
   bool handled=false;
-  QStringList f0=SyAString(cmd).split(" ","\"");
+  QStringList f0=SyAString(cmd.trimmed()).split(" ","\"");
 
   if(f0[0]=="VER") {
     ProcessVER(f0);
@@ -984,26 +984,32 @@ void SyLwrpClient::ProcessGPO(const QStringList &cmds)
 
 void SyLwrpClient::ProcessCFG(const QStringList &cmds)
 {
-  if(cmds.size()>=4) {
+  if(cmds.size()>=3) {
     bool ok=false;
     unsigned slotnum=cmds[2].toUInt(&ok)-1;
     SyGpo *gpo=lwrp_gpos[slotnum];
+    if(cmds.size()==3) {
+      gpo->setSourceAddress(QHostAddress(),-1);
+      return;
+    }
     for(int i=3;i<cmds.size();i++) {
       QStringList f0=SyAString(cmds[i]).split(":","\"");
-      if(f0.size()==2) {
+      if(f0.size()>=2) {
 	if(f0[0]=="NAME") {
 	  gpo->setName(f0[1]);
 	}
 	if(f0[0]=="SRCA") {
 	  QStringList f1=f0[1].split(" ");
-	  unsigned srcnum=f1[0].replace("\"","").toUInt(&ok);
+	  QString srca=f1[0];
+	  srca.replace("\"","");
+	  unsigned srcnum=srca.toUInt(&ok);
 	  if(ok) {  // Source number
 	    // FIXME: This breaks with surround sound!
 	    gpo->setSourceAddress(SyRouting::streamAddress(SyRouting::Stereo,
 							   srcnum),-1);
 	  }
 	  else {  // IP address
-	    QStringList f2=f1[0].replace("\"","").split("/");
+	    QStringList f2=srca.split("/");
 	    int s_slot=-1;
 	    if(f2.size()==2) {
 	      s_slot=f2[1].toInt()-1;
