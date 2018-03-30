@@ -1,6 +1,18 @@
 The NEWS file for the Switchyard package.
 
 -------------------------------------------------------------------------------
+v0.12.1 - 3/30/2018
+
+Changes:
+   Added 'SyEndPoint::exists()' and 'SyEndPoint::setExists()' methods.
+   SyLwrpClient uses these to indicate that a given endpoint (SySource
+   or SyDestination) actually exists on a device (as opposed to being
+   a 'phantom in the hole', as can be the case with devices like Mix
+   Engines and Omnia processors).
+
+   BugFixes. See the ChangeLog.
+
+-------------------------------------------------------------------------------
 v0.11.1 - 2/26/2018
 
 First public release.
