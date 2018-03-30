@@ -34,12 +34,15 @@ class SyEndPoint
   void setSilenceThreshold(int lvl);
   int silenceTimeout() const;
   void setSilenceTimeout(int msec);
+  bool exists() const;
+  void setExists(bool state);
 
  private:
   int ep_clip_threshold;
   int ep_clip_timeout;
   int ep_silence_threshold;
   int ep_silence_timeout;
+  bool ep_exists;
 };
 
 

@@ -27,6 +27,7 @@ SyEndPoint::SyEndPoint()
   ep_clip_timeout=0;
   ep_silence_threshold=0;
   ep_silence_timeout=0;
+  ep_exists=false;
 }
 
 
@@ -75,4 +76,16 @@ int SyEndPoint::silenceTimeout() const
 void SyEndPoint::setSilenceTimeout(int msec)
 {
   ep_silence_timeout=msec;
+}
+
+
+bool SyEndPoint::exists() const
+{
+  return ep_exists;
+}
+
+
+void SyEndPoint::setExists(bool state)
+{
+  ep_exists=state;
 }

@@ -891,6 +891,7 @@ void SyLwrpClient::ProcessSRC(const QStringList &cmds)
   unsigned slotnum=cmds[1].toUInt(&ok)-1;
   if(ok&&(slotnum<srcSlots())) {
     SySource *src=lwrp_sources[slotnum];
+    src->setExists(true);
     for(int i=2;i<cmds.size();i++) {
       QStringList f1=SyAString(cmds[i]).split(":","\"");
       if(f1[0]=="NCHN") {
@@ -925,6 +926,7 @@ void SyLwrpClient::ProcessDST(const QStringList &cmds)
   unsigned slotnum=cmds[1].toUInt(&ok)-1;
   if(ok&&(slotnum<dstSlots())) {
     SyDestination *dst=lwrp_destinations[slotnum];
+    dst->setExists(true);
     for(int i=2;i<cmds.size();i++) {
       QStringList f1=SyAString(cmds[i]).split(":","\"");
       if(f1[0]=="NAME") {

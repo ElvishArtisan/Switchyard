@@ -605,3 +605,6 @@
 2018-03-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the 'SyLwrpClient' class that caused corrupt
 	GPIO source address values to be returned.
+2018-03-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SyEndpoint::exists()' and 'SyEndpoint::setExists()'
+	methods.
