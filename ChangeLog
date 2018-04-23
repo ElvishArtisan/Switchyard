@@ -612,3 +612,7 @@
 	* Updated 'NEWS'.
 	* Incremented the library ABI version to 14:0:11.
 	* Updated the package version to 0.18.0.
+2018-04-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'SyGpioServer' that caused 'gpiReceived()' and
+	'gpioReceived()' signals to be omitted when processing multicast
+	updates containing multiple bit events.

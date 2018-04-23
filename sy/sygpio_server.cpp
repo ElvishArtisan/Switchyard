@@ -311,23 +311,26 @@ void SyGpioServer::gpiReadyReadData()
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
     if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
-       (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))){
+       (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
-      //
-      // FIXME: Is there actually a 'pulse' component for a GPI event?
-      //        We assume not here (even though there is a place for one
-      //        in the Switchyard API).
-      //
-      e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,
-			((0xFF&data[23])<<8)+(0xFF&data[24]),
-		       0x0D-(0xff&data[25]),(data[27]&0x01)!=0,false);
-      printf("emit 1\n");
-      emit gpioReceived(e);
-      emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-      gpio_routing->setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-      delete e;
+      uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
+      for(uint16_t i=0;i<count;i++) {
+	unsigned offset=22+i*6;
+	//
+	// FIXME: Is there actually a 'pulse' component for a GPI event?
+	//        We assume not here (even though there is a place for one
+	//        in the Switchyard API).
+	//
+	e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,
+			  ((0xFF&data[offset+1])<<8)+(0xFF&data[offset+2]),
+			  0x0D-(0xff&data[offset+3]),
+			  (data[offset+5]&0x01)!=0,false);
+	emit gpioReceived(e);
+	emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	gpio_routing->setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	delete e;
+      }
     }
-    
   }
 }
 
@@ -342,6 +345,14 @@ void SyGpioServer::gpoReadyReadData()
   SyGpioEvent *e=NULL;
 
   while((n=gpio_gpo_socket->readDatagram(data,1500,&addr,&port))>0) {
+    /*
+      QString str="";
+      for(int i=0;i<n;i++) {
+      str+=QString().sprintf("%02x:",0xff&data[i]);
+      }
+      printf("%s: %s\n",(const char *)addr.toString().toUtf8(),
+      (const char *)str.toUtf8());
+    */
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
     /*
