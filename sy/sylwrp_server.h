@@ -54,10 +54,12 @@ class SyLwrpServer : public QObject
   bool ExecuteGpi(int ch,QStringList &args);
   bool ExecuteGpo(int ch,QStringList &args);
   bool ExecuteIfc(int ch,QStringList &args);
+  bool ExecuteCfg(int ch,QStringList &args);
   QString SrcLine(int slot);
   QString DstLine(int slot);
   QString GpiLine(int slot);
   QString GpoLine(int slot);
+  QString CfgLine(int slot);
   QStringList ParseField(const SyAString &field);
   void ParseCommand(int id);
   void BroadcastCommand(const QString &cmd);

@@ -382,6 +382,81 @@ bool SyLwrpServer::ExecuteIfc(int ch,QStringList &args)
 }
 
 
+bool SyLwrpServer::ExecuteCfg(int ch,QStringList &args)
+{
+  unsigned slot=0;
+  unsigned srcnum=0;
+  QStringList fields;
+  QString addr="0.0.0.0";
+  bool save=false;
+  bool ok=false;
+
+  if(args.size()<2) {
+    return false;
+  }
+  if(args[1]!="GPO") {
+    return false;
+  }
+  if(args.size()==2) {
+    SendCommand(ch,"BEGIN");
+    for(unsigned i=0;i<ctrl_routing->gpos();i++) {
+      SendCommand(ch,CfgLine(i));
+    }
+    SendCommand(ch,"END");
+    return true;
+  }
+  if(args.size()>=3) {
+    slot=args[2].toInt(&ok)-1;
+    if((!ok)||(slot>=ctrl_routing->gpos())) {
+      return false;
+    }
+  }
+  if(args.size()==3) {
+    SendCommand(ch,CfgLine(slot));
+    return true;
+  }
+  for(int i=3;i<args.size();i++) {
+    fields=ParseField(SyAString(args[i]));
+    if(fields[0]=="NAME") {
+      if(fields.size()>1) {
+	ctrl_routing->setGpoName(slot,fields[1]);
+	save=true;
+      }
+    }
+    if(fields[0]=="SRCA") {
+      if(fields.size()>1) {
+	srcnum=fields[1].toUInt(&ok);
+	if(ok&&(srcnum<32768)) {
+	  ctrl_routing->setGpoAddress(slot,
+		       SyRouting::streamAddress(SyRouting::Stereo,srcnum));
+	  save=true;
+	}
+	else {
+	  QHostAddress addr(fields[1]);
+	  if(!addr.isNull()) {
+	    ctrl_routing->setGpoAddress(slot,addr);
+	    save=true;
+	  }
+	  else {
+	    return false;
+	  }
+	}
+      }
+      else {
+	ctrl_routing->setGpoAddress(slot,"0.0.0.0");
+      }
+    }
+  }
+
+  if(save) {
+    ctrl_routing->save();
+  }
+  SendCommand(ch,CfgLine(slot));
+  
+  return true;
+}
+
+
 QString SyLwrpServer::SrcLine(int slot)
 {
   return QString().
@@ -431,6 +506,20 @@ QString SyLwrpServer::GpoLine(int slot)
     else {
       ret+="h";
     }
+  }
+
+  return ret;
+}
+
+
+QString SyLwrpServer::CfgLine(int slot)
+{
+  QString ret=QString().sprintf("CFG GPO %d",slot+1);
+
+  ret+=" NAME:\""+ctrl_routing->gpoName(slot)+"\"";
+  if(SyRouting::livewireNumber(ctrl_routing->gpoAddress(slot))!=0) {
+    ret+=QString().sprintf(" SRCA:\"%u\"",
+		    SyRouting::livewireNumber(ctrl_routing->gpoAddress(slot)));
   }
 
   return ret;
@@ -490,6 +579,9 @@ void SyLwrpServer::ParseCommand(int id)
   }
   if(args[0]=="ifc") {
     ok=ExecuteIfc(id,args);
+  }
+  if(args[0]=="cfg") {
+    ok=ExecuteCfg(id,args);
   }
   if(!ok) {
     SendCommand(id,"ERROR 1000 bad command");

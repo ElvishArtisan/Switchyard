@@ -330,6 +330,36 @@ void SyRouting::setGpo(int gpo,int line,bool state,bool pulse)
 }
 
 
+QHostAddress SyRouting::gpoAddress(int slot) const
+{
+  return QHostAddress(gpo_addr[slot]);
+}
+
+
+void SyRouting::setGpoAddress(int slot,const QHostAddress &addr)
+{
+  gpo_addr[slot]=addr.toIPv4Address();
+}
+
+
+void SyRouting::setGpoAddress(int slot,const QString &addr)
+{
+  gpo_addr[slot]=QHostAddress(addr).toIPv4Address();
+}
+
+
+QString SyRouting::gpoName(int slot) const
+{
+  return sy_gpo_names[slot];
+}
+
+
+void SyRouting::setGpoName(int slot,const QString &str)
+{
+  sy_gpo_names[slot]=str;
+}
+
+
 unsigned SyRouting::nicQuantity() const
 {
   return sy_nic_devices.size();
@@ -440,6 +470,14 @@ void SyRouting::load()
     setDstAddress(i,s->value(key+"/DestinationAddress").toString());
     setDstName(i,s->value(key+"/DestinationName").toString());
   }
+  for(unsigned i=0;i<gpos();i++) {
+    QString key=QString().sprintf("Slot%u",i+1);
+    setGpoAddress(i,s->value(key+"/GpoAddress").toString());
+    setGpoName(i,s->value(key+"/GpoName").toString());
+    if(gpoName(i).isEmpty()) {
+      setGpoName(i,QString().sprintf("GPIO %d",i+1));
+    }
+  }
   delete s;
 #else
   QString section;
@@ -461,6 +499,14 @@ void SyRouting::load()
     section=QString().sprintf("Slot%u",i+1);
     setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
     setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
+  }
+  for(unsigned i=0;i<gpos();i++) {
+    section=QString().sprintf("Slot%u",i+1);
+    setGpoAddress(i,p->addressValue(section,"GpoAddress",""));
+    setGpoName(i,p->stringValue(section,"GpoName",gpoName(i)));
+    if(gpoName(i).isEmpty()) {
+      setGpoName(i,QString().sprintf("GPIO %d",i+1));
+    }
   }
   delete p;
 #endif  // WIN32
@@ -484,6 +530,10 @@ void SyRouting::save() const
     if(i<(int)dstSlots()) {
       s->setValue(key+"/DestinationAddress",dstAddress(i).toString());
       s->setValue(key+"/DestinationName",dstName(i));
+    }
+    if(i<(int)gpos()) {
+      s->setValue(key+"/GpoAddress",gpoAddress(i).toString());
+      s->setValue(key+"/GpoName",gpoName(i));
     }
   }
   delete s;
@@ -512,6 +562,11 @@ void SyRouting::save() const
       fprintf(f,"DestinationAddress=%s\n",
 	      (const char *)dstAddress(i).toString().toAscii());
       fprintf(f,"DestinationName=%s\n",(const char *)dstName(i).toAscii());
+    }
+    if(i<(int)gpos()) {
+      fprintf(f,"GpoAddress=%s\n",
+	      (const char *)gpoAddress(i).toString().toAscii());
+      fprintf(f,"GpoNameName=%s\n",(const char *)gpoName(i).toAscii());
     }
     fprintf(f,"\n");
   }

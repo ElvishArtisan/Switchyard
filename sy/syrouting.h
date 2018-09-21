@@ -71,6 +71,11 @@ class SyRouting
   bool gpoState(int gpo,int line) const;
   bool gpoStateBySlot(int slot,int line) const;
   void setGpo(int gpo,int line,bool state,bool pulse);
+  QHostAddress gpoAddress(int slot) const;
+  void setGpoAddress(int slot,const QHostAddress &addr);
+  void setGpoAddress(int slot,const QString &addr);
+  QString gpoName(int slot) const;
+  void setGpoName(int slot,const QString &str);
   unsigned nicQuantity() const;
   QHostAddress nicAddress(unsigned n);
   QHostAddress nicNetmask(unsigned n);
@@ -91,6 +96,7 @@ class SyRouting
   float src_meter[SWITCHYARD_MAX_SLOTS][SWITCHYARD_MAX_CHANNELS];
   uint32_t dst_addr[SWITCHYARD_MAX_SLOTS];
   float dst_meter[SWITCHYARD_MAX_SLOTS][SWITCHYARD_MAX_CHANNELS];
+  uint32_t gpo_addr[SWITCHYARD_MAX_SLOTS];
   void writeRtpData(unsigned src_slot,const char *data,int len) const;
   static unsigned livewireNumber(const QHostAddress &addr);
   static QHostAddress streamAddress(Realm realm,uint16_t lw_num);
@@ -103,6 +109,7 @@ class SyRouting
   void LoadInterfaces();
   QString sy_src_names[SWITCHYARD_MAX_SLOTS];
   QString sy_dst_names[SWITCHYARD_MAX_SLOTS];
+  QString sy_gpo_names[SWITCHYARD_MAX_SLOTS];
   std::vector<bool> sy_gpi_states;
   std::vector<bool> sy_gpo_states;
   std::vector<QHostAddress> sy_nic_addresses;

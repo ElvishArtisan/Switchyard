@@ -621,3 +621,8 @@
 	* Updated the package version to 0.18.1.
 2018-09-21 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SyGpioServer::gpioEvent(SyGpioBundleEvent *)' signal.
+2018-09-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for the 'CFG GPO' command to 'SyLwrpServer'.
+	* Added 'SyRouter::gpoName()' and 'SyRouter::setGpoName()' methods.
+	* Added 'SyRouter::gpoAddress()' and 'SyRouter::setGpoAddress()'
+	methods.
