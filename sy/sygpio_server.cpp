@@ -22,6 +22,69 @@
 #include "sygpio_server.h"
 #include "sysyslog.h"
 
+SyGpioBundleEvent::SyGpioBundleEvent(SyGpioBundleEvent::Type type,
+				     const QHostAddress &orig_addr,
+				     uint16_t orig_port,
+				     int srcnum,const QString &code)
+{
+  event_type=type;
+  event_origin_address=orig_addr;
+  event_origin_port=orig_port;
+  event_source_number=srcnum;
+  event_code=code;
+}
+
+
+SyGpioBundleEvent::Type SyGpioBundleEvent::type() const
+{
+  return event_type;
+}
+
+
+QHostAddress SyGpioBundleEvent::originAddress() const
+{
+  return event_origin_address;
+}
+
+
+uint16_t SyGpioBundleEvent::originPort() const
+{
+  return event_origin_port;
+}
+
+
+int SyGpioBundleEvent::sourceNumber() const
+{
+  return event_source_number;
+}
+
+
+QString SyGpioBundleEvent::code() const
+{
+  return event_code;
+}
+
+
+QString SyGpioBundleEvent::dump() const
+{
+  QString str="GPIO Bundle Event\n";
+  if(type()==SyGpioBundleEvent::TypeGpi) {
+    str+="Type: GPI\n";
+  }
+  else {
+    str+="Type: GPO\n";
+  }
+  str+=QString().sprintf("Source Number: %d\n",sourceNumber());
+  str+="Code: "+code()+"\n";
+  str+=QString().sprintf("Origin: %s:%d\n",
+			 (const char *)originAddress().toString().toUtf8(),
+			 originPort());
+  return str;
+}
+
+
+
+
 SyGpioEvent::SyGpioEvent(SyGpioEvent::Type type,const QHostAddress &orig_addr,
 			 uint16_t orig_port,int srcnum,int line,bool state,
 			 bool pulse)
@@ -306,6 +369,9 @@ void SyGpioServer::gpiReadyReadData()
   QHostAddress addr;
   uint16_t port=0;
   SyGpioEvent *e=NULL;
+  SyGpioBundleEvent *eb=NULL;
+  int srcnum=0;
+  QString code;
 
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
@@ -314,6 +380,8 @@ void SyGpioServer::gpiReadyReadData()
        (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
       uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
+      srcnum=((0xFF&data[22+1])<<8)+(0xFF&data[22+2]);
+      code=gpio_gpi_codes.value(srcnum,"hhhhh");
       for(uint16_t i=0;i<count;i++) {
 	unsigned offset=22+i*6;
 	//
@@ -321,15 +389,30 @@ void SyGpioServer::gpiReadyReadData()
 	//        We assume not here (even though there is a place for one
 	//        in the Switchyard API).
 	//
-	e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,
-			  ((0xFF&data[offset+1])<<8)+(0xFF&data[offset+2]),
-			  0x0D-(0xff&data[offset+3]),
-			  (data[offset+5]&0x01)!=0,false);
+	//	srcnum=((0xFF&data[offset+1])<<8)+(0xFF&data[offset+2]);
+	int line=0x0D-(0xff&data[offset+3]);
+	bool state=(data[offset+5]&0x01)!=0;
+	printf("i: %d  srcnum: %d  line: %d  state: %d\n",
+	       i,srcnum,line,state);
+	if(state) {
+	  code.replace(line,1,"L");
+	}
+	else {
+	  code.replace(line,1,"H");
+	}
+	e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,srcnum,line,state,
+			  false);
 	emit gpioReceived(e);
 	emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-	gpio_routing->setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	gpio_routing->
+	  setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
 	delete e;
       }
+      gpio_gpi_codes[srcnum]=code.toLower();
+      eb=
+	new SyGpioBundleEvent(SyGpioBundleEvent::TypeGpi,addr,port,srcnum,code);
+      emit gpioReceived(eb);
+      delete eb;
     }
   }
 }

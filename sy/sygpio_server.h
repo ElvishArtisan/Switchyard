@@ -29,12 +29,37 @@
 
 #include <QDateTime>
 #include <QHostAddress>
+#include <QMap>
 #include <QString>
 #include <QTimer>
 
 #include <sy/symcastsocket.h>
 #include <sy/syethmonitor.h>
 #include <sy/syrouting.h>
+
+class SyGpioBundleEvent
+{
+ public:
+  enum Type {TypeGpi=0,TypeGpo=1};
+  SyGpioBundleEvent(Type type,const QHostAddress &orig_addr,uint16_t orig_port,
+		    int srcnum,const QString &code);
+  Type type() const;
+  QHostAddress originAddress() const;
+  uint16_t originPort() const;
+  int sourceNumber() const;
+  QString code() const;
+  QString dump() const;
+
+ private:
+  Type event_type;
+  QHostAddress event_origin_address;
+  uint16_t event_origin_port;
+  int event_source_number;
+  QString event_code;
+};
+
+
+
 
 class SyGpioEvent
 {
@@ -77,6 +102,7 @@ class SyGpioServer : public QObject
   void sendGpo(int gpo,int line,bool state,bool pulse);
 
  signals:
+  void gpioReceived(SyGpioBundleEvent *e);
   void gpioReceived(SyGpioEvent *e);
   void gpiReceived(int gpi,int line,bool state,bool pulse);
   void gpoReceived(int gpo,int line,bool state,bool pulse);
@@ -94,6 +120,7 @@ class SyGpioServer : public QObject
   uint32_t gpio_serial;
   std::map<uint32_t,uint32_t> gpio_src_addr_serials;
   SyEthMonitor *gpio_eth_monitor;
+  QMap<int,QString> gpio_gpi_codes;
 };
 
 

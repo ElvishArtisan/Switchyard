@@ -619,3 +619,5 @@
 2018-04-24 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 14:1:11.
 	* Updated the package version to 0.18.1.
+2018-09-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'SyGpioServer::gpioEvent(SyGpioBundleEvent *)' signal.
