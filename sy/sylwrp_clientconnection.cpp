@@ -25,6 +25,8 @@ SyLwrpClientConnection::SyLwrpClientConnection()
 {
   client_socket=NULL;
   client_command_buffer="";
+  client_gpi_added=false;
+  client_gpo_added=false;
 }
 
 
@@ -61,4 +63,40 @@ void SyLwrpClientConnection::appendCommandBuffer(const char c)
 void SyLwrpClientConnection::clearBuffer()
 {
   client_command_buffer="";
+}
+
+
+bool SyLwrpClientConnection::gpiAdded() const
+{
+  return client_gpi_added;
+}
+
+
+void SyLwrpClientConnection::gpiAdd()
+{
+  client_gpi_added=true;
+}
+
+
+void SyLwrpClientConnection::gpiDel()
+{
+  client_gpi_added=false;
+}
+
+
+bool SyLwrpClientConnection::gpoAdded() const
+{
+  return client_gpo_added;
+}
+
+
+void SyLwrpClientConnection::gpoAdd()
+{
+  client_gpo_added=true;
+}
+
+
+void SyLwrpClientConnection::gpoDel()
+{
+  client_gpo_added=false;
 }

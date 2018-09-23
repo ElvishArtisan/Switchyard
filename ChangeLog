@@ -626,3 +626,18 @@
 	* Added 'SyRouter::gpoName()' and 'SyRouter::setGpoName()' methods.
 	* Added 'SyRouter::gpoAddress()' and 'SyRouter::setGpoAddress()'
 	methods.
+2018-09-23 Fred Gleason <fredg@paravelsystems.com>
+	* Added ' SyLwrpClientConnection::gpiAdded()',
+	' SyLwrpClientConnection::addGpi()', 'SyLwrpClientConnection::delGpi()'
+	' SyLwrpClientConnection::addGpo()' and
+	' SyLwrpClientConnection::delGpo()' methods.
+	* Added 'SyLwrpServer::sendGpiState()' and
+	'SyLwrpServer::sendGpoState()' methods.
+	* Added 'SyGpioEvent::sourceAddress()' and
+	'SyGpioBundleEvent::sourceAddress()' methods.
+	* Added support for the 'ADD GPI', 'ADD GPO', 'DEL GPI' and 'DEL GPO'
+	command to 'SyLwrpServer'.
+	* Removed the 'SyRouting::gpiState()' and 'SyRouting::gpoState()'
+	methods.
+	* Added 'SyRouting::setGpiBySlot()' and 'SyRouting::setGpoBySlot()'
+	methods.

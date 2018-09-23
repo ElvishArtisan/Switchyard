@@ -60,6 +60,45 @@ SyLwrpServer::SyLwrpServer(SyRouting *routing)
 }
 
 
+void SyLwrpServer::sendGpiState(int slot,const QString &code)
+{
+  SyLwrpClientConnection *conn=NULL;
+  for(unsigned i=0;i<ctrl_client_connections.size();i++) {
+    if((conn=ctrl_client_connections.at(i))!=NULL) {
+      if(conn->gpiAdded()) {
+	SendCommand(i,QString().sprintf("GPI %d ",slot+1)+code);
+      }
+    }
+  }
+}
+
+
+void SyLwrpServer::sendGpoState(int slot,const QString &code)
+{
+  SyLwrpClientConnection *conn=NULL;
+  bool save=false;
+
+  for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
+    bool state=code.mid(i,1).toLower()=="l";
+    if(ctrl_routing->gpoStateBySlot(slot,i)!=state) {
+      ctrl_routing->setGpoBySlot(slot,i,state,false);
+      save=true;
+    }
+  }
+  if(save) {
+    ctrl_routing->save();
+  }
+
+  for(unsigned i=0;i<ctrl_client_connections.size();i++) {
+    if((conn=ctrl_client_connections.at(i))!=NULL) {
+      if(conn->gpoAdded()) {
+	SendCommand(i,QString().sprintf("GPO %d ",slot+1)+code);
+      }
+    }
+  }
+}
+
+
 void SyLwrpServer::newConnectionData()
 {
   unsigned id=0;
@@ -457,6 +496,58 @@ bool SyLwrpServer::ExecuteCfg(int ch,QStringList &args)
 }
 
 
+bool SyLwrpServer::ExecuteAdd(int ch,QStringList &args)
+{
+  bool ret=false;
+
+  if(args.size()!=2) {
+    return ret;
+  }
+
+  if(args[1]=="GPI") {
+    ctrl_client_connections[ch]->gpiAdd();
+    SendCommand(ch,"BEGIN");
+    for(unsigned i=0;i<ctrl_routing->gpis();i++) {
+      SendCommand(ch,GpiLine(i));
+    }
+    SendCommand(ch,"END");
+    ret=true;
+  }
+  if(args[1]=="GPO") {
+    ctrl_client_connections[ch]->gpoAdd();
+    SendCommand(ch,"BEGIN");
+    for(unsigned i=0;i<ctrl_routing->gpos();i++) {
+      SendCommand(ch,GpoLine(i));
+    }
+    SendCommand(ch,"END");
+    ret=true;
+  }
+
+  return ret;
+}
+
+
+bool SyLwrpServer::ExecuteDel(int ch,QStringList &args)
+{
+  bool ret=false;
+
+  if(args.size()!=2) {
+    return ret;
+  }
+
+  if(args[1]=="GPI") {
+    ctrl_client_connections[ch]->gpiDel();
+    ret=true;
+  }
+  if(args[1]=="GPO") {
+    ctrl_client_connections[ch]->gpoDel();
+    ret=true;
+  }
+
+  return ret;
+}
+
+
 QString SyLwrpServer::SrcLine(int slot)
 {
   return QString().
@@ -582,6 +673,12 @@ void SyLwrpServer::ParseCommand(int id)
   }
   if(args[0]=="cfg") {
     ok=ExecuteCfg(id,args);
+  }
+  if(args[0]=="add") {
+    ok=ExecuteAdd(id,args);
+  }
+  if(args[0]=="del") {
+    ok=ExecuteDel(id,args);
   }
   if(!ok) {
     SendCommand(id,"ERROR 1000 bad command");

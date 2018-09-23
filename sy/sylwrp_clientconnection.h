@@ -35,10 +35,18 @@ class SyLwrpClientConnection
   QString commandBuffer() const;
   void appendCommandBuffer(const char c);
   void clearBuffer();
+  bool gpiAdded() const;
+  void gpiAdd();
+  void gpiDel();
+  bool gpoAdded() const;
+  void gpoAdd();
+  void gpoDel();
 
  private:
   QTcpSocket *client_socket;
   QString client_command_buffer;
+  bool client_gpi_added;
+  bool client_gpo_added;
 };
 
 

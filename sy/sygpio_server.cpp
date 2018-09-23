@@ -53,6 +53,12 @@ uint16_t SyGpioBundleEvent::originPort() const
 }
 
 
+QHostAddress SyGpioBundleEvent::sourceAddress() const
+{
+  return SyRouting::streamAddress(SyRouting::Stereo,event_source_number);
+}
+
+
 int SyGpioBundleEvent::sourceNumber() const
 {
   return event_source_number;
@@ -114,6 +120,12 @@ QHostAddress SyGpioEvent::originAddress() const
 uint16_t SyGpioEvent::originPort() const
 {
   return event_origin_port;
+}
+
+
+QHostAddress SyGpioEvent::sourceAddress() const
+{
+  return SyRouting::streamAddress(SyRouting::Stereo,event_source_number);
 }
 
 

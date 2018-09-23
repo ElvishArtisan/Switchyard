@@ -65,12 +65,12 @@ class SyRouting
   QString dstName(int slot) const;
   void setDstName(int slot,const QString &str);
   int dstMeterLevel(int slot,int chan) const;
-  bool gpiState(int gpi,int line) const;
   bool gpiStateBySlot(int slot,int line) const;
-  void setGpi(int gpi,int line,bool state,bool pulse);
-  bool gpoState(int gpo,int line) const;
+  void setGpi(int srcnum,int line,bool state,bool pulse);
+  void setGpiBySlot(int slot,int line,bool state,bool pulse);
   bool gpoStateBySlot(int slot,int line) const;
-  void setGpo(int gpo,int line,bool state,bool pulse);
+  void setGpo(int srcnum,int line,bool state,bool pulse);
+  void setGpoBySlot(int slot,int line,bool state,bool pulse);
   QHostAddress gpoAddress(int slot) const;
   void setGpoAddress(int slot,const QHostAddress &addr);
   void setGpoAddress(int slot,const QString &addr);
@@ -105,7 +105,6 @@ class SyRouting
   static QString socketErrorString(const QString &msg);
 
  private:
-  int GetSlotByGpio(int gpio) const;
   void LoadInterfaces();
   QString sy_src_names[SWITCHYARD_MAX_SLOTS];
   QString sy_dst_names[SWITCHYARD_MAX_SLOTS];

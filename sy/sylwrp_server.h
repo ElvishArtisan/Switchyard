@@ -39,6 +39,8 @@ class SyLwrpServer : public QObject
   Q_OBJECT
  public:
   SyLwrpServer(SyRouting *routing);
+  void sendGpiState(int slot,const QString &code);
+  void sendGpoState(int slot,const QString &code);
 
  private slots:
   void newConnectionData();
@@ -55,6 +57,8 @@ class SyLwrpServer : public QObject
   bool ExecuteGpo(int ch,QStringList &args);
   bool ExecuteIfc(int ch,QStringList &args);
   bool ExecuteCfg(int ch,QStringList &args);
+  bool ExecuteAdd(int ch,QStringList &args);
+  bool ExecuteDel(int ch,QStringList &args);
   QString SrcLine(int slot);
   QString DstLine(int slot);
   QString GpiLine(int slot);

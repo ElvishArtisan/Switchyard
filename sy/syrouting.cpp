@@ -274,43 +274,24 @@ int SyRouting::dstMeterLevel(int slot,int chan) const
 }
 
 
-bool SyRouting::gpiState(int gpi,int line) const
-{
-  int slot=GetSlotByGpio(gpi);
-  bool ret=false;
-
-  if(slot>=0) {
-    ret=sy_gpi_states[slot+line];
-  }
-  return ret;
-}
-
-
 bool SyRouting::gpiStateBySlot(int slot,int line) const
 {
   return sy_gpi_states[slot*SWITCHYARD_GPIO_BUNDLE_SIZE+line];
 }
 
-
-void SyRouting::setGpi(int gpi,int line,bool state,bool pulse)
+void SyRouting::setGpi(int srcnum,int line,bool state,bool pulse)
 {
-  int slot=GetSlotByGpio(gpi);
-
-  if(slot>=0) {
-    sy_gpi_states[slot+line]=state;
+  for(unsigned i=0;i<gpis();i++) {
+    if(gpoAddress(i)==SyRouting::streamAddress(SyRouting::Stereo,srcnum)) {
+      sy_gpi_states[i+line]=state;
+    }
   }
 }
 
 
-bool SyRouting::gpoState(int gpo,int line) const
+void SyRouting::setGpiBySlot(int slot,int line,bool state,bool pulse)
 {
-  int slot=GetSlotByGpio(gpo);
-  bool ret=false;
-
-  if(slot>=0) {
-    ret=sy_gpo_states[slot+line];
-  }
-  return ret;
+  sy_gpi_states[slot+line]=state;
 }
 
 
@@ -320,13 +301,19 @@ bool SyRouting::gpoStateBySlot(int slot,int line) const
 }
 
 
-void SyRouting::setGpo(int gpo,int line,bool state,bool pulse)
+void SyRouting::setGpo(int srcnum,int line,bool state,bool pulse)
 {
-  int slot=GetSlotByGpio(gpo);
-
-  if(slot>=0) {
-    sy_gpo_states[slot+line]=state;
+  for(unsigned i=0;i<gpos();i++) {
+    if(gpoAddress(i)==SyRouting::streamAddress(SyRouting::Stereo,srcnum)) {
+      sy_gpo_states[i+line]=state;
+    }
   }
+}
+
+
+void SyRouting::setGpoBySlot(int slot,int line,bool state,bool pulse)
+{
+  sy_gpo_states[slot+line]=state;
 }
 
 
@@ -566,7 +553,7 @@ void SyRouting::save() const
     if(i<(int)gpos()) {
       fprintf(f,"GpoAddress=%s\n",
 	      (const char *)gpoAddress(i).toString().toAscii());
-      fprintf(f,"GpoNameName=%s\n",(const char *)gpoName(i).toAscii());
+      fprintf(f,"GpoName=%s\n",(const char *)gpoName(i).toAscii());
     }
     fprintf(f,"\n");
   }
@@ -659,18 +646,6 @@ QString SyRouting::socketErrorString(const QString &msg)
 #endif  // WIN32
 
   return ret;
-}
-
-
-int SyRouting::GetSlotByGpio(int gpio) const
-{
-  for(unsigned i=0;i<dstSlots();i++) {
-    if(SyRouting::livewireNumber(dstAddress(i))==(unsigned)gpio) {
-      return i*SWITCHYARD_GPIO_BUNDLE_SIZE;
-    }
-  }
-
-  return -1;
 }
 
 

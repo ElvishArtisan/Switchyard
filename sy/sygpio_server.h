@@ -46,6 +46,7 @@ class SyGpioBundleEvent
   Type type() const;
   QHostAddress originAddress() const;
   uint16_t originPort() const;
+  QHostAddress sourceAddress() const;
   int sourceNumber() const;
   QString code() const;
   QString dump() const;
@@ -70,6 +71,7 @@ class SyGpioEvent
   Type type() const;
   QHostAddress originAddress() const;
   uint16_t originPort() const;
+  QHostAddress sourceAddress() const;
   int sourceNumber() const;
   int line() const;
   bool state() const;
