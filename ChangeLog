@@ -641,3 +641,8 @@
 	methods.
 	* Added 'SyRouting::setGpiBySlot()' and 'SyRouting::setGpoBySlot()'
 	methods.
+2018-09-26 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'SyLwrpServer::sendGpiState()' that failed to cache
+	current GPI state.
+	* Fixed a bug in 'SyLwrpServer::sendGpiState()' that caused a
+	gratutious routing DB save every time GPO state was updated.

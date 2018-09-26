@@ -63,6 +63,12 @@ SyLwrpServer::SyLwrpServer(SyRouting *routing)
 void SyLwrpServer::sendGpiState(int slot,const QString &code)
 {
   SyLwrpClientConnection *conn=NULL;
+
+  for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
+    bool state=code.mid(i,1).toLower()=="l";
+    ctrl_routing->setGpiBySlot(slot,i,state,false);
+  }
+
   for(unsigned i=0;i<ctrl_client_connections.size();i++) {
     if((conn=ctrl_client_connections.at(i))!=NULL) {
       if(conn->gpiAdded()) {
@@ -76,17 +82,10 @@ void SyLwrpServer::sendGpiState(int slot,const QString &code)
 void SyLwrpServer::sendGpoState(int slot,const QString &code)
 {
   SyLwrpClientConnection *conn=NULL;
-  bool save=false;
 
   for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
     bool state=code.mid(i,1).toLower()=="l";
-    if(ctrl_routing->gpoStateBySlot(slot,i)!=state) {
-      ctrl_routing->setGpoBySlot(slot,i,state,false);
-      save=true;
-    }
-  }
-  if(save) {
-    ctrl_routing->save();
+    ctrl_routing->setGpoBySlot(slot,i,state,false);
   }
 
   for(unsigned i=0;i<ctrl_client_connections.size();i++) {
