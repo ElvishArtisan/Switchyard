@@ -2,7 +2,7 @@
 //
 // AoIP stream routing configuration
 //
-// (C) 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -35,6 +35,7 @@
 class SyRouting
 {
  public:
+  enum GpoMode {GpoFollowSource=0,GpoSnake=1};
   enum Realm {Stereo=0,Backfeed=1,Surround=2};
   SyRouting(unsigned d_slots,unsigned s_slots,
 	    unsigned gpis=0,unsigned gpos=0);
@@ -71,9 +72,13 @@ class SyRouting
   bool gpoStateBySlot(int slot,int line) const;
   void setGpo(int srcnum,int line,bool state,bool pulse);
   void setGpoBySlot(int slot,int line,bool state,bool pulse);
+  GpoMode gpoMode(int slot) const;
+  void setGpoMode(int slot,GpoMode mode);
   QHostAddress gpoAddress(int slot) const;
   void setGpoAddress(int slot,const QHostAddress &addr);
   void setGpoAddress(int slot,const QString &addr);
+  int gpoSnakeSlot(int slot) const;
+  void setGpoSnakeSlot(int slot,int snake_slot);
   QString gpoName(int slot) const;
   void setGpoName(int slot,const QString &str);
   unsigned nicQuantity() const;
@@ -109,6 +114,8 @@ class SyRouting
   QString sy_src_names[SWITCHYARD_MAX_SLOTS];
   QString sy_dst_names[SWITCHYARD_MAX_SLOTS];
   QString sy_gpo_names[SWITCHYARD_MAX_SLOTS];
+  GpoMode sy_gpo_modes[SWITCHYARD_MAX_SLOTS];
+  int sy_gpo_snake_slots[SWITCHYARD_MAX_SLOTS];
   std::vector<bool> sy_gpi_states;
   std::vector<bool> sy_gpo_states;
   std::vector<QHostAddress> sy_nic_addresses;

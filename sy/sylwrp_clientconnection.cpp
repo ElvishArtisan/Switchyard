@@ -25,8 +25,6 @@ SyLwrpClientConnection::SyLwrpClientConnection()
 {
   client_socket=NULL;
   client_command_buffer="";
-  client_gpi_added=false;
-  client_gpo_added=false;
 }
 
 
@@ -66,37 +64,37 @@ void SyLwrpClientConnection::clearBuffer()
 }
 
 
-bool SyLwrpClientConnection::gpiAdded() const
+bool SyLwrpClientConnection::gpiAdded(int slot) const
 {
-  return client_gpi_added;
+  return client_gpi_added.value(slot,false);
 }
 
 
-void SyLwrpClientConnection::gpiAdd()
+void SyLwrpClientConnection::gpiAdd(int slot)
 {
-  client_gpi_added=true;
+  client_gpi_added[slot]=true;
 }
 
 
-void SyLwrpClientConnection::gpiDel()
+void SyLwrpClientConnection::gpiDel(int slot)
 {
-  client_gpi_added=false;
+  client_gpi_added[slot]=false;
 }
 
 
-bool SyLwrpClientConnection::gpoAdded() const
+bool SyLwrpClientConnection::gpoAdded(int slot) const
 {
-  return client_gpo_added;
+  return client_gpo_added.value(slot,false);
 }
 
 
-void SyLwrpClientConnection::gpoAdd()
+void SyLwrpClientConnection::gpoAdd(int slot)
 {
-  client_gpo_added=true;
+  client_gpo_added[slot]=true;
 }
 
 
-void SyLwrpClientConnection::gpoDel()
+void SyLwrpClientConnection::gpoDel(int slot)
 {
-  client_gpo_added=false;
+  client_gpo_added[slot]=false;
 }

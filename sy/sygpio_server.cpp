@@ -242,7 +242,7 @@ SyGpioServer::~SyGpioServer()
 }
 
 
-void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
+void SyGpioServer::sendGpi(int srcnum,int line,bool state,bool pulse)
 {
   uint8_t data[28]={0x03,0x00,0x02,0x07,0xC6,0x04,0x55,0x1E,
 		    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -260,8 +260,8 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
   //
   // Livewire Number
   //
-  data[23]=0xFF&(gpi>>8);
-  data[24]=0xFF&gpi;
+  data[23]=0xFF&(srcnum>>8);
+  data[24]=0xFF&srcnum;
 
   //
   // Line Number
@@ -291,7 +291,80 @@ void SyGpioServer::sendGpi(int gpi,int line,bool state,bool pulse)
 }
 
 
-void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
+void SyGpioServer::sendGpi(int srcnum,const QString &code)
+{
+  int count=0;
+  /*
+  uint8_t data[28]={0x03,0x00,0x02,0x07,0xC6,0x04,0x55,0x1E,
+		    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+		    'I','N','D','I',0x00,0x01,
+		    0x00,0x00,0x00,0x00,0x07,0x00};
+  */
+  uint8_t data[52]={0x03,0x00,0x02,0x07,0xC6,0x04,0x55,0x1E,
+		    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+		    'I','N','D','I',0x00,0x01,
+		    0x00,0x00,0x00,0x00,0x07,0x00,
+		    0x00,0x00,0x00,0x00,0x07,0x00,
+		    0x00,0x00,0x00,0x00,0x07,0x00,
+		    0x00,0x00,0x00,0x00,0x07,0x00,
+		    0x00,0x00,0x00,0x00,0x07,0x00};
+
+  //
+  // Serial Number
+  //
+  data[4]=0xFF&(gpio_serial>>24);
+  data[5]=0xFF&(gpio_serial>>16);
+  data[6]=0xFF&(gpio_serial>>8);
+  data[7]=0xFF&gpio_serial;
+
+  //
+  // Build Events
+  //
+  count=0;
+  for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
+    if((code.mid(i,1)=="H")||(code.mid(i,1)=="L")) {
+      unsigned offset=22+count*6;
+
+      //
+      // Livewire Number
+      //
+      data[offset+1]=0xFF&(srcnum>>8);
+      data[offset+2]=0xFF&srcnum;
+
+      //
+      // Line Number
+      //
+      data[offset+3]=0xFF&(0x0D-i);
+
+      //
+      // State
+      //
+      data[offset+5]=0xFF&(code.mid(i,1)=="L");
+
+      count++;
+    }
+  }
+  data[21]=0xFF&count;
+
+  //
+  // Send Packet
+  //
+  gpio_gpi_socket->writeDatagram((const char *)data,22+6*count,
+				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
+				 SWITCHYARD_GPIO_GPI_PORT);
+  gpio_serial++;
+  data[4]=0xFF&(gpio_serial>>24);
+  data[5]=0xFF&(gpio_serial>>16);
+  data[6]=0xFF&(gpio_serial>>8);
+  data[7]=0xFF&gpio_serial;
+  gpio_gpi_socket->writeDatagram((const char *)data,22+6*count,
+				 QHostAddress(SWITCHYARD_GPIO_ADDRESS),
+				 SWITCHYARD_GPIO_GPI_PORT);
+  gpio_serial+=2;
+}
+
+
+void SyGpioServer::sendGpo(int srcnum,int line,bool state,bool pulse)
 {
   uint8_t data[60]={0x03,0x00,0x02,0x07,0x36,0x0B,0x97,0xA9,
 		    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -313,8 +386,8 @@ void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
   //
   // Livewire Number
   //
-  data[23]=0xFF&(gpo>>8);
-  data[24]=0xFF&gpo;
+  data[23]=0xFF&(srcnum>>8);
+  data[24]=0xFF&srcnum;
 
   //
   // Line Number
@@ -359,6 +432,11 @@ void SyGpioServer::sendGpo(int gpo,int line,bool state,bool pulse)
 }
 
 
+void SyGpioServer::sendGpo(int srcnum,const QString &code)
+{
+}
+
+
 void SyGpioServer::interfaceStartedData()
 {
   gpio_gpi_socket->subscribe(SWITCHYARD_GPIO_ADDRESS);
@@ -386,45 +464,47 @@ void SyGpioServer::gpiReadyReadData()
   QString code;
 
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
-    serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
-      (0xFF&data[7]);
-    if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
-       (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
-      gpio_src_addr_serials[addr.toIPv4Address()]=serial;
-      uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
-      srcnum=((0xFF&data[22+1])<<8)+(0xFF&data[22+2]);
-      code=gpio_gpi_codes.value(srcnum,"hhhhh");
-      for(uint16_t i=0;i<count;i++) {
-	unsigned offset=22+i*6;
-	//
-	// FIXME: Is there actually a 'pulse' component for a GPI event?
-	//        We assume not here (even though there is a place for one
-	//        in the Switchyard API).
-	//
-	//	srcnum=((0xFF&data[offset+1])<<8)+(0xFF&data[offset+2]);
-	int line=0x0D-(0xff&data[offset+3]);
-	bool state=(data[offset+5]&0x01)!=0;
-	printf("i: %d  srcnum: %d  line: %d  state: %d\n",
-	       i,srcnum,line,state);
-	if(state) {
-	  code.replace(line,1,"L");
+    if(addr!=gpio_routing->nicAddress()) {
+      serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
+	(0xFF&data[7]);
+      if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
+	 (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
+	gpio_src_addr_serials[addr.toIPv4Address()]=serial;
+	uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
+	srcnum=((0xFF&data[22+1])<<8)+(0xFF&data[22+2]);
+	code=gpio_gpi_codes.value(srcnum,"hhhhh");
+	for(uint16_t i=0;i<count;i++) {
+	  unsigned offset=22+i*6;
+	  //
+	  // FIXME: Is there actually a 'pulse' component for a GPI event?
+	  //        We assume not here (even though there is a place for one
+	  //        in the Switchyard API).
+	  //
+	  //	srcnum=((0xFF&data[offset+1])<<8)+(0xFF&data[offset+2]);
+	  int line=0x0D-(0xff&data[offset+3]);
+	  bool state=(data[offset+5]&0x01)!=0;
+	  //	printf("i: %d  srcnum: %d  line: %d  state: %d\n",
+	  //	       i,srcnum,line,state);
+	  if(state) {
+	    code.replace(line,1,"L");
+	  }
+	  else {
+	    code.replace(line,1,"H");
+	  }
+	  e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,srcnum,line,state,
+			    false);
+	  emit gpioReceived(e);
+	  emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	  gpio_routing->
+	    setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	  delete e;
 	}
-	else {
-	  code.replace(line,1,"H");
-	}
-	e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,srcnum,line,state,
-			  false);
-	emit gpioReceived(e);
-	emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-	gpio_routing->
-	  setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-	delete e;
+	gpio_gpi_codes[srcnum]=code.toLower();
+	eb=
+	  new SyGpioBundleEvent(SyGpioBundleEvent::TypeGpi,addr,port,srcnum,code);
+	emit gpioReceived(eb);
+	delete eb;
       }
-      gpio_gpi_codes[srcnum]=code.toLower();
-      eb=
-	new SyGpioBundleEvent(SyGpioBundleEvent::TypeGpi,addr,port,srcnum,code);
-      emit gpioReceived(eb);
-      delete eb;
     }
   }
 }

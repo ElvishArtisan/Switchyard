@@ -22,6 +22,7 @@
 #ifndef SYLWRP_CLIENTCONNECTION_H
 #define SYLWRP_CLIENTCONNECTION_H
 
+#include <QMap>
 #include <QString>
 #include <QTcpSocket>
 
@@ -35,18 +36,18 @@ class SyLwrpClientConnection
   QString commandBuffer() const;
   void appendCommandBuffer(const char c);
   void clearBuffer();
-  bool gpiAdded() const;
-  void gpiAdd();
-  void gpiDel();
-  bool gpoAdded() const;
-  void gpoAdd();
-  void gpoDel();
+  bool gpiAdded(int slot) const;
+  void gpiAdd(int slot);
+  void gpiDel(int slot);
+  bool gpoAdded(int slot) const;
+  void gpoAdd(int slot);
+  void gpoDel(int slot);
 
  private:
   QTcpSocket *client_socket;
   QString client_command_buffer;
-  bool client_gpi_added;
-  bool client_gpo_added;
+  QMap<int,bool> client_gpi_added;
+  QMap<int,bool> client_gpo_added;
 };
 
 

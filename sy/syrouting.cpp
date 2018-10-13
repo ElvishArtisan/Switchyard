@@ -2,7 +2,7 @@
 //
 // AoIP stream routing configuration
 //
-// (C) 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -317,6 +317,18 @@ void SyRouting::setGpoBySlot(int slot,int line,bool state,bool pulse)
 }
 
 
+SyRouting::GpoMode SyRouting::gpoMode(int slot) const
+{
+  return sy_gpo_modes[slot];
+}
+
+
+void SyRouting::setGpoMode(int slot,SyRouting::GpoMode mode)
+{
+  sy_gpo_modes[slot]=mode;
+}
+
+
 QHostAddress SyRouting::gpoAddress(int slot) const
 {
   return QHostAddress(gpo_addr[slot]);
@@ -332,6 +344,18 @@ void SyRouting::setGpoAddress(int slot,const QHostAddress &addr)
 void SyRouting::setGpoAddress(int slot,const QString &addr)
 {
   gpo_addr[slot]=QHostAddress(addr).toIPv4Address();
+}
+
+
+int SyRouting::gpoSnakeSlot(int slot) const
+{
+  return sy_gpo_snake_slots[slot];
+}
+
+
+void SyRouting::setGpoSnakeSlot(int slot,int snake_slot)
+{
+  sy_gpo_snake_slots[slot]=snake_slot;
 }
 
 
@@ -459,7 +483,9 @@ void SyRouting::load()
   }
   for(unsigned i=0;i<gpos();i++) {
     QString key=QString().sprintf("Slot%u",i+1);
+    setGpoMode(i,(SyRouting::GpoMode)s->value(key+"/GpoMode").toInt());
     setGpoAddress(i,s->value(key+"/GpoAddress").toString());
+    setGpoSnakeSlot(i,s->value(key+"/GpoSnakeSlot").toInt());
     setGpoName(i,s->value(key+"/GpoName").toString());
     if(gpoName(i).isEmpty()) {
       setGpoName(i,QString().sprintf("GPIO %d",i+1));
@@ -489,7 +515,9 @@ void SyRouting::load()
   }
   for(unsigned i=0;i<gpos();i++) {
     section=QString().sprintf("Slot%u",i+1);
+    setGpoMode(i,(SyRouting::GpoMode)p->intValue(section,"GpoMode"));
     setGpoAddress(i,p->addressValue(section,"GpoAddress",""));
+    setGpoSnakeSlot(i,p->intValue(section,"GpoSnakeSlot"));
     setGpoName(i,p->stringValue(section,"GpoName",gpoName(i)));
     if(gpoName(i).isEmpty()) {
       setGpoName(i,QString().sprintf("GPIO %d",i+1));
@@ -519,7 +547,9 @@ void SyRouting::save() const
       s->setValue(key+"/DestinationName",dstName(i));
     }
     if(i<(int)gpos()) {
+      s->setValue(key+"/GpoMode",(int)gpoMode(i));
       s->setValue(key+"/GpoAddress",gpoAddress(i).toString());
+      s->setValue(key+"/GpoSnakeSlot",gpoSnakeSlot(i));
       s->setValue(key+"/GpoName",gpoName(i));
     }
   }
@@ -551,8 +581,10 @@ void SyRouting::save() const
       fprintf(f,"DestinationName=%s\n",(const char *)dstName(i).toAscii());
     }
     if(i<(int)gpos()) {
+      fprintf(f,"GpoMode=%d\n",gpoMode(i));
       fprintf(f,"GpoAddress=%s\n",
 	      (const char *)gpoAddress(i).toString().toAscii());
+      fprintf(f,"GpoSnakeSlot=%d\n",gpoSnakeSlot(i));
       fprintf(f,"GpoName=%s\n",(const char *)gpoName(i).toAscii());
     }
     fprintf(f,"\n");
@@ -583,15 +615,15 @@ QHostAddress SyRouting::streamAddress(SyRouting::Realm realm,uint16_t lw_num)
   QHostAddress ret;
   switch(realm) {
   case SyRouting::Stereo:    // 239.192.0.0/15
-    ret.setAddress(4022337536+lw_num);
+    ret.setAddress(4022337536u+lw_num);
     break;
 
   case SyRouting::Backfeed:  // 239.193.0.0/15
-    ret.setAddress(4022403072+lw_num);
+    ret.setAddress(4022403072u+lw_num);
     break;
 
   case SyRouting::Surround:  // 239.128.0.0/15
-    ret.setAddress(4022599680+lw_num);
+    ret.setAddress(4022599680u+lw_num);
     break;
   }
 

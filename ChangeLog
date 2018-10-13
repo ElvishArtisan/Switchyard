@@ -646,3 +646,9 @@
 	current GPI state.
 	* Fixed a bug in 'SyLwrpServer::sendGpiState()' that caused a
 	gratutious routing DB save every time GPO state was updated.
+2018-10-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'SyGpioServer' that caused locally originated
+	GPI events to be processed.
+	* Added 'SyRouting::gpoMode()', 'SyRouting::setGpoMode()',
+	'SyRouting::gpoSnakeSlot()' and 'SyRouting::setGpoSnakeSlot()'
+	methods.

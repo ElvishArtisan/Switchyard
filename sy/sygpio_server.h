@@ -100,8 +100,10 @@ class SyGpioServer : public QObject
   ~SyGpioServer();
 
  public slots:
-  void sendGpi(int gpi,int line,bool state,bool pulse);
-  void sendGpo(int gpo,int line,bool state,bool pulse);
+  void sendGpi(int srcnum,int line,bool state,bool pulse);
+  void sendGpi(int srcnum,const QString &code);
+  void sendGpo(int srcnum,int line,bool state,bool pulse);
+  void sendGpo(int srcnum,const QString &code);
 
  signals:
   void gpioReceived(SyGpioBundleEvent *e);
