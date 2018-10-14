@@ -652,3 +652,5 @@
 	* Added 'SyRouting::gpoMode()', 'SyRouting::setGpoMode()',
 	'SyRouting::gpoSnakeSlot()' and 'SyRouting::setGpoSnakeSlot()'
 	methods.
+2018-10-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'SyLwrpServer::gpoCfgChanged()' signal.

@@ -481,7 +481,7 @@ bool SyLwrpServer::ExecuteCfg(int ch,QStringList &args)
 	    QStringList f0=fields[1].split("/");
 	    if(f0.size()==2) {
 	      addr.setAddress(f0[0]);
-	      int snake_slot=f0[1].toInt(&ok);
+	      int snake_slot=f0[1].toInt(&ok)-1;
 	      if((!addr.isNull())&&ok) {
 		ctrl_routing->setGpoMode(slot,SyRouting::GpoSnake);
 		ctrl_routing->setGpoAddress(slot,addr);
@@ -509,6 +509,9 @@ bool SyLwrpServer::ExecuteCfg(int ch,QStringList &args)
 
   if(save) {
     ctrl_routing->save();
+    emit gpoCfgChanged(slot,ctrl_routing->gpoMode(slot),
+		       ctrl_routing->gpoAddress(slot),
+    		       ctrl_routing->gpoSnakeSlot(slot));
   }
   SendCommand(ch,CfgLine(slot));
   
@@ -693,7 +696,7 @@ QString SyLwrpServer::CfgLine(int slot)
   if(ctrl_routing->gpoMode(slot)==SyRouting::GpoSnake) {
     if(!ctrl_routing->gpoAddress(slot).isNull()) {
       ret+=QString(" SRCA:")+ctrl_routing->gpoAddress(slot).toString()+
-	QString().sprintf("/%d",ctrl_routing->gpoSnakeSlot(slot));
+	QString().sprintf("/%d",ctrl_routing->gpoSnakeSlot(slot)+1);
       srca_sent=true;
     }
   }

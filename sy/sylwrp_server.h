@@ -24,6 +24,7 @@
 
 #include <vector>
 
+#include <QHostAddress>
 #include <QObject>
 #include <QStringList>
 #include <QSignalMapper>
@@ -41,6 +42,10 @@ class SyLwrpServer : public QObject
   SyLwrpServer(SyRouting *routing);
   void sendGpiState(int slot,const QString &code);
   void sendGpoState(int slot,const QString &code);
+
+ signals:
+  void gpoCfgChanged(int slot,SyRouting::GpoMode mode,
+		     const QHostAddress &addr,int snake_slot);
 
  private slots:
   void newConnectionData();
