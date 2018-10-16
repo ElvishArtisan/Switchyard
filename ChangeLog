@@ -655,4 +655,5 @@
 2018-10-14 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SyLwrpServer::gpoCfgChanged()' signal.
 2018-10-15 Fred Gleason <fredg@paravelsystems.com>
-	* Incremented the package version to 0.18.1gpionode00.
+	* Incremented the library ABI version to 15:0:0.
+	* Incremented the package version to 0.19.0.
