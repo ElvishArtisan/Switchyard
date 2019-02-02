@@ -432,8 +432,16 @@ void SyGpioServer::sendGpo(int srcnum,int line,bool state,bool pulse)
 }
 
 
-void SyGpioServer::sendGpo(int srcnum,const QString &code)
+void SyGpioServer::sendGpo(int srcnum,const QString &code,bool pulse)
 {
+  for(int i=0;i<code.length();i++) {
+    if(code.at(i)==QChar('L')) {
+      sendGpo(srcnum,i,true,pulse);
+    }
+    if(code.at(i)==QChar('H')) {
+      sendGpo(srcnum,i,false,pulse);
+    }
+  }
 }
 
 
@@ -480,7 +488,6 @@ void SyGpioServer::gpiReadyReadData()
 	  //        We assume not here (even though there is a place for one
 	  //        in the Switchyard API).
 	  //
-	  //	srcnum=((0xFF&data[offset+1])<<8)+(0xFF&data[offset+2]);
 	  int line=0x0D-(0xff&data[offset+3]);
 	  bool state=(data[offset+5]&0x01)!=0;
 	  //	printf("i: %d  srcnum: %d  line: %d  state: %d\n",

@@ -103,7 +103,7 @@ class SyGpioServer : public QObject
   void sendGpi(int srcnum,int line,bool state,bool pulse);
   void sendGpi(int srcnum,const QString &code);
   void sendGpo(int srcnum,int line,bool state,bool pulse);
-  void sendGpo(int srcnum,const QString &code);
+  void sendGpo(int srcnum,const QString &code,bool pulse);
 
  signals:
   void gpioReceived(SyGpioBundleEvent *e);
