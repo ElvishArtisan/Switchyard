@@ -472,46 +472,47 @@ void SyGpioServer::gpiReadyReadData()
   QString code;
 
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
-    if(addr!=gpio_routing->nicAddress()) {
-      serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
-	(0xFF&data[7]);
-      if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
-	 (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
-	gpio_src_addr_serials[addr.toIPv4Address()]=serial;
-	uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
-	srcnum=((0xFF&data[22+1])<<8)+(0xFF&data[22+2]);
-	code=gpio_gpi_codes.value(srcnum,"hhhhh");
-	for(uint16_t i=0;i<count;i++) {
-	  unsigned offset=22+i*6;
-	  //
-	  // FIXME: Is there actually a 'pulse' component for a GPI event?
-	  //        We assume not here (even though there is a place for one
-	  //        in the Switchyard API).
-	  //
-	  int line=0x0D-(0xff&data[offset+3]);
-	  bool state=(data[offset+5]&0x01)!=0;
-	  //	printf("i: %d  srcnum: %d  line: %d  state: %d\n",
-	  //	       i,srcnum,line,state);
-	  if(state) {
-	    code.replace(line,1,"L");
-	  }
-	  else {
-	    code.replace(line,1,"H");
-	  }
-	  e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,srcnum,line,state,
-			    false);
-	  emit gpioReceived(e);
-	  emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-	  gpio_routing->
-	    setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
-	  delete e;
+    serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
+      (0xFF&data[7]);
+    printf("gpiReadyReadData() serial: 0x%08X\n",serial);
+
+    if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
+       (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
+      printf("  PROCESSED\n");
+      gpio_src_addr_serials[addr.toIPv4Address()]=serial;
+      uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
+      srcnum=((0xFF&data[22+1])<<8)+(0xFF&data[22+2]);
+      code=gpio_gpi_codes.value(srcnum,"hhhhh");
+      for(uint16_t i=0;i<count;i++) {
+	unsigned offset=22+i*6;
+	//
+	// FIXME: Is there actually a 'pulse' component for a GPI event?
+	//        We assume not here (even though there is a place for one
+	//        in the Switchyard API).
+	//
+	int line=0x0D-(0xff&data[offset+3]);
+	bool state=(data[offset+5]&0x01)!=0;
+	//	printf("i: %d  srcnum: %d  line: %d  state: %d\n",
+	//	       i,srcnum,line,state);
+	if(state) {
+	  code.replace(line,1,"L");
 	}
-	gpio_gpi_codes[srcnum]=code.toLower();
-	eb=
-	  new SyGpioBundleEvent(SyGpioBundleEvent::TypeGpi,addr,port,srcnum,code);
-	emit gpioReceived(eb);
-	delete eb;
+	else {
+	  code.replace(line,1,"H");
+	}
+	e=new SyGpioEvent(SyGpioEvent::TypeGpi,addr,port,srcnum,line,state,
+			  false);
+	emit gpioReceived(e);
+	emit gpiReceived(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	gpio_routing->
+	  setGpi(e->sourceNumber(),e->line(),e->state(),e->isPulse());
+	delete e;
       }
+      gpio_gpi_codes[srcnum]=code.toLower();
+      eb=
+	new SyGpioBundleEvent(SyGpioBundleEvent::TypeGpi,addr,port,srcnum,code);
+      emit gpioReceived(eb);
+      delete eb;
     }
   }
 }

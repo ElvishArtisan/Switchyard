@@ -659,3 +659,7 @@
 	* Incremented the package version to 0.19.0.
 2019-02-02 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'SyGpioServer::sendGpo()' method.
+2019-02-06 Fred Gleason <fredg@paravelsystems.com>
+	* Reverted change to 'SyGpioServer' on 2018-10-13 that suppressed
+	reception of locally originated GPI events.
+
