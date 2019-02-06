@@ -2,7 +2,7 @@
 //
 // Livewire GPIO Server
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public

@@ -662,4 +662,6 @@
 2019-02-06 Fred Gleason <fredg@paravelsystems.com>
 	* Reverted change to 'SyGpioServer' on 2018-10-13 that suppressed
 	reception of locally originated GPI events.
-
+2019-02-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'SyGpioServer' that caused the first GPI event
+	sent to have an invalid serial number.

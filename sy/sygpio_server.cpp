@@ -2,7 +2,7 @@
 //
 // Livewire GPIO Server
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -180,6 +180,7 @@ SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)
 {
   gpio_routing=r;
   gpio_eth_monitor=NULL;
+  gpio_serial=2;
 
   //
   // GPI Socket
@@ -474,11 +475,8 @@ void SyGpioServer::gpiReadyReadData()
   while((n=gpio_gpi_socket->readDatagram(data,1500,&addr,&port))>0) {
     serial=((0xFF&data[4])<<24)+((0xFF&data[5])<<16)+((0xFF&data[6])<<8)+
       (0xFF&data[7]);
-    printf("gpiReadyReadData() serial: 0x%08X\n",serial);
-
     if((gpio_src_addr_serials[addr.toIPv4Address()]!=serial)&&
        (gpio_src_addr_serials[addr.toIPv4Address()]!=(serial-1))) {
-      printf("  PROCESSED\n");
       gpio_src_addr_serials[addr.toIPv4Address()]=serial;
       uint16_t count=((0xFF&data[20])<<8)+(0xFF&data[21]);
       srcnum=((0xFF&data[22+1])<<8)+(0xFF&data[22+2]);
