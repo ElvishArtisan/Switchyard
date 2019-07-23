@@ -2,7 +2,7 @@
 //
 // Network interface information
 //
-// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -42,6 +42,8 @@ class SyInterfaces
   QHostAddress ipv4Netmask(int n) const;
   bool update();
   static QString macString(uint64_t maddr);
+  static uint32_t toCidrMask(const QHostAddress &mask);
+  static QHostAddress fromCidrMask(uint32_t mask);
 
  private:
   QStringList iface_names;

@@ -665,3 +665,6 @@
 2019-02-06 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'SyGpioServer' that caused the first GPI event
 	sent to have an invalid serial number.
+2019-07-23 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyInterfaces::toCidrMask()' method.
+	* Added a 'SyInterfaces::fromCidrMask()' method.

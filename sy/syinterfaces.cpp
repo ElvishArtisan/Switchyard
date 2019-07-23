@@ -136,3 +136,36 @@ QString SyInterfaces::macString(uint64_t maddr)
 			   (unsigned)(0xFF&(maddr>>8)),
 			   (unsigned)(0xFF&maddr));
 }
+
+
+uint32_t SyInterfaces::toCidrMask(const QHostAddress &mask)
+{
+  uint32_t bits=mask.toIPv4Address();
+  uint32_t ret=32;
+
+  for(int i=0;i<32;i++) {
+    if((bits&0x01)==1) {
+      return ret;
+    }
+    ret--;
+    bits=bits>>1;
+  }
+  return 0;
+}
+
+
+QHostAddress SyInterfaces::fromCidrMask(uint32_t mask)
+{
+  uint32_t bits=0;
+
+  for(int i=0;i<32;i++) {
+    if(mask>0) {
+      bits=(bits<<1)|1;
+      mask--;
+    }
+    else {
+      bits=(bits<<1);
+    }
+  }
+  return QHostAddress(bits);
+}
