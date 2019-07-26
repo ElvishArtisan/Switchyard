@@ -1,8 +1,8 @@
-// sygpiobundle.h
+// codeinverttest.h
 //
-// Abstract a set of LiveWire GPIO signals
+// Test the SyAString parser
 //
-// (C) Copyright 2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,26 +19,28 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYGPIOBUNDLE_H
-#define SYGPIOBUNDLE_H
+#ifndef CODEINVERTTEST_H
+#define CODEINVERTTEST_H
 
-#include <QString>
+#include <stdint.h>
+
+#include <QObject>
+
+#include <sndfile.h>
 
 #include <sy/syconfig.h>
+#include <sy/sylwrp_server.h>
+#include <sy/syrouting.h>
+#include <sy/syrtp_server.h>
 
-class SyGpioBundle
+#define CODEINVERTTEST_USAGE "<code>\n"
+
+class MainObject : public QObject
 {
+  Q_OBJECT;
  public:
-  SyGpioBundle();
-  QString code() const;
-  void setCode(const QString &str);
-  bool state(int offset) const;
-  void setState(int offset,bool state);
-  static QString invertCode(const QString &code);
-
- private:
-  char gpio_code[SWITCHYARD_GPIO_BUNDLE_SIZE+1];
+  MainObject(QObject *parent=0);
 };
 
 
-#endif  // SYGPIOBUNDLE_H
+#endif  // CODEINVERTTEST_H

@@ -668,3 +668,6 @@
 2019-07-23 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyInterfaces::toCidrMask()' method.
 	* Added a 'SyInterfaces::fromCidrMask()' method.
+2019-07-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyGpioBundle::invertCode()' static method.
+	* Added a 'codeinverttest' test.

@@ -56,3 +56,36 @@ void SyGpioBundle::setState(int offset,bool state)
     gpio_code[offset]='l';
   }
 }
+
+
+QString SyGpioBundle::invertCode(const QString &code)
+{
+  QString ret="";
+
+  for(int i=0;i<code.length();i++) {
+    QChar c=code.at(i);
+    if(c=='H') {
+      ret+='L';
+    }
+    else {
+      if(c=='h') {
+	ret+='l';
+      }
+      else {
+	if(c=='L') {
+	  ret+='H';
+	}
+	else {
+	  if(c=='l') {
+	    ret+='h';
+	  }
+	  else {
+	    ret+=c;
+	  }
+	}
+      }
+    }
+  }
+
+  return ret;
+}
