@@ -671,3 +671,6 @@
 2019-07-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyGpioBundle::invertCode()' static method.
 	* Added a 'codeinverttest' test.
+2019-07-29 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library ABI version to 16:0:1.
+	* Incremented the package version to 0.20.0.
