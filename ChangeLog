@@ -678,3 +678,6 @@
 	* Fixed a bug in 'SyLwrpClient' that could cause emission of the
 	'SyLwrpClient::connected()' signal to be suppressed after reception
 	of a socket error.
+2020-03-25 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library ABI version to 16:1:1.
+	* Incremented the package version to 0.20.1.
