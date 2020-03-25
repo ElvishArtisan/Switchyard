@@ -575,7 +575,7 @@ void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
   }
   if(lwrp_socket->state()==QAbstractSocket::ConnectedState) {
     lwrp_socket->disconnect();
-    if(!lwrp_connected) {
+    if(lwrp_connected) {
       lwrp_connected=false;
       emit connected(lwrp_id,false);
     }
