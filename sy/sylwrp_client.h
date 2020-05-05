@@ -53,6 +53,7 @@ class SyLwrpClient :public QObject
   bool isConnected() const;
   SyNode *node() const;
   QString deviceName() const;
+  QString productName() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;
   SySource *src(int slot) const;
@@ -169,6 +170,7 @@ class SyLwrpClient :public QObject
   QTcpSocket *lwrp_socket;
   QString lwrp_buffer;
   QString lwrp_device_name;
+  QString lwrp_product_name;
   bool lwrp_connected;
   QHostAddress lwrp_nic_address;
   unsigned lwrp_id;

@@ -123,6 +123,12 @@ QString SyLwrpClient::deviceName() const
 }
 
 
+QString SyLwrpClient::productName() const
+{
+  return lwrp_product_name;
+}
+
+
 unsigned SyLwrpClient::dstSlots() const
 {
   return lwrp_destinations.size();
@@ -875,6 +881,10 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
 				      dst->silenceTimeout()));
       }
     }
+    lwrp_product_name=SyNode::productName(lwrp_node->deviceName(),
+					  lwrp_node->gpiSlotQuantity(),
+					  lwrp_node->gpoSlotQuantity());
+    lwrp_node->setProductName(lwrp_product_name);
   }
   else {  // Watchdog response
     //    fprintf(stderr,"receiving watchdog\n");

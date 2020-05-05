@@ -19,6 +19,8 @@
 //    Boston, MA  02111-1307  USA
 //
 
+#include <QMap>
+
 #include "synode.h"
 
 SyNode::SyNode()
@@ -75,6 +77,18 @@ QString SyNode::product() const
 void SyNode::setProduct(const QString &str)
 {
   node_product=str;
+}
+
+
+QString SyNode::productName() const
+{
+  return node_product_name;
+}
+
+
+void SyNode::setProductName(const QString &str)
+{
+  node_product_name=str;
 }
 
 
@@ -170,6 +184,7 @@ QString SyNode::dump() const
   ret+="hostName: "+hostName()+"\n";
   ret+="deviceName: "+deviceName()+"\n";
   ret+="product: "+product()+"\n";
+  ret+="productName: "+productName()+"\n";
   ret+="model: "+model()+"\n";
   ret+="softwareVersion: "+softwareVersion()+"\n";
   ret+="lwrpVersion: "+lwrpVersion()+"\n";
@@ -177,6 +192,42 @@ QString SyNode::dump() const
   ret+=QString().sprintf("dstSlotQuantity: %u\n",dstSlotQuantity());
   ret+=QString().sprintf("gpiSlotQuantity: %u\n",gpiSlotQuantity());
   ret+=QString().sprintf("gpoSlotQuantity: %u\n",gpoSlotQuantity());
+
+  return ret;
+}
+
+
+QString SyNode::productName(const QString &devn_str,int gpis,int gpos)
+{
+  QString ret;
+
+  if((devn_str.toLower()=="liveio")&&(gpis==8)&&(gpos==8)) {
+    ret="AudioScience 6585/6685 Card";
+  }
+  else {
+    QMap<QString,QString> devn_map;
+    devn_map["axiaalsa"]="Linux Host";
+    devn_map["axiaxnode.gpio"]="GPIO xNode";
+    devn_map["axiaunode.mic"]="Microphone xNode";
+    devn_map["axiaxnode.aes4x4"]="AES3 xNode";
+    devn_map["axiaxnode.analog4x4"]="Analog xNode";
+    devn_map["axiaxnode.combo"]="Combination xNode";
+    devn_map["element"]="Element Control Surface";
+    devn_map["engine"]="Mix Engine (Gen1)";
+    devn_map["eth4can"]="CAN Bus Bridge";
+    devn_map["fusion"]="Fusion Control Surface";
+    devn_map["liveaes"]="AES Node (Gen1)";
+    devn_map["livegpio"]="GPIO Node (Gen1)";
+    devn_map["liveio"]="Analog Node (Gen1)"; // OR an ASI6x85 card!
+    devn_map["livemic"]="Microphone Node (Gen1)";
+    devn_map["livert"]="Router Node (Gen1)";
+    devn_map["lwwd"]="Microsoft Windows Host";
+    devn_map["qor"]="QOR Engine";
+    devn_map["vx engine"]="VX Phone Engine";
+    devn_map["xnode.sdi"]="SDI xNode";
+
+    ret=devn_map.value(devn_str.toLower(),"Livewire Device");
+  }
 
   return ret;
 }

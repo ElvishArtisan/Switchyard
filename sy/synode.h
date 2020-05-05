@@ -37,6 +37,8 @@ class SyNode
   void setDeviceName(const QString &str);
   QString product() const;
   void setProduct(const QString &str);
+  QString productName() const;
+  void setProductName(const QString &str);
   QString model() const;
   void setModel(const QString &str);
   QString softwareVersion() const;
@@ -52,12 +54,14 @@ class SyNode
   unsigned gpoSlotQuantity() const;
   void setGpoSlotQuantity(unsigned slot_quan);
   QString dump() const;
+  static QString productName(const QString &devn_str,int gpis,int gpos);
 
  private:
   QHostAddress node_host_address;
   QString node_host_name;
   QString node_device_name;
   QString node_product;
+  QString node_product_name;
   QString node_model;
   QString node_software_version;
   QString node_lwrp_version;

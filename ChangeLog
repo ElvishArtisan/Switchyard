@@ -681,3 +681,7 @@
 2020-03-25 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 16:1:1.
 	* Incremented the package version to 0.20.1.
+2020-05-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SyNode::productName()' and 'SyNode::setProductName()'
+	methods.
+	* Added an 'SyLwrpClient::productName()' method.

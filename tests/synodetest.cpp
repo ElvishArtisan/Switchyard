@@ -95,6 +95,7 @@ void MainObject::connectedData(unsigned id,bool state)
 	   (const char *)node_node->hostAddress().toString().toUtf8(),
 	   0xFFFF&node_node->port());
     printf("\n");
+    /*
     printf("Hostname: %s\n",(const char *)node_node->hostName().toUtf8());
     printf("Host Address: %s\n",
 	   (const char *)node_node->hostAddress().toString().toUtf8());
@@ -105,6 +106,8 @@ void MainObject::connectedData(unsigned id,bool state)
     printf("GPI Slots: %u\n",node_node->gpis());
     printf("GPO Slots: %u\n",node_node->gpos());
     printf("\n");
+    */
+    printf("%s\n",node_node->node()->dump().toUtf8().constData());
     printf("--- SOURCES ---\n");
     for(unsigned i=0;i<node_node->srcSlots();i++) {
       printf("Slot %3u:\n",i+1);
