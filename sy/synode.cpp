@@ -236,7 +236,7 @@ QString SyNode::productName(const QString &devn_str,int gpis,int gpos)
     devn_map["axiaxnode.combo"]="Combination xNode";
     devn_map["axiaxnode_combo"]="Combination xNode";
     devn_map["axiaxnodexsdi"]="SDI xNode";
-    devn_map["element"]="Element Control Surface";
+    //    devn_map["element"]="Element Control Surface";
     devn_map["engine"]="Mix Engine (Gen1)";
     devn_map["engineacl"]="Blade Engine";
     devn_map["eth4can"]="CAN Bus Bridge";
@@ -305,7 +305,7 @@ QString SyNode::productName(const QString &devn_str,int gpis,int gpos)
     devn_map["zsys128"]="Z-Systems 128x128 Detangler";
     devn_map["zxs2"]="Telos Zeyphr XStream";
 
-    ret=devn_map.value(devn_str.toLower(),"Livewire Device ["+devn_str+"]");
+    ret=devn_map.value(devn_str.toLower(),"Livewire Device ['"+devn_str+"']");
   }
 
   return ret;
