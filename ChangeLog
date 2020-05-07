@@ -685,3 +685,5 @@
 	* Added 'SyNode::productName()' and 'SyNode::setProductName()'
 	methods.
 	* Added an 'SyLwrpClient::productName()' method.
+2020-05-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added more device signatures to 'SyNode::productName()'.
