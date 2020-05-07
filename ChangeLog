@@ -690,3 +690,5 @@
 2020-05-07 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'SyNode::productName()' to include the DEVN string
 	when reporting unrecognized devices.
+2020-05-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a type in 'sy/synode.cpp'.

@@ -236,7 +236,7 @@ QString SyNode::productName(const QString &devn_str,int gpis,int gpos)
     devn_map["axiaxnode.combo"]="Combination xNode";
     devn_map["axiaxnode_combo"]="Combination xNode";
     devn_map["axiaxnodexsdi"]="SDI xNode";
-    //    devn_map["element"]="Element Control Surface";
+    devn_map["element"]="Element Control Surface";
     devn_map["engine"]="Mix Engine (Gen1)";
     devn_map["engineacl"]="Blade Engine";
     devn_map["eth4can"]="CAN Bus Bridge";
