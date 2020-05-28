@@ -60,9 +60,9 @@ AC_LANG(C++)
 #      increment 'AGE'.
 #   6. If any interfaces have been removed since the last public release,
 #      then set 'AGE' to 0.
-CURRENT=16
-REVISION=1
-AGE=1
+CURRENT=17
+REVISION=0
+AGE=2
 POINT=$(($CURRENT - $AGE))
 
 #
