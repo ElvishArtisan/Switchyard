@@ -29,12 +29,12 @@ BuildRoot: 	/var/tmp/%{name}-@VERSION@
 %package devel
 Summary:        Development components for the Switchyard AES67 Library
 Group:		System Environment/Libraries
-Requires:	switchyard
+Requires:	%{name} = %{version}-%{release}
 
 
 %description
-Switchyard is a control and conveience library for writing applications
-for Audio-over-IP (AoIP) systems using the AES67 and LiveWire standards.
+Switchyard is a control and convenience library for writing applications
+for Audio-over-IP (AoIP) systems using the AES67 and Livewire standards.
 
 
 %description devel

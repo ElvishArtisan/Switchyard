@@ -695,3 +695,6 @@
 2020-05-28 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 17:0:2.
 	* Incremented the package version to 0.21.0.
+2020-06-11 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the RPM packaging that failed to enforce version
+	consistency between the base and '-devel' packages.
