@@ -2,7 +2,7 @@ dnl configure.ac
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com dnl
+dnl   (C) Copyright 2014-2020 Fred Gleason <fredg@paravelsystems.com dnl
 dnl
 dnl    This program is free software; you can redistribute it and/or modify
 dnl    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -61,7 +61,7 @@ AC_LANG(C++)
 #   6. If any interfaces have been removed since the last public release,
 #      then set 'AGE' to 0.
 CURRENT=17
-REVISION=0
+REVISION=1
 AGE=2
 POINT=$(($CURRENT - $AGE))
 

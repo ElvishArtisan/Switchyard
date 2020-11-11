@@ -703,3 +703,6 @@
 2020-11-11 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the 'SyLwrpClient::setGpoSourceAddress()' method
 	that broke operation for GPIO endpoints.
+2020-11-11 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library ABI version to 17:1:2.
+	* Incremented the package version to 0.21.2.
