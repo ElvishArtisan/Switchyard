@@ -400,7 +400,7 @@ void SyLwrpClient::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
     }
     else {
       SendCommand(QString().sprintf("CFG GPO %d",slot+1)+" SRCA:\""+
-		  s_addr.toString()+QString().sprintf("\"/%d",s_slot+1)+
+		  s_addr.toString()+QString().sprintf("/%d\"",s_slot+1)+
 		  " FUNC:FOLLOW");
     }
   }
