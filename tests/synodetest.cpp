@@ -24,9 +24,9 @@
 #include <QApplication>
 #include <QCoreApplication>
 
-#include <sy/sycmdswitch.h>
-#include <sy/symcastsocket.h>
-#include <sy/syrouting.h>
+#include <sy5/sycmdswitch.h>
+#include <sy5/symcastsocket.h>
+#include <sy5/syrouting.h>
 
 #include "synodetest.h"
 

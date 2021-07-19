@@ -2,7 +2,7 @@
 //
 // Test the SyInterfaces class.
 //
-// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-#include <sy/syinterfaces.h>
+#include <sy5/syinterfaces.h>
 
 #define INTERFACESTEST_USAGE "\n"
 

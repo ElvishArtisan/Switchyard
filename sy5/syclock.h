@@ -2,7 +2,7 @@
 //
 // Livewire Clock
 //
-// (C) Copyright 2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2015-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include <sy/symcastsocket.h>
+#include <sy5/symcastsocket.h>
 
 #define SYCLOCK_WINDOW_SIZE 100.0
 #define SYCLOCK_WATCHDOG_INTERVAL 5000

@@ -24,7 +24,7 @@
 
 #include <QCoreApplication>
 
-#include <sy/sycmdswitch.h>
+#include <sy5/sycmdswitch.h>
 
 #include "syethmonitortest.h"
 

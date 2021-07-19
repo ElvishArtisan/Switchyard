@@ -2,7 +2,7 @@
 //
 // Switchyard stream capture command
 //
-// (C) 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -28,10 +28,10 @@
 
 #include <sndfile.h>
 
-#include <sy/syconfig.h>
-#include <sy/sylwrp_server.h>
-#include <sy/syrouting.h>
-#include <sy/syrtp_server.h>
+#include <sy5/syconfig.h>
+#include <sy5/sylwrp_server.h>
+#include <sy5/syrouting.h>
+#include <sy5/syrtp_server.h>
 
 #define SYCAPTURE_USAGE "[--bits=16|24|32] --output=<filename>\n"
 

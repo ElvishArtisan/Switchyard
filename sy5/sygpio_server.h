@@ -33,9 +33,9 @@
 #include <QString>
 #include <QTimer>
 
-#include <sy/symcastsocket.h>
-#include <sy/syethmonitor.h>
-#include <sy/syrouting.h>
+#include <sy5/symcastsocket.h>
+#include <sy5/syethmonitor.h>
+#include <sy5/syrouting.h>
 
 class SyGpioBundleEvent
 {

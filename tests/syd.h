@@ -2,7 +2,7 @@
 //
 // Switchyard stream swiching daemon
 //
-// (C) 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -26,12 +26,12 @@
 
 #include <QObject>
 
-#include <sy/syadv_server.h>
-#include <sy/syconfig.h>
-#include <sy/sygpio_server.h>
-#include <sy/sylwrp_server.h>
-#include <sy/syrouting.h>
-#include <sy/syrtp_server.h>
+#include <sy5/syadv_server.h>
+#include <sy5/syconfig.h>
+#include <sy5/sygpio_server.h>
+#include <sy5/sylwrp_server.h>
+#include <sy5/syrouting.h>
+#include <sy5/syrtp_server.h>
 
 #define SYD_USAGE "-d\n"
 #define SYD_PID_FILE "/var/run/syd.pid"

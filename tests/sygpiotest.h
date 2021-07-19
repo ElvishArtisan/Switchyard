@@ -2,7 +2,7 @@
 //
 // Listen for GPIO events and print them to stdout
 //
-// (C) 2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,8 +24,8 @@
 
 #include <QObject>
 
-#include <sy/sygpio_server.h>
-#include <sy/syrouting.h>
+#include <sy5/sygpio_server.h>
+#include <sy5/syrouting.h>
 
 #define SYGPIOTEST_USAGE "--log\n"
 

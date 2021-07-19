@@ -2,7 +2,7 @@
 //
 // Livewire Advertising Protocol Server
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -29,13 +29,13 @@
 #include <QString>
 #include <QTimer>
 
-#include <sy/syadv_packet.h>
-#include <sy/syadv_source.h>
-#include <sy/syadv_tag.h>
-#include <sy/syastring.h>
-#include <sy/syethmonitor.h>
-#include <sy/symcastsocket.h>
-#include <sy/syrouting.h>
+#include <sy5/syadv_packet.h>
+#include <sy5/syadv_source.h>
+#include <sy5/syadv_tag.h>
+#include <sy5/syastring.h>
+#include <sy5/syethmonitor.h>
+#include <sy5/symcastsocket.h>
+#include <sy5/syrouting.h>
 
 class SyAdvServer : public QObject
 {

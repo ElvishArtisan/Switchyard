@@ -1,10 +1,10 @@
 ## automake.am
 ##
-## Top level automake.am for Switchyard
+## Top level automake.am for Switchyard5
 ##
 ## Use automake to process this into a Makefile.in
 ##
-##   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -22,7 +22,7 @@
 ##
 
 SUBDIRS = conf\
-          sy\
+          sy5\
           tests
 
 ACLOCAL_AMFLAGS = -I m4
@@ -31,23 +31,23 @@ maintainer-clean-local:
 	rm -rf m4
 
 rpm:	dist
-	cp switchyard-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
-	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard.spec
-	mv $(HOME)/rpmbuild/RPMS/$(ARCH)/switchyard-*.rpm $(top_srcdir)/
-	mv $(HOME)/rpmbuild/SRPMS/switchyard-*.src.rpm $(top_srcdir)/
-	rm $(HOME)/rpmbuild/SOURCES/switchyard-$(VERSION).tar.gz
-	rm -rf $(HOME)/rpmbuild/BUILD/switchyard-$(VERSION)
+	cp switchyard5-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
+	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard5.spec
+	mv $(HOME)/rpmbuild/RPMS/$(ARCH)/switchyard5-*.rpm $(top_srcdir)/
+	mv $(HOME)/rpmbuild/SRPMS/switchyard5-*.src.rpm $(top_srcdir)/
+	rm $(HOME)/rpmbuild/SOURCES/switchyard5-$(VERSION).tar.gz
+	rm -rf $(HOME)/rpmbuild/BUILD/switchyard5-$(VERSION)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = switchyard.pc
+pkgconfig_DATA = switchyard5.pc
 
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
              get_target.sh\
              PACKAGE_VERSION\
-             switchyard.pc.in\
-             switchyard.pro\
-             switchyard.spec.in
+             switchyard5.pc.in\
+             switchyard5.pro\
+             switchyard5.spec.in
 
 CLEANFILES = *~\
              *.tar.gz\

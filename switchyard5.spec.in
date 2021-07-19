@@ -1,4 +1,4 @@
-# switchyard.spec.in
+# switchyard5.spec.in
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -14,20 +14,20 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, 
 #    Boston, MA  02111-1307  USA
 #
-Name:		switchyard
+Name:		switchyard5
 Version:	@VERSION@
 Release:	1%{?dist}
-Summary:	AES67 Control and Conveience Library
+Summary:	AES67 Control and Conveience Library for Qt5
 Group:		System Environment/Libraries
 License:	lgplv2
 URL:		http://www.paravelsystems.com/
 Source0:	%{name}-%{version}.tar.gz
-BuildRequires:	qt-devel
+BuildRequires:	qt5-qtbase-devel
 BuildRoot: 	/var/tmp/%{name}-@VERSION@
 
 
 %package devel
-Summary:        Development components for the Switchyard AES67 Library
+Summary:        Development components for the Switchyard AES67 Library for Qt5
 Group:		System Environment/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -70,9 +70,9 @@ ldconfig
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libSwitchyard.so
-%{_libdir}/libSwitchyard.so.@INTERFACE_MAJOR@
-%{_libdir}/libSwitchyard.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
+%{_libdir}/libSwitchyard5.so
+%{_libdir}/libSwitchyard5.so.@INTERFACE_MAJOR@
+%{_libdir}/libSwitchyard5.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
 %doc COPYING
 %doc NEWS
 %doc README
@@ -81,9 +81,9 @@ ldconfig
 %files devel
 %{_bindir}/sygpiotest
 %{_includedir}/sy/*.h
-%{_libdir}/pkgconfig/switchyard.pc
-%{_libdir}/libSwitchyard.a
-%{_libdir}/libSwitchyard.la
+%{_libdir}/pkgconfig/switchyard5.pc
+%{_libdir}/libSwitchyard5.a
+%{_libdir}/libSwitchyard5.la
 
 %changelog
 * Tue Dec 13 2016 Fred Gleason <fredg@paravelsystems.com>

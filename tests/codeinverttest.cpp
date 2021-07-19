@@ -24,7 +24,7 @@
 
 #include <QCoreApplication>
 
-#include <sy/sygpiobundle.h>
+#include <sy5/sygpiobundle.h>
 
 #include "codeinverttest.h"
 

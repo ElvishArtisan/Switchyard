@@ -2,7 +2,7 @@
 //
 // Switchyard stream play command
 //
-// (C) 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -28,13 +28,13 @@
 
 #include <sndfile.h>
 
-#include <sy/syadv_server.h>
-#include <sy/syclock.h>
-#include <sy/syconfig.h>
-#include <sy/sylwrp_server.h>
-#include <sy/syrouting.h>
-#include <sy/syrtp_header.h>
-#include <sy/syrtp_server.h>
+#include <sy5/syadv_server.h>
+#include <sy5/syclock.h>
+#include <sy5/syconfig.h>
+#include <sy5/sylwrp_server.h>
+#include <sy5/syrouting.h>
+#include <sy5/syrtp_header.h>
+#include <sy5/syrtp_server.h>
 
 #define SYPLAY_USAGE "--input=<filename>\n"
 

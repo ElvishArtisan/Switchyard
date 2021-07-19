@@ -2,7 +2,7 @@
 //
 // AoIP stream routing configuration
 //
-// (C) 2014-2018 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,7 +30,7 @@
 #include <QHostAddress>
 #include <QString>
 
-#include <sy/syconfig.h>
+#include <sy5/syconfig.h>
 
 class SyRouting
 {

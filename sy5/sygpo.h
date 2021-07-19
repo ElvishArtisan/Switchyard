@@ -1,8 +1,8 @@
-// syadv_packet.h
+// sygpo.h
 //
-// Abstract a LiveWire Control Protocol packet.
+// Abstract a LiveWire GPO slot
 //
-// (C) Copyright 2009 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2015-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,35 +19,35 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYADV_PACKET_H
-#define SYADV_PACKET_H
+#ifndef SYGPO_H
+#define SYGPO_H
 
-#include <stdint.h>
+#include <QHostAddress>
+#include <QString>
 
-#include <vector>
+#include <sy5/sygpiobundle.h>
 
-#include <sy/syadv_tag.h>
-
-class SyAdvPacket
+class SyGpo
 {
  public:
-  SyAdvPacket();
-  ~SyAdvPacket();
-  uint32_t sequenceNumber() const;
-  void setSequenceNumber(uint32_t num);
-  unsigned tags() const;
-  SyTag *tag(unsigned n);
-  void addTag(const SyTag &tag);
-  bool readPacket(uint8_t *data,uint32_t size);
-  int writePacket(uint8_t *data,uint32_t maxsize);
-  QString dump() const;
-  SyAdvPacket &operator++();
-  SyAdvPacket operator++(int);
+  SyGpo();
+  ~SyGpo();
+  QString name() const;
+  void setName(const QString &str);
+  QHostAddress sourceAddress() const;
+  int sourceSlot() const;
+  void setSourceAddress(const QHostAddress &s_addr,int s_slot);
+  bool follow() const;
+  void setFollow(bool state);
+  SyGpioBundle *bundle() const;
 
  private:
-  uint32_t lw_sequence_number;
-  std::vector<SyTag *> lw_tags;
+  QString gpo_name;
+  QHostAddress gpo_source_address;
+  int gpo_source_slot;
+  bool gpo_follow;
+  SyGpioBundle *gpo_bundle;
 };
 
 
-#endif  // SYADV_PACKET_H
+#endif  // SYGPO_H

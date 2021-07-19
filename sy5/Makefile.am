@@ -30,8 +30,8 @@ moc_%.cpp:	%.h
 clean-local:	
 	rm -rf debug release
 
-lib_LTLIBRARIES = libSwitchyard.la
-dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
+lib_LTLIBRARIES = libSwitchyard5.la
+dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 syadv_reader.cpp syadv_reader.h\
                                 syadv_server.cpp syadv_server.h\
                                 syadv_source.cpp syadv_source.h\
@@ -62,7 +62,7 @@ dist_libSwitchyard_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                 syrtp_server.cpp syrtp_server.h\
                                 sysource.cpp sysource.h
 
-nodist_libSwitchyard_la_SOURCES = moc_syadv_server.cpp\
+nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_syclock.cpp\
                                   moc_syethmonitor.cpp\
                                   moc_sygpio_server.cpp\
@@ -100,7 +100,7 @@ include_HEADERS = syadv_packet.h\
                   syrtp_server.h\
                   sysource.h
 
-libSwitchyard_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
+libSwitchyard5_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
 
 EXTRA_DIST = sy.pro
 

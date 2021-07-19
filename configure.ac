@@ -19,7 +19,7 @@ dnl    Foundation, Inc., 59 Temple Place, Suite 330,
 dnl    Boston, MA  02111-1307  USA
 dnl
 
-AC_INIT(switchyard,m4_esyscmd(cat PACKAGE_VERSION))
+AC_INIT(switchyard5,m4_esyscmd(cat PACKAGE_VERSION))
 AM_INIT_AUTOMAKE
 AC_SUBST(RPM_RELEASE,1)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
@@ -117,10 +117,10 @@ fi
 # Configure Linker Flags
 #
 if test $ar_gcc_distro = "apple" ; then
-  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard5")
   AC_SUBST(SWITCHYARDFLAGS,"-framework Qt5Core -framework QtNetwork")
 else
-  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard -lQt5Core -lQt5Network")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard5 -lQt5Core -lQt5Network")
   AC_SUBST(SWITCHYARDFLAGS,"-pthread")
 fi
 
@@ -143,12 +143,12 @@ fi
 
 AC_CONFIG_FILES([\
     Makefile \
-    sy/Makefile \
+    sy5/Makefile \
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \
-    switchyard.pc \
-    switchyard.spec \
+    switchyard5.pc \
+    switchyard5.spec \
     ])
 
 AC_OUTPUT()

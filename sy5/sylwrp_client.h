@@ -2,7 +2,7 @@
 //
 // LWRP client implementation
 //
-// (C) 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,13 +32,13 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include <sy/syconfig.h>
-#include <sy/sydestination.h>
-#include <sy/sygpiobundle.h>
-#include <sy/sygpo.h>
-#include <sy/synode.h>
-#include <sy/sysource.h>
-#include <sy/syrouting.h>
+#include <sy5/syconfig.h>
+#include <sy5/sydestination.h>
+#include <sy5/sygpiobundle.h>
+#include <sy5/sygpo.h>
+#include <sy5/synode.h>
+#include <sy5/sysource.h>
+#include <sy5/syrouting.h>
 
 #define SYLWRP_CLIENT_METER_INTERVAL 100
 

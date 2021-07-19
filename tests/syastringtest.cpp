@@ -24,7 +24,7 @@
 
 #include <QCoreApplication>
 
-#include <sy/syastring.h>
+#include <sy5/syastring.h>
 
 #include "syastringtest.h"
 

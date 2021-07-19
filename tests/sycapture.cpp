@@ -28,7 +28,7 @@
 #include <QCoreApplication>
 #include <QTimer>
 
-#include <sy/sycmdswitch.h>
+#include <sy5/sycmdswitch.h>
 
 #include "sycapture.h"
 

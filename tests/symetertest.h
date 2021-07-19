@@ -2,7 +2,7 @@
 //
 // Display level meters via LWRP
 //
-// (C) 2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -28,7 +28,7 @@
 #include <QMainWindow>
 #include <QSpinBox>
 
-#include <sy/sylwrp_client.h>
+#include <sy5/sylwrp_client.h>
 
 #include "playmeter.h"
 #include "statuslight.h"
