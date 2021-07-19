@@ -140,6 +140,7 @@ else
   AC_SUBST(RPM_ROOT,/usr/src/packages)
   AC_SUBST(VENDOR,suse)
 fi 
+AC_SUBST(RPM_DATESTAMP,`date +%a\ %b\ %d\ %Y`)
 
 AC_CONFIG_FILES([\
     Makefile \
