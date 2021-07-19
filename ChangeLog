@@ -710,3 +710,6 @@
 	* Updated Qt dependency to Qt5.
 2021-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the library SONAME from 'Switchyard' to 'Switchyard5'.
+2021-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the 'make rpm' target to generate the RPM datestamp
+	automatically.
