@@ -3,7 +3,7 @@
 // This implements a widget that represents a stereo audio level meter,
 // complete with labels and scale.
 //
-//   (C) Copyright 2002-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -21,6 +21,8 @@
 //
 
 #include <stdio.h>
+
+#include <QPainter>
 
 #include "playmeter.h"
 

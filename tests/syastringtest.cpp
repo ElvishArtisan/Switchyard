@@ -2,7 +2,7 @@
 //
 // Test the SyAString parser
 //
-// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,15 +31,15 @@
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
-  if(qApp->argc()<2) {
+  if(qApp->arguments().size()<2) {
     fprintf(stderr,"syastringtest: you must specify a test string\n");
     exit(1);
   }
-  printf("Test String: |%s|\n",qApp->argv()[1]);
-  SyAString astr(QString(qApp->argv()[1]));
+  printf("Test String: |%s|\n",qApp->arguments().at(1).toUtf8().constData());
+  SyAString astr(QString(qApp->arguments().at(1)));
   QStringList f0=astr.split(" ","\"");
   for(int i=0;i<f0.size();i++) {
-    printf("[%d]: [%s]\n",i,(const char *)f0.at(i).toUtf8());
+    printf("[%d]: [%s]\n",i,f0.at(i).toUtf8().constData());
   }
   exit(0);
 }

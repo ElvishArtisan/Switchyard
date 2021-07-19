@@ -2,7 +2,7 @@
 //
 // Cross-platform system logging routines for Switchyard
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -27,7 +27,7 @@
 void SyOpenLog(const QString &ident,int option,int facility)
 {
 #ifndef WIN32
-  openlog(ident.toAscii(),option,facility);
+  openlog(ident.toUtf8(),option,facility);
 #endif  // WIN32
 }
 
@@ -35,8 +35,8 @@ void SyOpenLog(const QString &ident,int option,int facility)
 void SySyslog(int priority,const QString &msg)
 {
 #ifdef WIN32
-  fprintf(stderr,"%s\n",(const char *)msg.toAscii());
+  fprintf(stderr,"%s\n",msg.toUtf8().constData());
 #else
-  syslog(priority,"%s",(const char *)msg.toAscii());
+  syslog(priority,"%s",msg.toUtf8().constData());
 #endif  // WIN32
 }

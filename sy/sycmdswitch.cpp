@@ -22,11 +22,59 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <QCoreApplication>
+#include <QStringList>
+
 #include "sycmdswitch.h"
 
-SyCmdSwitch::SyCmdSwitch(int argc,char *argv[],const char *modname,
-			 const char *modver,const char *usage)
+SyCmdSwitch::SyCmdSwitch(const QString &modname,const QString &modver,
+			 const QString &usage)
+//SyCmdSwitch::SyCmdSwitch(int argc,char *argv[],const char *modname,
+//			 const char *modver,const char *usage)
 {
+  QStringList args=qApp->arguments();
+
+  for(int i=1;i<args.size();i++) {
+    QString value=args.at(i);
+    if(value=="--version") {
+      printf("%s v%s\n",modname.toUtf8().constData(),
+	     modver.toUtf8().constData());
+      exit(0);
+    }
+    if(value=="--help") {
+      printf("\n%s %s\n",modname.toUtf8().constData(),
+	     usage.toUtf8().constData());
+      exit(0);
+    }
+    QStringList f0=value.split("=",QString::KeepEmptyParts);
+    if(f0.size()>=2) {
+      if(f0.at(0).left(1)=="-") {
+	switch_keys.push_back(f0.at(0));
+	for(int i=2;i<f0.size();i++) {
+	  f0[1]+="="+f0.at(i);
+	}
+	if(f0.at(1).isEmpty()) {
+	  switch_values.push_back("");
+	}
+	else {
+	  switch_values.push_back(f0.at(1));
+	}
+      }
+      else {
+	switch_keys.push_back(f0.join("="));
+	switch_values.push_back("");
+      }
+      switch_processed.push_back(false);
+    }
+    else {
+      switch_keys.push_back(value);
+      switch_values.push_back("");
+      switch_processed.push_back(false);
+    }
+  }
+
+
+  /*
   unsigned l=0;
   bool handled=false;
 
@@ -58,34 +106,35 @@ SyCmdSwitch::SyCmdSwitch(int argc,char *argv[],const char *modname,
       switch_processed.push_back(false);
     }
   }
+  */
 }
 
 
-unsigned SyCmdSwitch::keys() const
+int SyCmdSwitch::keys() const
 {
   return switch_keys.size();
 }
 
 
-QString SyCmdSwitch::key(unsigned n) const
+QString SyCmdSwitch::key(int n) const
 {
   return switch_keys[n];
 }
 
 
-QString SyCmdSwitch::value(unsigned n) const
+QString SyCmdSwitch::value(int n) const
 {
   return switch_values[n];
 }
 
 
-bool SyCmdSwitch::processed(unsigned n) const
+bool SyCmdSwitch::processed(int n) const
 {
   return switch_processed[n];
 }
 
 
-void SyCmdSwitch::setProcessed(unsigned n,bool state)
+void SyCmdSwitch::setProcessed(int n,bool state)
 {
   switch_processed[n]=state;
 }
@@ -93,7 +142,7 @@ void SyCmdSwitch::setProcessed(unsigned n,bool state)
 
 bool SyCmdSwitch::allProcessed() const
 {
-  for(unsigned i=0;i<switch_processed.size();i++) {
+  for(int i=0;i<switch_processed.size();i++) {
     if(!switch_processed[i]) {
       return false;
     }

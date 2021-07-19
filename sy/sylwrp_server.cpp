@@ -2,7 +2,7 @@
 //
 // Livewire Control Protocol Server
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -630,9 +630,9 @@ QString SyLwrpServer::SrcLine(int slot)
   return QString().
     sprintf("SRC %u PSNM:\"%s\" FASM:1 RTPE:%d RTPA:\"%s\" INGN:0 SHAB:0 NCHN:2 RTPP:240",
 	    slot+1,
-	    (const char *)ctrl_routing->srcName(slot).toAscii(),
+	    ctrl_routing->srcName(slot).toUtf8().constData(),
 	    ctrl_routing->srcEnabled(slot),
-	    (const char *)ctrl_routing->srcAddress(slot).toString().toAscii());
+	    ctrl_routing->srcAddress(slot).toString().toUtf8().constData());
 }
 
 
@@ -641,8 +641,8 @@ QString SyLwrpServer::DstLine(int slot)
   return QString().
     sprintf("DST %u NAME:\"%s\" ADDR:\"%s\" NCHN:2 LOAD:0 OUGN:0",
 	    slot+1,
-	    (const char *)ctrl_routing->dstName(slot).toAscii(),
-	    (const char *)ctrl_routing->dstAddress(slot).toString().toAscii());
+	    ctrl_routing->dstName(slot).toUtf8().constData(),
+	    ctrl_routing->dstAddress(slot).toString().toUtf8().constData());
 }
 
 
@@ -789,8 +789,7 @@ void SyLwrpServer::BroadcastCommand(const QString &cmd)
 
 void SyLwrpServer::SendCommand(int ch,const QString &cmd)
 {
-  ctrl_client_connections[ch]->
-    socket()->write((cmd+"\r\n").toAscii(),cmd.length()+2);
+  ctrl_client_connections[ch]->socket()->write((cmd+"\r\n").toUtf8());
 }
 
 

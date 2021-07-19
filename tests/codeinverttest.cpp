@@ -2,7 +2,7 @@
 //
 // Test the SyAString parser
 //
-// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,12 +31,13 @@
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
-  if(qApp->argc()<2) {
+  if(qApp->arguments().size()<2) {
     fprintf(stderr,"codeinverttest: you must specify a test code\n");
     exit(1);
   }
-  printf("Test Code: |%s|\n",qApp->argv()[1]);
-  printf("Inversion: |%s|\n",(const char *)SyGpioBundle::invertCode(QString(qApp->argv()[1])).toUtf8());
+  printf("Test Code: |%s|\n",qApp->arguments().at(1).toUtf8().constData());
+  printf("Inversion: |%s|\n",
+	 SyGpioBundle::invertCode(QString(qApp->arguments().at(1))).toUtf8().constData());
 
   exit(0);
 }

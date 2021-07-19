@@ -2,7 +2,7 @@
 //
 // AoIP stream routing configuration
 //
-// (C) 2014-2018 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -558,39 +558,39 @@ void SyRouting::save() const
   FILE *f=NULL;
   QString tempfile=QString(SWITCHYARD_ROUTING_FILE)+"-temp";
 
-  if((f=fopen(tempfile.toAscii(),"w"))==NULL) {
+  if((f=fopen(tempfile.toUtf8(),"w"))==NULL) {
     SySyslog(LOG_WARNING,QString().
 	     sprintf("unable to save routing data [%s]",strerror(errno)));
     return;
   }
 
   fprintf(f,"[Global]\n");
-  fprintf(f,"NicAddress=%s\n",(const char *)nicAddress().toString().toAscii());
+  fprintf(f,"NicAddress=%s\n",nicAddress().toString().toUtf8().constData());
   fprintf(f,"\n");
   for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
     fprintf(f,"[Slot%u]\n",i+1);
     if(i<(int)srcSlots()) {
       fprintf(f,"SourceAddress=%s\n",
-	      (const char *)srcAddress(i).toString().toAscii());
-      fprintf(f,"SourceName=%s\n",(const char *)srcName(i).toAscii());
+	      srcAddress(i).toString().toUtf8().constData());
+      fprintf(f,"SourceName=%s\n",srcName(i).toUtf8().constData());
       fprintf(f,"SourceEnabled=%d\n",srcEnabled(i));
     }
     if(i<(int)dstSlots()) {
       fprintf(f,"DestinationAddress=%s\n",
-	      (const char *)dstAddress(i).toString().toAscii());
-      fprintf(f,"DestinationName=%s\n",(const char *)dstName(i).toAscii());
+	      dstAddress(i).toString().toUtf8().constData());
+      fprintf(f,"DestinationName=%s\n",dstName(i).toUtf8().constData());
     }
     if(i<(int)gpos()) {
       fprintf(f,"GpoMode=%d\n",gpoMode(i));
       fprintf(f,"GpoAddress=%s\n",
-	      (const char *)gpoAddress(i).toString().toAscii());
+	      gpoAddress(i).toString().toUtf8().constData());
       fprintf(f,"GpoSnakeSlot=%d\n",gpoSnakeSlot(i));
-      fprintf(f,"GpoName=%s\n",(const char *)gpoName(i).toAscii());
+      fprintf(f,"GpoName=%s\n",gpoName(i).toUtf8().constData());
     }
     fprintf(f,"\n");
   }
   fclose(f);
-  rename(tempfile.toAscii(),SWITCHYARD_ROUTING_FILE);
+  rename(tempfile.toUtf8(),SWITCHYARD_ROUTING_FILE);
 #endif  // WIN32
 }
 
@@ -811,9 +811,9 @@ void SyRouting::LoadInterfaces()
 #endif  // WIN32
   /*
   for(unsigned i=0;i<sy_nic_addresses.size();i++) {
-    printf("%s: %s  %s\n",(const char *)sy_nic_devices[i].toAscii(),
-	   (const char *)sy_nic_addresses[i].toString().toAscii(),
-	   (const char *)sy_nic_netmasks[i].toString().toAscii());
+    printf("%s: %s  %s\n",(const char *)sy_nic_devices[i].toUtf8(),
+	   (const char *)sy_nic_addresses[i].toString().toUtf8(),
+	   (const char *)sy_nic_netmasks[i].toString().toUtf8());
   }
   */
 }

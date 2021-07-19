@@ -2,7 +2,7 @@ dnl configure.ac
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2020 Fred Gleason <fredg@paravelsystems.com dnl
+dnl   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com dnl
 dnl
 dnl    This program is free software; you can redistribute it and/or modify
 dnl    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -90,12 +90,12 @@ else
 fi
 
 #
-# Check for Qt4 (Mandatory)
+# Check for Qt5 (Mandatory)
 #
-PKG_CHECK_MODULES(QT4,QtCore QtNetwork,[],[AC_MSG_ERROR([*** Qt4 not found ***])])
-PKG_CHECK_MODULES(QT4GUI,QtGui,[],[AC_MSG_ERROR([*** Qt4 GUI not found ***])])
-AC_CHECK_PROG(MOC_NAME,moc-qt4,[moc-qt4],[moc])
-AC_SUBST(MOC,$MOC_NAME)
+PKG_CHECK_MODULES(QT5,Qt5Core Qt5Network,[],[AC_MSG_ERROR([*** Qt5 not found ***])])
+PKG_CHECK_MODULES(QT5GUI,Qt5Gui Qt5Widgets,[],[AC_MSG_ERROR([*** Qt5 GUI not found ***])])
+AC_CHECK_PROG(MOC_NAME,moc-qt5,[moc-qt5],[moc])
+AC_SUBST(QT_MOC,$MOC_NAME)
 
 #
 # Check for libsndfile (Needed for sycapture)
@@ -118,9 +118,9 @@ fi
 #
 if test $ar_gcc_distro = "apple" ; then
   AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard")
-  AC_SUBST(SWITCHYARDFLAGS,"-framework QtCore -framework QtNetwork")
+  AC_SUBST(SWITCHYARDFLAGS,"-framework Qt5Core -framework QtNetwork")
 else
-  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard -lQtCore -lQtNetwork")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard -lQt5Core -lQt5Network")
   AC_SUBST(SWITCHYARDFLAGS,"-pthread")
 fi
 

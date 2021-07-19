@@ -2,7 +2,7 @@
 //
 // Real Time Protocol
 //
-//   (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -150,7 +150,7 @@ void *__RtpServer_ThreadCallback(void *p)
       }
       if(dst>0) {
 	//printf("received %ld bytes from %s.\n",n,
-	//       (const char *)SyRouting::dumpAddress(dst).toAscii());
+	//       SyRouting::dumpAddress(dst).toUtf8().constData());
 	if(cb_data->callback_func!=NULL) {
 	  cb_data->callback_func(dst,(char *)buffer,n,cb_data->routing,
 				 cb_data->priv);

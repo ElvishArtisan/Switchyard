@@ -2,7 +2,7 @@
 //
 // Switchyard tone command
 //
-// (C) 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
+#include <QApplication>
 #include <QCoreApplication>
 #include <QTimer>
 
@@ -56,9 +56,8 @@ MainObject::MainObject(QObject *parent)
   //
   // Process Command Line
   //
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"sytone",VERSION,SYTONE_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("sytone",VERSION,SYTONE_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(!cmd->processed(i)) {
       fprintf(stderr,"syplay: unrecognized option\n");
       exit(256);
@@ -144,7 +143,7 @@ MainObject::MainObject(QObject *parent)
 
 void MainObject::sourceAddressChangedData(const QHostAddress &addr)
 {
-  printf("Clock source is now: %s\n",(const char *)addr.toString().toAscii());
+  printf("Clock source is now: %s\n",addr.toString().toUtf8().constData());
 }
 
 

@@ -2,7 +2,7 @@
 //
 // Process Command-Line Switches
 //
-//   (C) Copyright 2013 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2013-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -22,26 +22,27 @@
 #ifndef SYADV_CMDSWITCH_H
 #define SYADV_CMDSWITCH_H
 
-#include <vector>
-
+#include <QList>
 #include <QString>
 
 class SyCmdSwitch
 {
  public:
-  SyCmdSwitch(int argc,char *argv[],const char *modname,const char *modver,
-	      const char *usage);
-  unsigned keys() const;
-  QString key(unsigned n) const;
-  QString value(unsigned n) const;
-  bool processed(unsigned n) const;
-  void setProcessed(unsigned n,bool state);
+  SyCmdSwitch(const QString &modname,const QString &modver,
+	      const QString &usage);
+  //  SyCmdSwitch(int argc,char *argv[],const char *modname,const char *modver,
+  //	      const char *usage);
+  int keys() const;
+  QString key(int n) const;
+  QString value(int n) const;
+  bool processed(int n) const;
+  void setProcessed(int n,bool state);
   bool allProcessed() const;
 
  private:
-  std::vector<QString> switch_keys;
-  std::vector<QString> switch_values;
-  std::vector<bool> switch_processed;
+  QList<QString> switch_keys;
+  QList<QString> switch_values;
+  QList<bool> switch_processed;
 };
 
 

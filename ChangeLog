@@ -706,3 +706,5 @@
 2020-11-11 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 17:1:2.
 	* Incremented the package version to 0.21.2.
+2021-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Updated Qt dependency to Qt5.

@@ -2,7 +2,7 @@
 //
 // Monitor a network interface and report changes in state.
 //
-// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,9 +32,9 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   QString iface;
-  SyCmdSwitch *cmd=new SyCmdSwitch(qApp->argc(),qApp->argv(),"syethmonitortest",
-				   VERSION,SYETHMONITORTEST_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=
+    new SyCmdSwitch("syethmonitortest",VERSION,SYETHMONITORTEST_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--iface") {
       iface=cmd->value(i);
       cmd->setProcessed(i,true);

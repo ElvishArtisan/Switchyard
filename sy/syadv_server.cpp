@@ -2,7 +2,7 @@
 //
 // Livewire Advertising Protocol Server
 //
-// (C) Copyright 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -139,8 +139,8 @@ void SyAdvServer::readData()
     /*
     printf("************************************************************\n");
     printf("processing from %s: %s\n",
-	   (const char *)addr.toString().toAscii(),
-	   (const char *)p.dump().toAscii());
+	   addr.toString().toUtf8().constData(),
+	   p.dump().toUtf8().constData());
     */
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
@@ -151,7 +151,7 @@ void SyAdvServer::readData()
       }
       /*
       printf("  examining[%u]: %s\n",i,
-	     (const char *)p.tag(i)->tagName().toAscii());
+	     p.tag(i)->tagName().toUtf8().constData());
       */
       if((slot=TagIsSource(p.tag(i)))>=0) {
 	src=GetSource(addr,slot);
@@ -267,7 +267,7 @@ void SyAdvServer::saveSourcesData()
   FILE *f=NULL;
   unsigned num=0;
 
-  if((f=fopen(tempfile.toAscii(),"w"))==NULL) {
+  if((f=fopen(tempfile.toUtf8(),"w"))==NULL) {
     SySyslog(LOG_WARNING,
 	     QString().sprintf("unable to update sources database [%s]",
 			       strerror(errno)));
@@ -281,11 +281,11 @@ void SyAdvServer::saveSourcesData()
 	fprintf(f,"[Source %u]\n",++num);
 	fprintf(f,"Slot=%u\n",src->slot());
 	fprintf(f,"NodeAddress=%s\n",
-		(const char *)src->nodeAddress().toString().toAscii());
-	fprintf(f,"NodeName=%s\n",(const char *)src->nodeName().toUtf8());
+		src->nodeAddress().toString().toUtf8().constData());
+	fprintf(f,"NodeName=%s\n",src->nodeName().toUtf8().constData());
 	fprintf(f,"StreamAddress=%s\n",
-		(const char *)src->streamAddress().toString().toAscii());
-	fprintf(f,"SourceName=%s\n",(const char *)src->sourceName().toUtf8());
+		src->streamAddress().toString().toUtf8().constData());
+	fprintf(f,"SourceName=%s\n",src->sourceName().toUtf8().constData());
 	fprintf(f,"\n");
       }
       src->setSaved();
@@ -293,7 +293,7 @@ void SyAdvServer::saveSourcesData()
   }
 
   fclose(f);
-  rename(tempfile.toAscii(),SWITCHYARD_SOURCES_FILE);
+  rename(tempfile.toUtf8(),SWITCHYARD_SOURCES_FILE);
   SySyslog(LOG_DEBUG,
 	   QString().sprintf("saved sources list to \"%s\"",
 			     SWITCHYARD_SOURCES_FILE));

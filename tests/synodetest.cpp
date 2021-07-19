@@ -2,7 +2,7 @@
 //
 // Enumerate node resources via LWRP.
 //
-// (C) 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 
-#include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
+#include <QApplication>
 #include <QCoreApplication>
 
 #include <sy/sycmdswitch.h>
@@ -38,9 +38,8 @@ MainObject::MainObject(QObject *parent)
   //
   // Process Command Line
   //
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"synode",VERSION,SYNODE_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("synode",VERSION,SYNODE_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--node") {
       node=cmd->value(i);
       cmd->setProcessed(i,true);

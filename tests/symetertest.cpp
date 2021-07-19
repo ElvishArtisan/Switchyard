@@ -33,10 +33,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Process Command Line
   //
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"symetertest",VERSION,
-		    SYMETERTEST_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("symetertest",VERSION,SYMETERTEST_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--node") {
       node=cmd->value(i);
       cmd->setProcessed(i,true);

@@ -2,7 +2,7 @@
 //
 // Abstract a LiveWire Control Protocol tag.
 //
-// (C) Copyright 2009 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2009-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -62,7 +62,7 @@ void SyTag::setTagValue(TagType type,const QVariant &value,int taglen)
 {
   lw_tag_type=type;
   if(taglen>0) {
-    QByteArray data((const char *)value.toString().left(taglen).toAscii());
+    QByteArray data(value.toString().left(taglen).toUtf8());
     while(data.size()<taglen) {
       data.append((char)0);
     }
@@ -84,11 +84,11 @@ void SyTag::setTagValue(TagType type,const QHostAddress &addr)
 
 QString SyTag::normalizeName(const QString &str)
 {
-  if((0xff&str.toAscii()[0])>176) {
+  if((0xff&str.toUtf8()[0])>176) {
     QString ret;
     ret="{";
     for(int i=0;i<str.length();i++) {
-      ret+=QString().sprintf("%02X ",0xff&str.toAscii()[i]);
+      ret+=QString().sprintf("%02X ",0xff&str.toUtf8()[i]);
     }
     ret=ret.left(ret.length()-1)+"}";
     return ret;

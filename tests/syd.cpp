@@ -2,7 +2,7 @@
 //
 // Switchyard stream swiching daemon
 //
-// (C) 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <QtGui/QApplication>  // So we get qApp with Qt<=4.2
+#include <QApplication>
 #include <QCoreApplication>
 #include <QTimer>
 
@@ -69,9 +69,8 @@ MainObject::MainObject(QObject *parent)
   //
   // Process Command Line
   //
-  SyCmdSwitch *cmd=new SyCmdSwitch(qApp->argc(),qApp->argv(),"syd",VERSION,
-				   SYD_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("syd",VERSION,SYD_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="-d") {
       debug=true;
       cmd->setProcessed(i,true);

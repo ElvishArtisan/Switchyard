@@ -2,7 +2,7 @@
 //
 // LWRP client implementation
 //
-// (C) 2014-2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -714,7 +714,7 @@ void SyLwrpClient::outputMeterData()
 void SyLwrpClient::SendCommand(const QString &cmd)
 {
   //  printf("SendCommand(\"%s\")\n",(const char *)cmd.toUtf8());
-  lwrp_socket->write((const char *)(cmd+"\r\n").toAscii());
+  lwrp_socket->write((cmd+"\r\n").toUtf8());
 }
 
 

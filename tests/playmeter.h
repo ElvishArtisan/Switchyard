@@ -2,7 +2,7 @@
 //
 //   A playback audio meter widget.
 //
-//   (C) Copyright 2002-2014 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -22,7 +22,8 @@
 #ifndef PLAYMETER_H
 #define PLAYMETER_H
 
-#include <QtGui/QtGui>
+#include <QTimer>
+#include <QWidget>
 
 /*
  * Default Colors

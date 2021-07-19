@@ -2,7 +2,7 @@
 ##
 ## Switchyard Control Daemon
 ##
-## (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -20,17 +20,9 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) @QT4_CFLAGS@ @QT4GUI_CFLAGS@
-LIBS = -L$(top_srcdir)/sy @QT4_LIBS@
-MOC = @MOC@
-
-#install-exec-local:	
-#	mkdir -p ${DESTDIR}/etc/init.d
-#	cp rc.syd ${DESTDIR}/etc/init.d/syd
-#	chmod 755 ${DESTDIR}/etc/init.d/syd
-
-#uninstall-local:
-#	rm -f ${DESTDIR}/etc/init.d/syd
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) -std=c++11 -fPIC @QT5_CFLAGS@ @QT5GUI_CFLAGS@
+LIBS = -L$(top_srcdir)/sy @QT5_LIBS@
+MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
@@ -91,7 +83,7 @@ dist_symetertest_SOURCES = playmeter.cpp playmeter.h\
 nodist_symetertest_SOURCES = moc_playmeter.cpp\
                              moc_statuslight.cpp\
                              moc_symetertest.cpp
-symetertest_LDADD = @SWITCHYARDLIBS@ @QT4GUI_LIBS@
+symetertest_LDADD = @SWITCHYARDLIBS@ @QT5GUI_LIBS@
 symetertest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_synodetest_SOURCES = synodetest.cpp synodetest.h

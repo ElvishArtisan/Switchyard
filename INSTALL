@@ -2,7 +2,7 @@ This is the installation file for the Switchyard package.
 
 Mandatory Prerequisites
 -----------------------
-Qt v4.x
+Qt v5.9.7 or later.
 Cross-platform development toolkit. Available at https://www.qt.io/.
 
 Optional Prerequisites
