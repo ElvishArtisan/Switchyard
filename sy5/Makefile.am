@@ -71,7 +71,7 @@ nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_symcastsocket.cpp\
                                   moc_syrtp_server.cpp
 
-includedir = $(prefix)/include/sy
+includedir = $(prefix)/include/sy5
 include_HEADERS = syadv_packet.h\
                   syadv_reader.h\
                   syadv_server.h\

@@ -713,3 +713,6 @@
 2021-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the 'make rpm' target to generate the RPM datestamp
 	automatically.
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in that caused the header files to be installed in
+	the incorrect location.
