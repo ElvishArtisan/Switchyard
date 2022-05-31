@@ -2,7 +2,7 @@
 //
 // Network interface information
 //
-// (C) 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -128,7 +128,7 @@ bool SyInterfaces::update()
 
 QString SyInterfaces::macString(uint64_t maddr)
 {
-  return QString().sprintf("%02X:%02X:%02X:%02X:%02X:%02X",
+  return QString::asprintf("%02X:%02X:%02X:%02X:%02X:%02X",
 			   (unsigned)(0xFF&(maddr>>40)),
 			   (unsigned)(0xFF&(maddr>>32)),
 			   (unsigned)(0xFF&(maddr>>24)),

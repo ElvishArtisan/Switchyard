@@ -2,7 +2,7 @@
 //
 // Process Command-Line Switches
 //
-//   (C) Copyright 2012 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2012-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -46,7 +46,7 @@ SyCmdSwitch::SyCmdSwitch(const QString &modname,const QString &modver,
 	     usage.toUtf8().constData());
       exit(0);
     }
-    QStringList f0=value.split("=",QString::KeepEmptyParts);
+    QStringList f0=value.split("=",Qt::KeepEmptyParts);
     if(f0.size()>=2) {
       if(f0.at(0).left(1)=="-") {
 	switch_keys.push_back(f0.at(0));

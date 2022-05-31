@@ -2,7 +2,7 @@
 //
 // Display level meters via LWRP
 //
-// (C) 2015-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -146,7 +146,7 @@ void MainWidget::connectedData(unsigned id,bool state)
   // Input Meters
   //
   for(unsigned i=0;i<meter_node->srcSlots();i++) {
-    meter_input_labels.push_back(new QLabel(QString().sprintf("%u",i+1),this));
+    meter_input_labels.push_back(new QLabel(QString::asprintf("%u",i+1),this));
     meter_input_labels.back()->setFont(meter_label_font);
     meter_input_labels.back()->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     meter_input_labels.back()->show();
@@ -170,7 +170,7 @@ void MainWidget::connectedData(unsigned id,bool state)
   // Output Meters
   //
   for(unsigned i=0;i<meter_node->dstSlots();i++) {
-    meter_output_labels.push_back(new QLabel(QString().sprintf("%u",i+1),this));
+    meter_output_labels.push_back(new QLabel(QString::asprintf("%u",i+1),this));
     meter_output_labels.back()->setFont(meter_label_font);
     meter_output_labels.back()->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     meter_output_labels.back()->show();

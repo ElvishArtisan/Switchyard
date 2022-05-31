@@ -716,3 +716,5 @@
 2021-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in that caused the header files to be installed in
 	the incorrect location.
+2022-05-31 Fred Gleason <fredg@paravelsystems.com>
+	* Cleaned up multiple build warnings.

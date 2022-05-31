@@ -2,7 +2,7 @@
 //
 // Abstract a LiveWire Control Protocol tag.
 //
-// (C) Copyright 2009-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2009-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -88,7 +88,7 @@ QString SyTag::normalizeName(const QString &str)
     QString ret;
     ret="{";
     for(int i=0;i<str.length();i++) {
-      ret+=QString().sprintf("%02X ",0xff&str.toUtf8()[i]);
+      ret+=QString::asprintf("%02X ",0xff&str.toUtf8()[i]);
     }
     ret=ret.left(ret.length()-1)+"}";
     return ret;

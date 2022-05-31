@@ -2,7 +2,7 @@
 //
 // Container class for LiveWire node attributes
 //
-// (C) 2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -188,10 +188,10 @@ QString SyNode::dump() const
   ret+="model: "+model()+"\n";
   ret+="softwareVersion: "+softwareVersion()+"\n";
   ret+="lwrpVersion: "+lwrpVersion()+"\n";
-  ret+=QString().sprintf("srcSlotQuantity: %u\n",srcSlotQuantity());
-  ret+=QString().sprintf("dstSlotQuantity: %u\n",dstSlotQuantity());
-  ret+=QString().sprintf("gpiSlotQuantity: %u\n",gpiSlotQuantity());
-  ret+=QString().sprintf("gpoSlotQuantity: %u\n",gpoSlotQuantity());
+  ret+=QString::asprintf("srcSlotQuantity: %u\n",srcSlotQuantity());
+  ret+=QString::asprintf("dstSlotQuantity: %u\n",dstSlotQuantity());
+  ret+=QString::asprintf("gpiSlotQuantity: %u\n",gpiSlotQuantity());
+  ret+=QString::asprintf("gpoSlotQuantity: %u\n",gpoSlotQuantity());
 
   return ret;
 }

@@ -2,7 +2,7 @@
 //
 // Livewire GPIO Server
 //
-// (C) Copyright 2014-2019 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -80,9 +80,9 @@ QString SyGpioBundleEvent::dump() const
   else {
     str+="Type: GPO\n";
   }
-  str+=QString().sprintf("Source Number: %d\n",sourceNumber());
+  str+=QString::asprintf("Source Number: %d\n",sourceNumber());
   str+="Code: "+code()+"\n";
-  str+=QString().sprintf("Origin: %s:%d\n",
+  str+=QString::asprintf("Origin: %s:%d\n",
 			 (const char *)originAddress().toString().toUtf8(),
 			 originPort());
   return str;
@@ -162,11 +162,11 @@ QString SyGpioEvent::dump() const
   else {
     str+="Type: GPO\n";
   }
-  str+=QString().sprintf("Source Number: %d\n",sourceNumber());
-  str+=QString().sprintf("Line: %d\n",line()+1);
-  str+=QString().sprintf("State: %d\n",state());
-  str+=QString().sprintf("isPulse: %d\n",isPulse());
-  str+=QString().sprintf("Origin: %s:%d\n",
+  str+=QString::asprintf("Source Number: %d\n",sourceNumber());
+  str+=QString::asprintf("Line: %d\n",line()+1);
+  str+=QString::asprintf("State: %d\n",state());
+  str+=QString::asprintf("isPulse: %d\n",isPulse());
+  str+=QString::asprintf("Origin: %s:%d\n",
 			 (const char *)originAddress().toString().toUtf8(),
 			 originPort());
   return str;
@@ -529,7 +529,7 @@ void SyGpioServer::gpoReadyReadData()
     /*
       QString str="";
       for(int i=0;i<n;i++) {
-      str+=QString().sprintf("%02x:",0xff&data[i]);
+      str+=QString::asprintf("%02x:",0xff&data[i]);
       }
       printf("%s: %s\n",(const char *)addr.toString().toUtf8(),
       (const char *)str.toUtf8());

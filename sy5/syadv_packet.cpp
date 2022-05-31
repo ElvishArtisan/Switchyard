@@ -2,7 +2,7 @@
 //
 // Abstract a LiveWire Control Protocol packet.
 //
-// (C) Copyright 2009-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2009-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -330,24 +330,24 @@ QString SyAdvPacket::dump() const
   QString str;
 
   str+="LWCP Packet\n";
-  str+=QString().sprintf(" Seq No: %u\n",sequenceNumber());
+  str+=QString::asprintf(" Seq No: %u\n",sequenceNumber());
   for(unsigned i=0;i<lw_tags.size();i++) {
     str+=SyTag::normalizeName(lw_tags[i]->tagName())+": ";
     switch(lw_tags[i]->tagType()) {
     case SyTag::TagType0:
     case SyTag::TagType7:
-      str+=QString().sprintf("%02X",0xff&lw_tags[i]->tagValue().toUInt());
+      str+=QString::asprintf("%02X",0xff&lw_tags[i]->tagValue().toUInt());
       break;
 
     case SyTag::TagType6:
     case SyTag::TagType8:
-      str+=QString().sprintf("%02X %02X",
+      str+=QString::asprintf("%02X %02X",
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>8),
 			     0xff&lw_tags[i]->tagValue().toUInt());
       break;
 
     case SyTag::TagType1:
-      str+=QString().sprintf("%02X %02X %02X %02X",
+      str+=QString::asprintf("%02X %02X %02X %02X",
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>24),
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>16),
 			     0xff&(lw_tags[i]->tagValue().toUInt()>>8),
@@ -355,8 +355,7 @@ QString SyAdvPacket::dump() const
       break;
 
     case SyTag::TagType9:
-      str+=QString().
-	sprintf("%02X %02X %02X %02X %02X %02X %02X %02X",
+      str+=QString::asprintf("%02X %02X %02X %02X %02X %02X %02X %02X",
 		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>56)),
 		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>48)),
 		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>40)),
@@ -368,11 +367,11 @@ QString SyAdvPacket::dump() const
       break;
 
     case SyTag::TagString:
-      str+=QString().sprintf("\"%s\" {",
+      str+=QString::asprintf("\"%s\" {",
 			     lw_tags[i]->tagValue().toString().
 			     toUtf8().constData());
       for(int j=0;j<lw_tags[i]->tagValue().toByteArray().size();j++) {
-	str+=QString().sprintf("%02X ",
+	str+=QString::asprintf("%02X ",
 			       0xff&lw_tags[i]->tagValue().toByteArray()[j]);
       }
       str=str.left(str.length()-1);

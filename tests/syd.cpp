@@ -2,7 +2,7 @@
 //
 // Switchyard stream swiching daemon
 //
-// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -116,7 +116,10 @@ MainObject::MainObject(QObject *parent)
 #ifdef LINUX
   FILE *f=NULL;
   if(!debug) {
-    daemon(0,0);
+    if(daemon(0,0)!=0) {
+      fprintf(f,"syd: fork failed [%s]\n",strerror(errno));
+      exit(1);
+    }
     if((f=fopen(SYD_PID_FILE,"w"))!=NULL) {
       fprintf(f,"%u",getpid());
       fclose(f);

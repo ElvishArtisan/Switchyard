@@ -2,7 +2,7 @@
 //
 // Container class for info about a Livewire source
 //
-// (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2010-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -192,7 +192,7 @@ void SyAdvSource::setSaved()
 
 QString SyAdvSource::hardwareString(HardwareType type)
 {
-  QString ret=QString().sprintf("Unknown (0x%04X)",type);
+  QString ret=QString::asprintf("Unknown (0x%04X)",type);
   switch(type) {
   case SyAdvSource::TypeAnalogNode:
     ret="Analog Node";

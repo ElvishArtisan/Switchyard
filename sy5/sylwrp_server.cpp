@@ -2,7 +2,7 @@
 //
 // Livewire Control Protocol Server
 //
-//   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -46,8 +46,8 @@ SyLwrpServer::SyLwrpServer(SyRouting *routing)
   ctrl_server=new QTcpServer(this);
   connect(ctrl_server,SIGNAL(newConnection()),this,SLOT(newConnectionData()));
   if (!ctrl_server->listen(QHostAddress::Any,SWITCHYARD_LWRP_PORT)){
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to bind port %d",SWITCHYARD_LWRP_PORT));
+    SySyslog(LOG_ERR,
+	     QString::asprintf("unable to bind port %d",SWITCHYARD_LWRP_PORT));
     exit(256);
   }
 
@@ -72,7 +72,7 @@ void SyLwrpServer::sendGpiState(int slot,const QString &code)
   for(unsigned i=0;i<ctrl_client_connections.size();i++) {
     if((conn=ctrl_client_connections.at(i))!=NULL) {
       if(conn->gpiAdded(slot)) {
-	SendCommand(i,QString().sprintf("GPI %d ",slot+1)+code);
+	SendCommand(i,QString::asprintf("GPI %d ",slot+1)+code);
       }
     }
   }
@@ -91,7 +91,7 @@ void SyLwrpServer::sendGpoState(int slot,const QString &code)
   for(unsigned i=0;i<ctrl_client_connections.size();i++) {
     if((conn=ctrl_client_connections.at(i))!=NULL) {
       if(conn->gpoAdded(slot)) {
-	SendCommand(i,QString().sprintf("GPO %d ",slot+1)+code);
+	SendCommand(i,QString::asprintf("GPO %d ",slot+1)+code);
       }
     }
   }
@@ -164,8 +164,7 @@ bool SyLwrpServer::ExecuteLogin(int id,QStringList &args)
 
 bool SyLwrpServer::ExecuteVer(int id,QStringList &args)
 {
-  SendCommand(id,QString().
-    sprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:%u NGPO:%u",
+  SendCommand(id,QString::asprintf("VER LWRP:%s DEVN:\"%s\" SYSV:%s NSRC:%u/2 NDST:%u NGPI:%u NGPO:%u",
 	     SWITCHYARD_LWRP_VERSION,SWITCHYARD_DEVICE_NAME,VERSION,
 	     ctrl_routing->srcSlots(),ctrl_routing->dstSlots(),
 	     ctrl_routing->gpis(),ctrl_routing->gpos()));
@@ -301,7 +300,7 @@ bool SyLwrpServer::ExecuteDst(int id,QStringList &args)
 	  streamno=addrs[0].toInt(&ok);
 	  if(ok) {
 	    if((streamno>0)&&(streamno<=0xFFFF)) {
-	      addr=QString().sprintf("239.192.%d.%d",streamno/256,streamno%256);
+	      addr=QString::asprintf("239.192.%d.%d",streamno/256,streamno%256);
 	      found=true;
 	    }
 	    if(streamno==0) {
@@ -627,8 +626,7 @@ bool SyLwrpServer::ExecuteDel(int ch,QStringList &args)
 
 QString SyLwrpServer::SrcLine(int slot)
 {
-  return QString().
-    sprintf("SRC %u PSNM:\"%s\" FASM:1 RTPE:%d RTPA:\"%s\" INGN:0 SHAB:0 NCHN:2 RTPP:240",
+  return QString::asprintf("SRC %u PSNM:\"%s\" FASM:1 RTPE:%d RTPA:\"%s\" INGN:0 SHAB:0 NCHN:2 RTPP:240",
 	    slot+1,
 	    ctrl_routing->srcName(slot).toUtf8().constData(),
 	    ctrl_routing->srcEnabled(slot),
@@ -638,17 +636,18 @@ QString SyLwrpServer::SrcLine(int slot)
 
 QString SyLwrpServer::DstLine(int slot)
 {
-  return QString().
-    sprintf("DST %u NAME:\"%s\" ADDR:\"%s\" NCHN:2 LOAD:0 OUGN:0",
-	    slot+1,
-	    ctrl_routing->dstName(slot).toUtf8().constData(),
-	    ctrl_routing->dstAddress(slot).toString().toUtf8().constData());
+  return
+    QString::asprintf("DST %u NAME:\"%s\" ADDR:\"%s\" NCHN:2 LOAD:0 OUGN:0",
+		      slot+1,
+		      ctrl_routing->dstName(slot).toUtf8().constData(),
+		      ctrl_routing->dstAddress(slot).toString().toUtf8().
+		      constData());
 }
 
 
 QString SyLwrpServer::GpiLine(int slot)
 {
-  QString ret=QString().sprintf("GPI %d ",slot+1);
+  QString ret=QString::asprintf("GPI %d ",slot+1);
 
   for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
     if(ctrl_routing->gpiStateBySlot(slot,i)) {
@@ -665,7 +664,7 @@ QString SyLwrpServer::GpiLine(int slot)
 
 QString SyLwrpServer::GpoLine(int slot)
 {
-  QString ret=QString().sprintf("GPO %d ",slot+1);
+  QString ret=QString::asprintf("GPO %d ",slot+1);
 
   for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
     if(ctrl_routing->gpoStateBySlot(slot,i)) {
@@ -682,13 +681,13 @@ QString SyLwrpServer::GpoLine(int slot)
 
 QString SyLwrpServer::CfgLine(int slot)
 {
-  QString ret=QString().sprintf("CFG GPO %d",slot+1);
+  QString ret=QString::asprintf("CFG GPO %d",slot+1);
 
   ret+=" NAME:\""+ctrl_routing->gpoName(slot)+"\"";
   bool srca_sent=false;
   if(ctrl_routing->gpoMode(slot)==SyRouting::GpoFollowSource) {
     if(SyRouting::livewireNumber(ctrl_routing->gpoAddress(slot))!=0) {
-      ret+=QString().sprintf(" SRCA:\"%u\"",
+      ret+=QString::asprintf(" SRCA:\"%u\"",
 			     SyRouting::livewireNumber(ctrl_routing->gpoAddress(slot)));
       srca_sent=true;
     }
@@ -696,7 +695,7 @@ QString SyLwrpServer::CfgLine(int slot)
   if(ctrl_routing->gpoMode(slot)==SyRouting::GpoSnake) {
     if(!ctrl_routing->gpoAddress(slot).isNull()) {
       ret+=QString(" SRCA:")+ctrl_routing->gpoAddress(slot).toString()+
-	QString().sprintf("/%d",ctrl_routing->gpoSnakeSlot(slot)+1);
+	QString::asprintf("/%d",ctrl_routing->gpoSnakeSlot(slot)+1);
       srca_sent=true;
     }
   }

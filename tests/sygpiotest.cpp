@@ -2,7 +2,7 @@
 //
 // Listen for GPIO events and print them to stdout
 //
-// (C) 2015-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -60,23 +60,23 @@ void MainObject::gpioReceivedData(SyGpioEvent *e)
 
   switch(e->type()) {
   case SyGpioEvent::TypeGpi:
-    msg+=QString().sprintf("GPI: ");
+    msg+=QString::asprintf("GPI: ");
     break;
 
   case SyGpioEvent::TypeGpo:
-    msg+=QString().sprintf("GPO: ");
+    msg+=QString::asprintf("GPO: ");
     break;
 
   default:
-    msg+=QString().sprintf("UNKNOWN: ");
+    msg+=QString::asprintf("UNKNOWN: ");
     break;
   }
   msg+="origin: "+e->originAddress().toString()+
-    QString().sprintf(":%u  ",0xFFFF&e->originPort());
-  msg+=QString().sprintf("srcnum: %d  ",e->sourceNumber());
-  msg+=QString().sprintf("line: %d  ",e->line());
-  msg+=QString().sprintf("state: %d  ",e->state());
-  msg+=QString().sprintf("pulse: %d",e->isPulse());
+    QString::asprintf(":%u  ",0xFFFF&e->originPort());
+  msg+=QString::asprintf("srcnum: %d  ",e->sourceNumber());
+  msg+=QString::asprintf("line: %d  ",e->line());
+  msg+=QString::asprintf("state: %d  ",e->state());
+  msg+=QString::asprintf("pulse: %d",e->isPulse());
   printf("%s\n",(const char *)msg.toUtf8());
   if(gpio_log) {
     syslog(LOG_INFO,"%s",(const char *)msg.toUtf8());

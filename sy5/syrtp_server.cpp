@@ -2,7 +2,7 @@
 //
 // Real Time Protocol
 //
-//   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -72,8 +72,8 @@ void *__RtpServer_ThreadCallback(void *p)
   sa.sin_port=htons(SWITCHYARD_RTP_PORT);
   sa.sin_addr.s_addr=htonl(INADDR_ANY);
   if(bind(read_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to bind RTP socket [%s]",strerror(errno)));
+    SySyslog(LOG_ERR,QString::asprintf("unable to bind RTP socket [%s]",
+				       strerror(errno)));
     __rtp_shutting_down=true;
     return NULL;
   }
@@ -90,8 +90,8 @@ void *__RtpServer_ThreadCallback(void *p)
   sa.sin_port=htons(SWITCHYARD_RTP_PORT);
   sa.sin_addr.s_addr=cb_data->routing->nic_addr;
   if(bind(write_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
-    SySyslog(LOG_ERR,QString().
-	     sprintf("unable to bind RTP socket [%s]",strerror(errno)));
+    SySyslog(LOG_ERR,QString::asprintf("unable to bind RTP socket [%s]",
+				       strerror(errno)));
     __rtp_shutting_down=true;
     return NULL;
   }
@@ -127,8 +127,8 @@ void *__RtpServer_ThreadCallback(void *p)
   while(!__rtp_shutting_down) {
     switch(poll(&fds,1,100)) {
     case -1:
-      SySyslog(LOG_WARNING,QString().
-	       sprintf("poll() returned error [%s]",strerror(errno)));
+      SySyslog(LOG_WARNING,QString::asprintf("poll() returned error [%s]",
+					     strerror(errno)));
       break;
 
     case 0:

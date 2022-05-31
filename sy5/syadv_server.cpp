@@ -2,7 +2,7 @@
 //
 // Livewire Advertising Protocol Server
 //
-// (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -238,7 +238,7 @@ void SyAdvServer::saveSourcesData()
   for(unsigned i=0;i<ctrl_sources.size();i++) {
     SyAdvSource *src=ctrl_sources[i];
     if(src!=NULL) {
-      QString key=QString().sprintf("Source %u",++num);
+      QString key=QString::asprintf("Source %u",++num);
       s->setValue(key+"/Slot",src->slot());
       s->setValue(key+"/NodeAddress",src->nodeAddress().toString());
       s->setValue(key+"/NodeName",src->nodeName());
@@ -269,7 +269,7 @@ void SyAdvServer::saveSourcesData()
 
   if((f=fopen(tempfile.toUtf8(),"w"))==NULL) {
     SySyslog(LOG_WARNING,
-	     QString().sprintf("unable to update sources database [%s]",
+	     QString::asprintf("unable to update sources database [%s]",
 			       strerror(errno)));
     return;
   }
@@ -295,7 +295,7 @@ void SyAdvServer::saveSourcesData()
   fclose(f);
   rename(tempfile.toUtf8(),SWITCHYARD_SOURCES_FILE);
   SySyslog(LOG_DEBUG,
-	   QString().sprintf("saved sources list to \"%s\"",
+	   QString::asprintf("saved sources list to \"%s\"",
 			     SWITCHYARD_SOURCES_FILE));
 #endif  // WIN32
 }
@@ -399,7 +399,7 @@ void SyAdvServer::GenerateAdvertPacket0(SyAdvPacket *p) const
     if((!adv_routing->srcAddress(i).isNull())&&
        (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
        adv_routing->srcEnabled(i)) {
-      tag.setTagName(QString().sprintf("S%03u",i+1));
+      tag.setTagName(QString::asprintf("S%03u",i+1));
       tag.setTagValue(SyTag::TagType6,0x1C);    // number of bytes describing source
       p->addTag(tag);
       tag.setTagName("INDI");
@@ -520,7 +520,7 @@ bool SyAdvServer::GenerateAdvertPacket2(SyAdvPacket *p,unsigned base_slot) const
        (!adv_routing->srcAddress(i).isNull())&&
        (adv_routing->srcAddress(i).toString()!="0.0.0.0")&&
        adv_routing->srcEnabled(i)) {
-      tag.setTagName(QString().sprintf("S%03u",i+1));
+      tag.setTagName(QString::asprintf("S%03u",i+1));
       tag.setTagValue(SyTag::TagType6,0x65);  // bytes in source record
       p->addTag(tag);
       tag.setTagName("INDI");

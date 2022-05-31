@@ -2,7 +2,7 @@
 //
 // Reader for AoIP Stream List
 //
-// (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -100,12 +100,12 @@ bool SyAdvReader::load()
     adv_stream_addresses.
       push_back(QHostAddress(s->value(key+"/StreamAddress").toString()));
     adv_source_names.push_back(s->value(key+"/SourceName").toString());
-    key=QString().sprintf("Source %d",count++);
+    key=QString::asprintf("Source %d",count++);
   }
 #else 
   int count=1;
   bool ok=false;
-  QString section=QString().sprintf("Source %u",count);
+  QString section=QString::asprintf("Source %u",count);
   SyProfile *p=new SyProfile();
   if(!p->setSource(SWITCHYARD_SOURCES_FILE)) {
     return false;
@@ -117,7 +117,7 @@ bool SyAdvReader::load()
     adv_node_names.push_back(p->stringValue(section,"NodeName"));
     adv_stream_addresses.push_back(p->addressValue(section,"StreamAddress",""));
     adv_source_names.push_back(p->stringValue(section,"SourceName"));
-    section=QString().sprintf("Source %u",++count);
+    section=QString::asprintf("Source %u",++count);
     slot=p->intValue(section,"Slot",0,&ok);
   }
   delete p;
@@ -142,15 +142,15 @@ QString SyAdvReader::dump() const
   QString ret;
 
   for(unsigned i=0;i<srcQuantity();i++) {
-    ret+=QString().sprintf("Source %u:\n",i+1);
-    ret+=QString().sprintf("  Node Address: %s\n",
+    ret+=QString::asprintf("Source %u:\n",i+1);
+    ret+=QString::asprintf("  Node Address: %s\n",
 			   nodeAddress(i).toString().toUtf8().constData());
-    ret+=QString().sprintf("  Node Name: %s\n",
+    ret+=QString::asprintf("  Node Name: %s\n",
 			   nodeName(i).toUtf8().constData());
-    ret+=QString().sprintf("  Slot: %u\n",slot(i));
-    ret+=QString().sprintf("  Stream Address: %s\n",
+    ret+=QString::asprintf("  Slot: %u\n",slot(i));
+    ret+=QString::asprintf("  Stream Address: %s\n",
 			   streamAddress(i).toString().toUtf8().constData());
-    ret+=QString().sprintf("  SourceName: %s\n",
+    ret+=QString::asprintf("  SourceName: %s\n",
 			   sourceName(i).toUtf8().constData());
     ret+="\n";
   }

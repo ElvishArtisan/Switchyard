@@ -2,7 +2,7 @@
 //
 // AoIP stream routing configuration
 //
-// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -471,24 +471,24 @@ void SyRouting::load()
 			      SWITCHYARD_SETTINGS_APPLICATION);
   setNicAddress(QHostAddress(s->value("NicAddress").toString()));
   for(unsigned i=0;i<srcSlots();i++) {
-    QString key=QString().sprintf("Slot%u",i+1);
+    QString key=QString::asprintf("Slot%u",i+1);
     setSrcAddress(i,s->value(key+"/SourceAddress").toString());
     setSrcName(i,s->value(key+"/SourceName").toString());
     setSrcEnabled(i,s->value(key+"/SourceEnabled").toUInt());
   }
   for(unsigned i=0;i<dstSlots();i++) {
-    QString key=QString().sprintf("Slot%u",i+1);
+    QString key=QString::asprintf("Slot%u",i+1);
     setDstAddress(i,s->value(key+"/DestinationAddress").toString());
     setDstName(i,s->value(key+"/DestinationName").toString());
   }
   for(unsigned i=0;i<gpos();i++) {
-    QString key=QString().sprintf("Slot%u",i+1);
+    QString key=QString::asprintf("Slot%u",i+1);
     setGpoMode(i,(SyRouting::GpoMode)s->value(key+"/GpoMode").toInt());
     setGpoAddress(i,s->value(key+"/GpoAddress").toString());
     setGpoSnakeSlot(i,s->value(key+"/GpoSnakeSlot").toInt());
     setGpoName(i,s->value(key+"/GpoName").toString());
     if(gpoName(i).isEmpty()) {
-      setGpoName(i,QString().sprintf("GPIO %d",i+1));
+      setGpoName(i,QString::asprintf("GPIO %d",i+1));
     }
   }
   delete s;
@@ -503,24 +503,24 @@ void SyRouting::load()
 
   setNicAddress(p->addressValue("Global","NicAddress",default_nic));
   for(unsigned i=0;i<srcSlots();i++) {
-    section=QString().sprintf("Slot%u",i+1);
+    section=QString::asprintf("Slot%u",i+1);
     setSrcAddress(i,p->addressValue(section,"SourceAddress",""));
-    setSrcName(i,p->stringValue(section,"SourceName",QString().sprintf("Source %u",i+1)));
+    setSrcName(i,p->stringValue(section,"SourceName",QString::asprintf("Source %u",i+1)));
     setSrcEnabled(i,p->intValue(section,"SourceEnabled"));
   }
   for(unsigned i=0;i<dstSlots();i++) {
-    section=QString().sprintf("Slot%u",i+1);
+    section=QString::asprintf("Slot%u",i+1);
     setDstAddress(i,p->addressValue(section,"DestinationAddress",""));
-    setDstName(i,p->stringValue(section,"DestinationName",QString().sprintf("Destination %u",i+1)));
+    setDstName(i,p->stringValue(section,"DestinationName",QString::asprintf("Destination %u",i+1)));
   }
   for(unsigned i=0;i<gpos();i++) {
-    section=QString().sprintf("Slot%u",i+1);
+    section=QString::asprintf("Slot%u",i+1);
     setGpoMode(i,(SyRouting::GpoMode)p->intValue(section,"GpoMode"));
     setGpoAddress(i,p->addressValue(section,"GpoAddress",""));
     setGpoSnakeSlot(i,p->intValue(section,"GpoSnakeSlot"));
     setGpoName(i,p->stringValue(section,"GpoName",gpoName(i)));
     if(gpoName(i).isEmpty()) {
-      setGpoName(i,QString().sprintf("GPIO %d",i+1));
+      setGpoName(i,QString::asprintf("GPIO %d",i+1));
     }
   }
   delete p;
@@ -536,7 +536,7 @@ void SyRouting::save() const
 			      SWITCHYARD_SETTINGS_APPLICATION);
   s->setValue("NicAddress",nicAddress().toString());
   for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
-    QString key=QString().sprintf("Slot%u",i+1);
+    QString key=QString::asprintf("Slot%u",i+1);
     if(i<(int)srcSlots()) {
       s->setValue(key+"/SourceAddress",srcAddress(i).toString());
       s->setValue(key+"/SourceName",srcName(i));
@@ -559,8 +559,8 @@ void SyRouting::save() const
   QString tempfile=QString(SWITCHYARD_ROUTING_FILE)+"-temp";
 
   if((f=fopen(tempfile.toUtf8(),"w"))==NULL) {
-    SySyslog(LOG_WARNING,QString().
-	     sprintf("unable to save routing data [%s]",strerror(errno)));
+    SySyslog(LOG_WARNING,QString::asprintf("unable to save routing data [%s]",
+					   strerror(errno)));
     return;
   }
 
@@ -636,12 +636,12 @@ QString SyRouting::sourceString(const QHostAddress &s_addr,int s_slot)
   QString ret;
 
   if(s_addr.isNull()) {
-    ret=QString().sprintf("%d",s_slot);
+    ret=QString::asprintf("%d",s_slot);
   }
   else {
     ret=s_addr.toString();
     if(s_slot>=0) {
-      ret+=QString().sprintf("/%d",s_slot+1);
+      ret+=QString::asprintf("/%d",s_slot+1);
     }
   }
 
@@ -672,7 +672,7 @@ QString SyRouting::socketErrorString(const QString &msg)
   QString ret=msg;
 #ifdef WIN32
   int err=WSAGetLastError();
-  ret+=QString().sprintf(" [Winsock error: %d]",err);
+  ret+=QString::asprintf(" [Winsock error: %d]",err);
 #else
   ret+=QString(" [")+strerror(errno)+"]";
 #endif  // WIN32
@@ -746,8 +746,7 @@ void SyRouting::LoadInterfaces()
 	(0xff&(uint64_t)ifr.ifr_ifru.ifru_hwaddr.sa_data[5]);
       if(mac!=0) {
 	sy_nic_devices.
-	  push_back(QString().
-		    sprintf("%s: %02X:%02X:%02X:%02X:%02X:%02X",
+	  push_back(QString::asprintf("%s: %02X:%02X:%02X:%02X:%02X:%02X",
 			    ifr.ifr_name,
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[0],
 			    0xff&ifr.ifr_ifru.ifru_hwaddr.sa_data[1],
@@ -786,7 +785,7 @@ void SyRouting::LoadInterfaces()
     info=(IP_ADAPTER_INFO *)malloc(buf_len);
   }
   if(GetAdaptersInfo(info,&buf_len)!=ERROR_SUCCESS) {
-    SySyslog(LOG_ERR,QString().sprintf("GetAdaptersInfo failed, error=%lu",ret));
+    SySyslog(LOG_ERR,QString::asprintf("GetAdaptersInfo failed, error=%lu",ret));
     exit(256);
   }
   PIP_ADAPTER_INFO a=info;
@@ -794,9 +793,9 @@ void SyRouting::LoadInterfaces()
   while(a) {
     //printf("Name: %s\n",a->AdapterName);
     //printf("Desc: %s\n",a->Description);
-    QString dev=QString().sprintf("%d: ",count+1);
+    QString dev=QString::asprintf("%d: ",count+1);
     for(unsigned i=0;i<a->AddressLength;i++) {
-      dev+=QString().sprintf("%02X:",(int)a->Address[i]);
+      dev+=QString::asprintf("%02X:",(int)a->Address[i]);
     }
     dev=dev.left(dev.length()-1);
     sy_nic_devices.push_back(dev);

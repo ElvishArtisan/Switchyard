@@ -2,7 +2,7 @@
 //
 // Container class for LiveWire destination attributes
 //
-// (C) 2015 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -79,7 +79,7 @@ QString SyDestination::dump() const
 
   ret+="streamAddress: "+streamAddress().toString()+"\n";
   ret+="name: "+name()+"\n";
-  ret+=QString().sprintf("channels: %u\n",channels());
+  ret+=QString::asprintf("channels: %u\n",channels());
 
   return ret;
 }

@@ -2,7 +2,7 @@
 //
 // A QUdpSocket for multicasting.
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -82,18 +82,18 @@ bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 
   if(mcast_recv_socket!=NULL) {
     if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
-      SySyslog(LOG_ERR,QString().
-	       sprintf("unable to bind port %u for reading [%s]",
-		       port,strerror(errno)));
+      SySyslog(LOG_ERR,
+	       QString::asprintf("unable to bind port %u for reading [%s]",
+				 port,strerror(errno)));
       ret=false;
     }    
   }
 
   if(mcast_send_socket!=NULL) {
     if(!mcast_send_socket->bind(addr,port,SYMCASTSOCKET_BIND_MODE)) {
-      SySyslog(LOG_ERR,QString().
-	       sprintf("unable to bind port %u for writing [%s]",
-		       port,strerror(errno)));
+      SySyslog(LOG_ERR,
+	       QString::asprintf("unable to bind port %u for writing [%s]",
+				 port,strerror(errno)));
       ret=false;
     }
   }
@@ -113,9 +113,9 @@ bool SyMcastSocket::bind(uint16_t port)
   }
   if(mcast_recv_socket!=NULL) {
     if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
-      SySyslog(LOG_ERR,QString().
-	       sprintf("unable to bind port %u for reading [%s]",
-		       port,strerror(errno)));
+      SySyslog(LOG_ERR,
+	       QString::asprintf("unable to bind port %u for reading [%s]",
+				 port,strerror(errno)));
       ret=false;
     }    
   }
@@ -235,7 +235,7 @@ bool SyMcastSocket::unsubscribe(const QString &addr)
 
 QString SyMcastSocket::socketErrorText(QAbstractSocket::SocketError err)
 {
-  QString ret=tr("Unknown socket error")+QString().sprintf(" [%u]",err);
+  QString ret=tr("Unknown socket error")+QString::asprintf(" [%u]",err);
 
   switch(err) {
   case QAbstractSocket::ConnectionRefusedError:
