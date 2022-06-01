@@ -1,4 +1,9 @@
 *~
+*.buildinfo
+*.changes
+*.deb
+*.ddeb
+*.dsc
 *.Debug
 *.la
 *.lo
@@ -8,10 +13,12 @@
 *.rpm
 *.spec
 *.tar.gz
+*.tar.xz
 .deps
 .libs
 aclocal.m4
 autom4te.cache
+build_debs.sh
 compile
 config.guess
 config.log
@@ -28,6 +35,8 @@ Makefile.in
 missing
 moc_*
 rc.syd
+debian/changelog
+debian/control
 tests/codeinverttest
 tests/syastringtest
 tests/sycapture
