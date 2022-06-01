@@ -1,0 +1,52 @@
+#!/usr/bin/make -f
+
+build:	
+	dh_update_autotools_config
+	dh_autoreconf
+	 ./configure --prefix=/usr --libdir=/usr/lib
+	make $(DEBUILD_MAKE_ARGS)
+
+binary:	
+	dh_testroot
+	dh_prep
+	dh_auto_install
+	dh_installchangelogs ChangeLog
+
+#
+# switchyard5
+#
+	mkdir -p debian/switchyard5/usr/lib
+	mv debian/tmp/usr/lib/libSwitchyard5.so.* debian/switchyard5/usr/lib/
+	mkdir -p debian/switchyard5/usr/share/doc/switchyard5
+	cp AUTHORS debian/switchyard5/usr/share/doc/switchyard5/
+	cp ChangeLog debian/switchyard5/usr/share/doc/switchyard5/
+	cp NEWS debian/switchyard5/usr/share/doc/switchyard5/
+	cp README debian/switchyard5/usr/share/doc/switchyard5/
+	cp conf/switchyard.conf-example debian/switchyard5/usr/share/doc/switchyard5/
+#
+# switchyard5-dev
+#
+	mkdir -p debian/switchyard5-dev/usr/bin
+	mv debian/tmp/usr/bin/* debian/switchyard5-dev/usr/bin/
+	mkdir -p debian/switchyard5-dev/usr/include
+	mv debian/tmp/usr/include/sy5 debian/switchyard5-dev/usr/include/
+	mkdir -p debian/switchyard5-dev/usr/lib
+	mv debian/tmp/usr/lib/*.a debian/switchyard5-dev/usr/lib/
+	mkdir -p debian/switchyard5-dev/usr/share
+	mv debian/tmp/usr/lib/pkgconfig debian/switchyard5-dev/usr/share/
+
+	dh_strip_nondeterminism
+	dh_compress
+	dh_fixperms
+	dh_missing
+	dh_dwz
+	dh_strip
+	dh_makeshlibs
+	dh_shlibdeps
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+%:	
+	dh $@

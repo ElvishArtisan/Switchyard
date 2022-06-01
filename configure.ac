@@ -2,7 +2,7 @@ dnl configure.ac
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com dnl
+dnl   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com dnl
 dnl
 dnl    This program is free software; you can redistribute it and/or modify
 dnl    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -144,15 +144,19 @@ AC_SUBST(RPM_DATESTAMP,`date +%a\ %b\ %d\ %Y`)
 
 AC_CONFIG_FILES([\
     Makefile \
+    debian/Makefile \
+    debian/source/Makefile \
     sy5/Makefile \
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \
     switchyard5.pc \
     switchyard5.spec \
+    build_debs.sh \
     ])
-
 AC_OUTPUT()
+chmod 755 build_debs.sh
+
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)
 AC_MSG_NOTICE()

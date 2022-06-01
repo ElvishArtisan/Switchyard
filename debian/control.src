@@ -1,0 +1,20 @@
+Source: switchyard5
+Section: audio
+Priority: optional
+Maintainer: Fred Gleason <fredg@paravelsystems.com>
+Build-Depends: debhelper-compat (= 12), autotools-dev
+Standards-Version: 4.4.1
+
+Package: switchyard5
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Livewire/AES67 Control and Conveience Library for Qt5
+ Switchyard is a control and convenience library for writing applications
+ for Audio-over-IP (AoIP) systems using the AES67 and Livewire standards.
+
+Package: switchyard5-dev
+Architecture: any
+Depends: ${misc:Depends}, switchyard5 (= @VERSION@-1)
+Description: Development components for the Switchyard Livewire/AES67 Library
+ These are the library components and headers required to develop application
+ for the Switchyard Livewire/AES67 library.

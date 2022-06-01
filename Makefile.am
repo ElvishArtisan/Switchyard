@@ -4,7 +4,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 ##
-##   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -22,6 +22,7 @@
 ##
 
 SUBDIRS = conf\
+          debian\
           sy5\
           tests
 
@@ -29,6 +30,9 @@ ACLOCAL_AMFLAGS = -I m4
 
 maintainer-clean-local:	
 	rm -rf m4
+
+deb:	dist
+	./build_debs.sh
 
 rpm:	dist
 	cp switchyard5-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
@@ -42,6 +46,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = switchyard5.pc
 
 EXTRA_DIST = autogen.sh\
+             build_debs.sh.in\
              get_distro.sh\
              get_target.sh\
              PACKAGE_VERSION\
@@ -50,12 +55,19 @@ EXTRA_DIST = autogen.sh\
              switchyard5.spec.in
 
 CLEANFILES = *~\
+             *.buildinfo\
+             *.changes\
+             *.ddeb\
+             *.deb\
+             *.dsc\
              *.tar.gz\
+             *.tar.xz\
              *.tgz\
              *.mo\
              *.rpm\
              *.zip
 DISTCLEANFILES = *.spec\
+                 build_debs.sh\
                  config.guess\
                  config.sub\
                  rc.syd

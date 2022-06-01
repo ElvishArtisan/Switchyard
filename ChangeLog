@@ -718,3 +718,5 @@
 	the incorrect location.
 2022-05-31 Fred Gleason <fredg@paravelsystems.com>
 	* Cleaned up multiple build warnings.
+2022-06-01 Fred Gleason <fredg@paravelsystems.com>
+	* Debianized the source tree.
