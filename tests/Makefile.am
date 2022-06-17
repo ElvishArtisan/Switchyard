@@ -2,7 +2,7 @@
 ##
 ## Switchyard Control Daemon
 ##
-## (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,6 +30,7 @@ moc_%.cpp:	%.h
 
 
 noinst_PROGRAMS = codeinverttest\
+                  signalnotifiertest\
                   syastringtest\
                   sycapture\
                   syd\
@@ -46,6 +47,11 @@ dist_codeinverttest_SOURCES = codeinverttest.cpp codeinverttest.h
 nodist_codeinverttest_SOURCES = moc_codeinverttest.cpp
 codeinverttest_LDADD = @SWITCHYARDLIBS@
 codeinverttest_LDFLAGS = @SWITCHYARDFLAGS@
+
+dist_signalnotifiertest_SOURCES = signalnotifiertest.cpp signalnotifiertest.h
+nodist_signalnotifiertest_SOURCES = moc_signalnotifiertest.cpp
+signalnotifiertest_LDADD = @SWITCHYARDLIBS@
+signalnotifiertest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_syastringtest_SOURCES = syastringtest.cpp syastringtest.h
 nodist_syastringtest_SOURCES = moc_syastringtest.cpp

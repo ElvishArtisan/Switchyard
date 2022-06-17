@@ -1,8 +1,8 @@
 ## automake.am
 ##
-## Makefile for AoIP common routines
+## Makefile for AoIP library routines
 ##
-## (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -32,35 +32,36 @@ clean-local:
 
 lib_LTLIBRARIES = libSwitchyard5.la
 dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
-                                syadv_reader.cpp syadv_reader.h\
-                                syadv_server.cpp syadv_server.h\
-                                syadv_source.cpp syadv_source.h\
-                                syadv_tag.cpp syadv_tag.h\
-                                syastring.cpp syastring.h\
-                                syclock.cpp syclock.h\
-                                sycmdswitch.cpp sycmdswitch.h\
-                                syconfig.h\
-                                sydestination.cpp sydestination.h\
-                                syendpoint.cpp syendpoint.h\
-                                syethmonitor.cpp syethmonitor.h\
-                                sygpo.cpp sygpo.h\
-                                sygpiobundle.cpp sygpiobundle.h\
-                                sygpio_server.cpp sygpio_server.h\
-                                syinterfaces.cpp syinterfaces.h\
-                                sylwrp_client.cpp\
-                                sylwrp_client.h\
-                                sylwrp_clientconnection.cpp\
-                                sylwrp_clientconnection.h\
-                                sylwrp_server.cpp sylwrp_server.h\
-                                symcastsocket.cpp symcastsocket.h\
-                                synode.cpp synode.h\
-                                syprofile.cpp syprofile.h\
-                                sysyslog.cpp sysyslog.h\
-                                syringbuffer.cpp syringbuffer.h\
-                                syrouting.cpp syrouting.h\
-                                syrtp_header.cpp syrtp_header.h\
-                                syrtp_server.cpp syrtp_server.h\
-                                sysource.cpp sysource.h
+                                 syadv_reader.cpp syadv_reader.h\
+                                 syadv_server.cpp syadv_server.h\
+                                 syadv_source.cpp syadv_source.h\
+                                 syadv_tag.cpp syadv_tag.h\
+                                 syastring.cpp syastring.h\
+                                 syclock.cpp syclock.h\
+                                 sycmdswitch.cpp sycmdswitch.h\
+                                 syconfig.h\
+                                 sydestination.cpp sydestination.h\
+                                 syendpoint.cpp syendpoint.h\
+                                 syethmonitor.cpp syethmonitor.h\
+                                 sygpo.cpp sygpo.h\
+                                 sygpiobundle.cpp sygpiobundle.h\
+                                 sygpio_server.cpp sygpio_server.h\
+                                 syinterfaces.cpp syinterfaces.h\
+                                 sylwrp_client.cpp\
+                                 sylwrp_client.h\
+                                 sylwrp_clientconnection.cpp\
+                                 sylwrp_clientconnection.h\
+                                 sylwrp_server.cpp sylwrp_server.h\
+                                 symcastsocket.cpp symcastsocket.h\
+                                 synode.cpp synode.h\
+                                 syprofile.cpp syprofile.h\
+                                 sysignalnotifier.cpp sysignalnotifier.h\
+                                 sysyslog.cpp sysyslog.h\
+                                 syringbuffer.cpp syringbuffer.h\
+                                 syrouting.cpp syrouting.h\
+                                 syrtp_header.cpp syrtp_header.h\
+                                 syrtp_server.cpp syrtp_server.h\
+                                 sysource.cpp sysource.h
 
 nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_syclock.cpp\
@@ -69,7 +70,8 @@ nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_sylwrp_client.cpp\
                                   moc_sylwrp_server.cpp\
                                   moc_symcastsocket.cpp\
-                                  moc_syrtp_server.cpp
+                                  moc_syrtp_server.cpp\
+                                  moc_sysignalnotifier.cpp
 
 includedir = $(prefix)/include/sy5
 include_HEADERS = syadv_packet.h\
@@ -98,6 +100,7 @@ include_HEADERS = syadv_packet.h\
                   syrouting.h\
                   syrtp_header.h\
                   syrtp_server.h\
+                  sysignalnotifier.h\
                   sysource.h
 
 libSwitchyard5_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
