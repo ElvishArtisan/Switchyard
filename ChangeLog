@@ -724,3 +724,6 @@
 	* Added a 'SySignalNotifier' class.
 2022-06-18 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs that broke the build under Qt-5.9.7.
+2022-06-18 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library ABI version to 18:0:3.
+	* Incremented the package version to 0.22.0.
