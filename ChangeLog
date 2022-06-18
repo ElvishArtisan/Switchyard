@@ -722,3 +722,5 @@
 	* Debianized the source tree.
 2022-06-17 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SySignalNotifier' class.
+2022-06-18 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed bugs that broke the build under Qt-5.9.7.

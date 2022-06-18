@@ -37,7 +37,8 @@ class SySignalNotifier : public QObject
   bool removeSignal(int signum);
 
  private slots:
-  void socketActivatedData(QSocketDescriptor sock,QSocketNotifier::Type type);
+   //  void socketActivatedData(QSocketDescriptor sock,QSocketNotifier::Type type);
+  void socketActivatedData(int sock);
  
  signals:
   void activated(int signum);

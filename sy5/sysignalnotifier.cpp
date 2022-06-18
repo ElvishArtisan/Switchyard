@@ -54,10 +54,12 @@ SySignalNotifier::SySignalNotifier(QObject *parent)
   }
   d_ipc_notifier=new QSocketNotifier(__sysignalnotifier_ipc_sockets[1],
 				     QSocketNotifier::Read,this);
-  connect(d_ipc_notifier,
-	  SIGNAL(activated(QSocketDescriptor,QSocketNotifier::Type)),
-	  this,
-	  SLOT(socketActivatedData(QSocketDescriptor,QSocketNotifier::Type)));
+  //  connect(d_ipc_notifier,
+  //	  SIGNAL(activated(QSocketDescriptor,QSocketNotifier::Type)),
+  //	  this,
+  //	  SLOT(socketActivatedData(QSocketDescriptor,QSocketNotifier::Type)));
+  connect(d_ipc_notifier,SIGNAL(activated(int)),
+	  this,SLOT(socketActivatedData(int)));
 }
 
 
@@ -114,8 +116,9 @@ bool SySignalNotifier::removeSignal(int signum)
 }
 
 
-void SySignalNotifier::socketActivatedData(QSocketDescriptor sock,
-					   QSocketNotifier::Type type)
+//void SySignalNotifier::socketActivatedData(QSocketDescriptor sock,
+//					   QSocketNotifier::Type type)
+void SySignalNotifier::socketActivatedData(int sock)
 {
   int signum;
   int n;
