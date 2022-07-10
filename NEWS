@@ -1,6 +1,12 @@
 The NEWS file for the Switchyard package.
 
 -------------------------------------------------------------------------------
+v0.22.1 - 10 July 2022
+
+Changes:
+   Removed sygpiotest(1) from the devel package. 
+
+-------------------------------------------------------------------------------
 v0.22.0 - 16 June 2022
 
 Changes:
