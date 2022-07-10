@@ -729,3 +729,5 @@
 	* Incremented the package version to 0.22.0.
 2022-07-10 Fred Gleason <fredg@paravelsystems.com>
 	* Removed sygpiotest(1) from the 'switchyard-devel' RPM package.
+2022-07-10 Fred Gleason <fredg@paravelsystems.com>
+	* Removed sygpiotest(1) from the 'switchyard-devel' DEB package.
