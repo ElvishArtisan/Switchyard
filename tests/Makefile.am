@@ -35,13 +35,12 @@ noinst_PROGRAMS = codeinverttest\
                   sycapture\
                   syd\
                   syethmonitortest\
+                  sygpiotest\
                   syinterfacestest\
                   symetertest\
                   synodetest\
                   syplay\
                   sytone
-
-bin_PROGRAMS = sygpiotest
 
 dist_codeinverttest_SOURCES = codeinverttest.cpp codeinverttest.h
 nodist_codeinverttest_SOURCES = moc_codeinverttest.cpp

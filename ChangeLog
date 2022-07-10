@@ -727,3 +727,5 @@
 2022-06-18 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 18:0:3.
 	* Incremented the package version to 0.22.0.
+2022-07-10 Fred Gleason <fredg@paravelsystems.com>
+	* Removed sygpiotest(1) from the 'switchyard-devel' RPM package.

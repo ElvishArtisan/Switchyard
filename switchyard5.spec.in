@@ -79,7 +79,6 @@ ldconfig
 
 
 %files devel
-%{_bindir}/sygpiotest
 %{_includedir}/sy5/*.h
 %{_libdir}/pkgconfig/switchyard5.pc
 %{_libdir}/libSwitchyard5.a
