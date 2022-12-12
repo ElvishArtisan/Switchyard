@@ -733,3 +733,5 @@
 	* Removed sygpiotest(1) from the 'switchyard-devel' DEB package.
 2022-07-10 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.22.1.
+2022-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyLwrpClient::sendRawLwrp()' method.

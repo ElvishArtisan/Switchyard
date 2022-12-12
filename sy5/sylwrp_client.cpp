@@ -199,7 +199,7 @@ void SyLwrpClient::setSrcAddress(int slot,const QHostAddress &addr)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     "RTPA:\""+addr.toString()+"\"";
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -219,7 +219,7 @@ void SyLwrpClient::setSrcName(int slot,const QString &str)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     "PSNM:\""+str+"\"";
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -233,7 +233,7 @@ void SyLwrpClient::setSrcLabel(int slot,const QString &str)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     "LABL:\""+str+"\"";
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -247,7 +247,7 @@ void SyLwrpClient::setSrcEnabled(int slot,bool state)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     QString::asprintf("RTPE:%d",state);
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -261,7 +261,7 @@ void SyLwrpClient::setSrcChannels(int slot,unsigned chans)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     QString::asprintf("NCHN:%d",chans);
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -275,7 +275,7 @@ void SyLwrpClient::setSrcPacketSize(int slot,unsigned size)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     QString::asprintf("RTPP:%d",size);
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -289,7 +289,7 @@ void SyLwrpClient::setSrcShareable(int slot,bool state)
 {
   QString cmd=QString::asprintf("SRC %d ",slot+1)+
     QString::asprintf("SHAB:%d",state);
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -309,7 +309,7 @@ void SyLwrpClient::setDstAddress(int slot,const QHostAddress &addr)
 {
   QString cmd=QString::asprintf("DST %d ",slot+1)+
     "ADDR:\""+addr.toString()+"\"";
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -329,7 +329,7 @@ void SyLwrpClient::setDstName(int slot,const QString &str)
 {
   QString cmd=QString::asprintf("DST %d ",slot+1)+
     "NAME:\""+str+"\"";
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -343,7 +343,7 @@ void SyLwrpClient::setDstChannels(int slot,unsigned chans)
 {
   QString cmd=QString::asprintf("DST %d ",slot+1)+
     "NCHN:"+QString::asprintf("%u",chans);
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -362,7 +362,7 @@ SyGpioBundle *SyLwrpClient::gpiBundle(int slot) const
 void SyLwrpClient::setGpiCode(int slot,const QString &code)
 {
   if(lwrp_gpis[slot]->code()!=code) {
-    SendCommand(QString::asprintf("GPI %d ",slot+1)+code);
+    sendRawLwrp(QString::asprintf("GPI %d ",slot+1)+code);
   }
 }
 
@@ -376,14 +376,14 @@ SyGpo *SyLwrpClient::gpo(int slot) const
 void SyLwrpClient::setGpoCode(int slot,const QString &code)
 {
   if(lwrp_gpos[slot]->bundle()->code()!=code) {
-    SendCommand(QString::asprintf("GPO %d ",slot+1)+code);
+    sendRawLwrp(QString::asprintf("GPO %d ",slot+1)+code);
   }
 }
 
 
 void SyLwrpClient::setGpoName(int slot,const QString &str)
 {
-  SendCommand(QString::asprintf("CFG GPO %d",slot+1)+" NAME:\""+str+"\"");
+  sendRawLwrp(QString::asprintf("CFG GPO %d",slot+1)+" NAME:\""+str+"\"");
 }
 
 
@@ -391,15 +391,15 @@ void SyLwrpClient::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 				       int s_slot)
 {
   if(s_addr.isNull()) {
-    SendCommand(QString::asprintf("CFG GPO %d",slot+1)+" SRCA: FUNC:");
+    sendRawLwrp(QString::asprintf("CFG GPO %d",slot+1)+" SRCA: FUNC:");
   }
   else {
     if(s_slot<0) {
-      SendCommand(QString::asprintf("CFG GPO %d",slot+1)+" SRCA:\""+
+      sendRawLwrp(QString::asprintf("CFG GPO %d",slot+1)+" SRCA:\""+
 		  s_addr.toString()+"\" FUNC:");
     }
     else {
-      SendCommand(QString::asprintf("CFG GPO %d",slot+1)+" SRCA:\""+
+      sendRawLwrp(QString::asprintf("CFG GPO %d",slot+1)+" SRCA:\""+
 		  s_addr.toString()+QString::asprintf("/%d\"",s_slot+1)+
 		  " FUNC:FOLLOW");
     }
@@ -410,10 +410,10 @@ void SyLwrpClient::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 void SyLwrpClient::setGpoFollow(int slot,bool state)
 {
   if(state) {
-    SendCommand(QString::asprintf("CFG GPO %d FUNC:FOLLOW",slot+1));
+    sendRawLwrp(QString::asprintf("CFG GPO %d FUNC:FOLLOW",slot+1));
   }
   else {
-    SendCommand(QString::asprintf("CFG GPO %d FUNC:",slot+1));
+    sendRawLwrp(QString::asprintf("CFG GPO %d FUNC:",slot+1));
   }
 }
 
@@ -443,7 +443,7 @@ void SyLwrpClient::setClipMonitor(int slot,SyLwrpClient::MeterType type,
   case SyLwrpClient::InputMeter:
     lwrp_sources[slot]->setClipThreshold(lvl);
     lwrp_sources[slot]->setClipTimeout(msec);
-    SendCommand(QString::asprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+    sendRawLwrp(QString::asprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
     				  slot+1,lvl,msec,
 				  lwrp_sources[slot]->silenceThreshold(),
 				  lwrp_sources[slot]->silenceTimeout()));
@@ -452,7 +452,7 @@ void SyLwrpClient::setClipMonitor(int slot,SyLwrpClient::MeterType type,
   case SyLwrpClient::OutputMeter:
     lwrp_destinations[slot]->setClipThreshold(lvl);
     lwrp_destinations[slot]->setClipTimeout(msec);
-    SendCommand(QString::asprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+    sendRawLwrp(QString::asprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
 				  slot+1,lvl,msec,
 				  lwrp_destinations[slot]->silenceThreshold(),
 				  lwrp_destinations[slot]->silenceTimeout()));
@@ -471,7 +471,7 @@ void SyLwrpClient::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
   case SyLwrpClient::InputMeter:
     lwrp_sources[slot]->setSilenceThreshold(lvl);
     lwrp_sources[slot]->setSilenceTimeout(msec);
-    SendCommand(QString::asprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+    sendRawLwrp(QString::asprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
 				  slot+1,
 				  lwrp_sources[slot]->clipThreshold(),
 				  lwrp_sources[slot]->clipTimeout(),
@@ -481,7 +481,7 @@ void SyLwrpClient::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
   case SyLwrpClient::OutputMeter:
     lwrp_destinations[slot]->setSilenceThreshold(lvl);
     lwrp_destinations[slot]->setSilenceTimeout(msec);
-    SendCommand(QString::asprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
+    sendRawLwrp(QString::asprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d LOW.LEVEL:%d LOW.TIME:%d",
 				  slot+1,
 				  lwrp_destinations[slot]->clipThreshold(),
 				  lwrp_destinations[slot]->clipTimeout(),
@@ -515,7 +515,7 @@ QHostAddress SyLwrpClient::nicAddress() const
 void SyLwrpClient::setNicAddress(const QHostAddress &addr)
 {
   QString cmd=QString("IFC ")+addr.toString();
-  SendCommand(cmd);
+  sendRawLwrp(cmd);
 }
 
 
@@ -545,6 +545,12 @@ void SyLwrpClient::setTimeoutInterval(int msec)
 }
 
 
+void SyLwrpClient::sendRawLwrp(const QString &cmd)
+{
+  lwrp_socket->write((cmd+"\r\n").toUtf8());
+}
+
+
 void SyLwrpClient::close()
 {
   lwrp_socket->close();
@@ -560,8 +566,8 @@ void SyLwrpClient::connectedData()
   if(!lwrp_password.isEmpty()) {
     cmd+=" "+lwrp_password;
   }
-  SendCommand(cmd);
-  SendCommand("VER");
+  sendRawLwrp(cmd);
+  sendRawLwrp("VER");
   lwrp_connection_timer->start(SWITCHYARD_LWRP_CONNECTION_TIMEOUT);
 }
 
@@ -643,7 +649,7 @@ void SyLwrpClient::watchdogIntervalData()
 {
   //  fprintf(stderr,"sending watchdog\n");
 
-  SendCommand("VER");
+  sendRawLwrp("VER");
   lwrp_watchdog_retry_timer->start(SWITCHYARD_LWRP_WATCHDOG_RETRY);
 }
 
@@ -698,7 +704,7 @@ void SyLwrpClient::watchdogRetryData()
 void SyLwrpClient::inputMeterData()
 {
   if(lwrp_connected) {
-    SendCommand("MTR ICH");
+    sendRawLwrp("MTR ICH");
   }
 }
 
@@ -706,15 +712,8 @@ void SyLwrpClient::inputMeterData()
 void SyLwrpClient::outputMeterData()
 {
   if(lwrp_connected) {
-    SendCommand("MTR OCH");
+    sendRawLwrp("MTR OCH");
   }
-}
-
-
-void SyLwrpClient::SendCommand(const QString &cmd)
-{
-  //  printf("SendCommand(\"%s\")\n",(const char *)cmd.toUtf8());
-  lwrp_socket->write((cmd+"\r\n").toUtf8());
 }
 
 
@@ -838,32 +837,32 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
       }
     }
     if(lwrp_node->srcSlotQuantity()>0) {
-      SendCommand("SRC");
+      sendRawLwrp("SRC");
     }
     if(lwrp_node->dstSlotQuantity()>0) {
-      SendCommand("DST");
+      sendRawLwrp("DST");
     }
     if(lwrp_node->gpiSlotQuantity()>0) {
-      SendCommand("ADD GPI");
+      sendRawLwrp("ADD GPI");
     }
     if(lwrp_node->gpoSlotQuantity()>0) {
-      SendCommand("ADD GPO");
-      SendCommand("CFG GPO");
+      sendRawLwrp("ADD GPO");
+      sendRawLwrp("CFG GPO");
     }
     if((lwrp_socket->peerAddress().toIPv4Address()>>24)==127) {
-      SendCommand("IFC");
+      sendRawLwrp("IFC");
     }
-    SendCommand("IP");
+    sendRawLwrp("IP");
 
     for(unsigned i=0;i<lwrp_sources.size();i++) {
       SySource *src=lwrp_sources[i];
       if(src->clipThreshold()!=0) {
-	SendCommand(QString::asprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d",
+	sendRawLwrp(QString::asprintf("LVL ICH %u CLIP.LEVEL:%d CLIP.TIME:%d",
 				      i+1,src->clipThreshold(),
 				      src->clipTimeout()));
       }
       if(src->silenceThreshold()!=0) {
-	SendCommand(QString::asprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME:%d",
+	sendRawLwrp(QString::asprintf("LVL ICH %u LOW.LEVEL:%d LOW.TIME:%d",
 				      i+1,src->silenceThreshold(),
 				      src->silenceTimeout()));
       }
@@ -871,12 +870,12 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
     for(unsigned i=0;i<lwrp_destinations.size();i++) {
       SyDestination *dst=lwrp_destinations[i];
       if(dst->clipThreshold()!=0) {
-	SendCommand(QString::asprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d",
+	sendRawLwrp(QString::asprintf("LVL OCH %u CLIP.LEVEL:%d CLIP.TIME:%d",
 				      i+1,dst->clipThreshold(),
 				      dst->clipTimeout()));
       }
       if(dst->silenceThreshold()!=0) {
-	SendCommand(QString::asprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME:%d",
+	sendRawLwrp(QString::asprintf("LVL OCH %u LOW.LEVEL:%d LOW.TIME:%d",
 				      i+1,dst->silenceThreshold(),
 				      dst->silenceTimeout()));
       }

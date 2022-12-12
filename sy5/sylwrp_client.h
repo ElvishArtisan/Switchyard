@@ -2,7 +2,7 @@
 //
 // LWRP client implementation
 //
-// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -107,6 +107,7 @@ class SyLwrpClient :public QObject
 		     bool persistent=false);
   int timeoutInterval() const;
   void setTimeoutInterval(int msec);
+  void sendRawLwrp(const QString &cmd);
   void close();
 
  signals:
@@ -140,7 +141,6 @@ class SyLwrpClient :public QObject
   void outputMeterData();
 
  private:
-  void SendCommand(const QString &cmd);
   void ProcessCommand(const QString &cmd);
   void ProcessVER(const QStringList &cmds);
   void ProcessSRC(const QStringList &cmds);
