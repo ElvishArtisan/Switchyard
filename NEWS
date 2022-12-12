@@ -1,6 +1,12 @@
 The NEWS file for the Switchyard package.
 
 -------------------------------------------------------------------------------
+v0.23.0 - 12 December 2022
+
+Changes:
+   Added a 'SyLwrpClient::sendRawLwrp()' method.
+
+-------------------------------------------------------------------------------
 v0.22.1 - 10 July 2022
 
 Changes:
