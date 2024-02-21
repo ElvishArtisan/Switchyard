@@ -60,6 +60,16 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
 	  this,SLOT(outputMeterData()));
 
   //
+  // GPIO Timers
+  //
+  lwrp_prev_gpi_mapper=new QSignalMapper(this);
+  connect(lwrp_prev_gpi_mapper,SIGNAL(mapped(int)),
+	  this,SLOT(gpiResetData(int)));
+  lwrp_prev_gpo_mapper=new QSignalMapper(this);
+  connect(lwrp_prev_gpo_mapper,SIGNAL(mapped(int)),
+	  this,SLOT(gpoResetData(int)));
+
+  //
   // Timeout Timer
   //
   lwrp_timeout_timer=new QTimer(this);
@@ -96,6 +106,14 @@ SyLwrpClient::~SyLwrpClient()
   delete lwrp_watchdog_interval_timer;
   delete lwrp_watchdog_retry_timer;
   delete lwrp_connection_timer;
+  for(int i=0;i<lwrp_prev_gpi_timers.size();i++) {
+    delete lwrp_prev_gpi_timers[i];
+  }
+  delete lwrp_prev_gpi_mapper;
+  for(int i=0;i<lwrp_prev_gpo_timers.size();i++) {
+    delete lwrp_prev_gpo_timers[i];
+  }
+  delete lwrp_prev_gpo_mapper;
 }
 
 
@@ -359,9 +377,18 @@ SyGpioBundle *SyLwrpClient::gpiBundle(int slot) const
 }
 
 
-void SyLwrpClient::setGpiCode(int slot,const QString &code)
+void SyLwrpClient::setGpiCode(int slot,const QString &code,int duration)
 {
   if(lwrp_gpis[slot]->code()!=code) {
+    if(duration>0) {
+      if(lwrp_prev_gpi_timers[slot]->isActive()) {
+	lwrp_prev_gpi_timers[slot]->stop();
+      }
+      else {
+	lwrp_prev_gpi_states[slot]=lwrp_gpis[slot]->code();
+      }
+      lwrp_prev_gpi_timers[slot]->start(duration);
+    }
     sendRawLwrp(QString::asprintf("GPI %d ",slot+1)+code);
   }
 }
@@ -373,9 +400,18 @@ SyGpo *SyLwrpClient::gpo(int slot) const
 }
 
 
-void SyLwrpClient::setGpoCode(int slot,const QString &code)
+void SyLwrpClient::setGpoCode(int slot,const QString &code,int duration)
 {
   if(lwrp_gpos[slot]->bundle()->code()!=code) {
+    if(duration>0) {
+      if(lwrp_prev_gpo_timers[slot]->isActive()) {
+	lwrp_prev_gpo_timers[slot]->stop();
+      }
+      else {
+	lwrp_prev_gpo_states[slot]=lwrp_gpos[slot]->bundle()->code();
+      }
+      lwrp_prev_gpo_timers[slot]->start(duration);
+    }
     sendRawLwrp(QString::asprintf("GPO %d ",slot+1)+code);
   }
 }
@@ -679,12 +715,16 @@ void SyLwrpClient::watchdogRetryData()
   }
   for(unsigned i=0;i<lwrp_gpis.size();i++) {
     delete lwrp_gpis[i];
+    delete lwrp_prev_gpi_timers[i];
   }
   lwrp_gpis.clear();
+  lwrp_prev_gpi_timers.clear();
   for(unsigned i=0;i<lwrp_gpos.size();i++) {
     delete lwrp_gpos[i];
+    delete lwrp_prev_gpo_timers[i];
   }
   lwrp_gpos.clear();
+  lwrp_prev_gpi_timers.clear();
 
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
@@ -714,6 +754,22 @@ void SyLwrpClient::outputMeterData()
   if(lwrp_connected) {
     sendRawLwrp("MTR OCH");
   }
+}
+
+
+void SyLwrpClient::gpiResetData(int slotnum)
+{
+  QString cmd=QString::asprintf("GPI %d ",
+				slotnum+1)+lwrp_prev_gpi_states[slotnum];
+  sendRawLwrp(cmd);
+}
+
+
+void SyLwrpClient::gpoResetData(int slotnum)
+{
+  QString cmd=QString::asprintf("GPO %d ",
+				slotnum+1)+lwrp_prev_gpo_states[slotnum];
+  sendRawLwrp(cmd);
 }
 
 
@@ -814,12 +870,24 @@ void SyLwrpClient::ProcessVER(const QStringList &cmds)
       if(f1[0]=="NGPI") {
 	for(int i=0;i<f1[1].toInt();i++) {
 	  lwrp_gpis.push_back(new SyGpioBundle());
+	  lwrp_prev_gpi_timers.push_back(new QTimer(this));
+	  lwrp_prev_gpi_timers.back()->setSingleShot(true);
+	  lwrp_prev_gpi_mapper->setMapping(lwrp_prev_gpi_timers.back(),i);
+	  connect(lwrp_prev_gpi_timers.back(),SIGNAL(timeout()),
+		  lwrp_prev_gpi_mapper,SLOT(map()));
+	  lwrp_prev_gpi_states.push_back(QString());
 	}
 	lwrp_node->setGpiSlotQuantity(f1[1].toUInt());
       }
       if(f1[0]=="NGPO") {
 	for(int i=0;i<f1[1].toInt();i++) {
 	  lwrp_gpos.push_back(new SyGpo());
+	  lwrp_prev_gpo_timers.push_back(new QTimer(this));
+	  lwrp_prev_gpo_timers.back()->setSingleShot(true);
+	  lwrp_prev_gpo_mapper->setMapping(lwrp_prev_gpo_timers.back(),i);
+	  connect(lwrp_prev_gpo_timers.back(),SIGNAL(timeout()),
+		  lwrp_prev_gpo_mapper,SLOT(map()));
+	  lwrp_prev_gpo_states.push_back(QString());
 	}
 	lwrp_node->setGpoSlotQuantity(f1[1].toUInt());
       }

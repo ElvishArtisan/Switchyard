@@ -28,7 +28,9 @@
 
 #include <QHostAddress>
 #include <QObject>
+#include <QSignalMapper>
 #include <QString>
+#include <QStringList>
 #include <QTcpSocket>
 #include <QTimer>
 
@@ -89,9 +91,9 @@ class SyLwrpClient :public QObject
   void setDstChannels(int slot,unsigned chans);
   int dstMeterLevel(int slot,int chan) const;
   SyGpioBundle *gpiBundle(int slot) const;
-  void setGpiCode(int slot,const QString &code);
+  void setGpiCode(int slot,const QString &code,int duration);
   SyGpo *gpo(int slot) const;
-  void setGpoCode(int slot,const QString &code);
+  void setGpoCode(int slot,const QString &code,int duration);
   void setGpoName(int slot,const QString &str);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,int s_slot);
   void setGpoFollow(int slot,bool state);
@@ -139,6 +141,8 @@ class SyLwrpClient :public QObject
   void watchdogRetryData();
   void inputMeterData();
   void outputMeterData();
+  void gpiResetData(int slotnum);
+  void gpoResetData(int slotnum);
 
  private:
   void ProcessCommand(const QString &cmd);
@@ -156,6 +160,12 @@ class SyLwrpClient :public QObject
   std::vector<SySource *> lwrp_sources;
   std::vector<SyDestination *> lwrp_destinations;
   std::vector<SyGpioBundle *> lwrp_gpis;
+  QSignalMapper *lwrp_prev_gpi_mapper;
+  QStringList lwrp_prev_gpi_states;
+  QList<QTimer *> lwrp_prev_gpi_timers;
+  QSignalMapper *lwrp_prev_gpo_mapper;
+  QStringList lwrp_prev_gpo_states;
+  QList<QTimer *> lwrp_prev_gpo_timers;
   std::vector<SyGpo *> lwrp_gpos;
   std::vector<bool> lwrp_source_clip_alarms[2];
   std::vector<bool> lwrp_source_silence_alarms[2];

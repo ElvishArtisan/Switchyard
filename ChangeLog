@@ -738,3 +738,7 @@
 2022-12-12 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 19:0:4.
 	* Incremented the package version to 0.23.0.
+2024-02-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'int duration' parameter to the
+	'SyLwrpClient::setGpiCode()' and 'SyLwrpClient::setGpoCode()'
+	methods.
