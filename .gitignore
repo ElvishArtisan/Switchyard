@@ -38,6 +38,7 @@ rc.syd
 debian/changelog
 debian/control
 tests/codeinverttest
+tests/signalnotifiertest
 tests/syastringtest
 tests/sycapture
 tests/syd
