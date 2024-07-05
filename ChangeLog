@@ -742,3 +742,6 @@
 	* Added an 'int duration' parameter to the
 	'SyLwrpClient::setGpiCode()' and 'SyLwrpClient::setGpoCode()'
 	methods.
+2024-07-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed compile warnings in 'SyCmdSwitch'.
+	* Fixed compile warnings in 'tests/playmeter.cpp'.
