@@ -394,6 +394,12 @@ void SyLwrpClient::setGpiCode(int slot,const QString &code,int duration)
 }
 
 
+void SyLwrpClient::setGpiCode(int slot,const QString &code)
+{
+  setGpiCode(slot,code,0);
+}
+
+
 SyGpo *SyLwrpClient::gpo(int slot) const
 {
   return lwrp_gpos[slot];
@@ -414,6 +420,12 @@ void SyLwrpClient::setGpoCode(int slot,const QString &code,int duration)
     }
     sendRawLwrp(QString::asprintf("GPO %d ",slot+1)+code);
   }
+}
+
+
+void SyLwrpClient::setGpoCode(int slot,const QString &code)
+{
+  setGpoCode(slot,code,0);
 }
 
 

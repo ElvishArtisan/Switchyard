@@ -745,3 +745,6 @@
 2024-07-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed compile warnings in 'SyCmdSwitch'.
 	* Fixed compile warnings in 'tests/playmeter.cpp'.
+2024-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added backwards-compatible methods for 'SyLwrpClient::setGpiCode()'
+	and 'SyLwrpClient::setGpoCode()' methods.

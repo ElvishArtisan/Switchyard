@@ -92,8 +92,10 @@ class SyLwrpClient :public QObject
   int dstMeterLevel(int slot,int chan) const;
   SyGpioBundle *gpiBundle(int slot) const;
   void setGpiCode(int slot,const QString &code,int duration);
+  void setGpiCode(int slot,const QString &code);
   SyGpo *gpo(int slot) const;
   void setGpoCode(int slot,const QString &code,int duration);
+  void setGpoCode(int slot,const QString &code);
   void setGpoName(int slot,const QString &str);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,int s_slot);
   void setGpoFollow(int slot,bool state);
