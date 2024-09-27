@@ -709,3 +709,6 @@
 2021-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the 'make rpm' target to generate the RPM datestamp
 	automatically.
+2024-09-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added an '--iface-address=' switch to the sygpiotest() test
+	command.

@@ -117,7 +117,7 @@ bool SyMcastSocket::bind(uint16_t port)
 	       sprintf("unable to bind port %u for reading [%s]",
 		       port,strerror(errno)));
       ret=false;
-    }    
+    }
   }
   return ret;
 }

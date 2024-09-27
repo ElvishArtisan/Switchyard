@@ -29,10 +29,18 @@
 
 MainObject::MainObject(QObject *parent)
 {
+  QHostAddress iface_address;
   gpio_log=false;
   SyCmdSwitch *cmd=new SyCmdSwitch(qApp->argc(),qApp->argv(),"sygpiotest",
 				   VERSION,SYGPIOTEST_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--iface-address") {
+      if(!iface_address.setAddress(cmd->value(i))) {
+	fprintf(stderr,"sygpiotest: invalid \"--iface-address\" specified\n");
+	exit(1);
+      }
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--log") {
       gpio_log=true;
       cmd->setProcessed(i,true);
@@ -48,6 +56,9 @@ MainObject::MainObject(QObject *parent)
   }
 
   gpio_routing=new SyRouting(0,0,1,1);
+  if(!iface_address.isNull()) {
+    gpio_routing->setNicAddress(iface_address);
+  }
 
   gpio_server=new SyGpioServer(gpio_routing,this);
   connect(gpio_server,SIGNAL(gpioReceived(SyGpioEvent *)),
