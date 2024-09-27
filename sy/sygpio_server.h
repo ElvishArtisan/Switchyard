@@ -2,7 +2,7 @@
 //
 // Livewire GPIO Server
 //
-// (C) Copyright 2014-2019 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -77,6 +77,7 @@ class SyGpioEvent
   bool state() const;
   bool isPulse() const;
   QString dump() const;
+  static QString gpioTypeString(Type type);
 
  private:
   Type event_type;

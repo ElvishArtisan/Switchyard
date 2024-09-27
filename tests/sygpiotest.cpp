@@ -70,19 +70,7 @@ void MainObject::gpioReceivedData(SyGpioEvent *e)
 {
   QString msg;
 
-  switch(e->type()) {
-  case SyGpioEvent::TypeGpi:
-    msg+=QString().sprintf("GPI: ");
-    break;
-
-  case SyGpioEvent::TypeGpo:
-    msg+=QString().sprintf("GPO: ");
-    break;
-
-  default:
-    msg+=QString().sprintf("UNKNOWN: ");
-    break;
-  }
+  msg+=SyGpioEvent::gpioTypeString(e->type())+" ";
   msg+="origin: "+e->originAddress().toString()+
     QString().sprintf(":%u  ",0xFFFF&e->originPort());
   msg+=QString().sprintf("srcnum: %d  ",e->sourceNumber());
