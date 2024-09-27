@@ -751,3 +751,6 @@
 2024-09-17 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 20:0:5.
 	* Incremented the package version to 0.24.0.
+2024-09-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added an '--iface-address=' switch to the sygpiotest() test
+	command.
