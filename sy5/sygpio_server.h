@@ -50,7 +50,7 @@ class SyGpioBundleEvent
   int sourceNumber() const;
   QString code() const;
   QString dump() const;
-
+  
  private:
   Type event_type;
   QHostAddress event_origin_address;
@@ -77,6 +77,7 @@ class SyGpioEvent
   bool state() const;
   bool isPulse() const;
   QString dump() const;
+  static QString gpioTypeString(Type type);
 
  private:
   Type event_type;

@@ -173,6 +173,24 @@ QString SyGpioEvent::dump() const
 }
 
 
+QString SyGpioEvent::gpioTypeString(SyGpioEvent::Type type)
+{
+  QString ret=QObject::tr("Unknown GPIO Type");
+  
+  switch(type) {
+  case SyGpioEvent::TypeGpi:
+    ret=QObject::tr("Livewire Node GPI");
+    break;
+
+  case SyGpioEvent::TypeGpo:
+    ret=QObject::tr("Livewire Surface GPI");
+    break;
+  }
+
+  return ret;
+}
+
+
 
 
 SyGpioServer::SyGpioServer(SyRouting *r,QObject *parent)

@@ -2,7 +2,7 @@
 //
 // Listen for GPIO events and print them to stdout
 //
-// (C) 2015-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2015-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -69,19 +69,7 @@ void MainObject::gpioReceivedData(SyGpioEvent *e)
 {
   QString msg;
 
-  switch(e->type()) {
-  case SyGpioEvent::TypeGpi:
-    msg+=QString::asprintf("GPI: ");
-    break;
-
-  case SyGpioEvent::TypeGpo:
-    msg+=QString::asprintf("GPO: ");
-    break;
-
-  default:
-    msg+=QString::asprintf("UNKNOWN: ");
-    break;
-  }
+  msg+=SyGpioEvent::gpioTypeString(e->type())+" ";
   msg+="origin: "+e->originAddress().toString()+
     QString::asprintf(":%u  ",0xFFFF&e->originPort());
   msg+=QString::asprintf("srcnum: %d  ",e->sourceNumber());
