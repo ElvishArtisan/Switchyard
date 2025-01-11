@@ -23,7 +23,7 @@
 
 #include <QCoreApplication>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
 
 #include "sygpiotest.h"
 

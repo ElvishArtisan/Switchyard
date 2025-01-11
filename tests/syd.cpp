@@ -28,8 +28,8 @@
 #include <QCoreApplication>
 #include <QTimer>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/sysyslog.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/sysyslog.h>
 
 #include "syd.h"
 

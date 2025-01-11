@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for switchyard5
+# postinst script for switchyard6
 
 case "$1" in
     configure)

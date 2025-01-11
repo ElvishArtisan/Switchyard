@@ -1,4 +1,4 @@
-# switchyard5.spec.in
+# switchyard6.spec.in
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -14,7 +14,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, 
 #    Boston, MA  02111-1307  USA
 #
-Name:		switchyard5
+Name:		switchyard6
 Version:	@VERSION@
 Release:	1%{?dist}
 Summary:	AES67 Control and Conveience Library for Qt5
@@ -70,19 +70,19 @@ ldconfig
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/libSwitchyard5.so
-%{_libdir}/libSwitchyard5.so.@INTERFACE_MAJOR@
-%{_libdir}/libSwitchyard5.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
+%{_libdir}/libSwitchyard6.so
+%{_libdir}/libSwitchyard6.so.@INTERFACE_MAJOR@
+%{_libdir}/libSwitchyard6.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
 %doc COPYING
 %doc NEWS
 %doc README
 
 
 %files devel
-%{_includedir}/sy5/*.h
-%{_libdir}/pkgconfig/switchyard5.pc
-%{_libdir}/libSwitchyard5.a
-%{_libdir}/libSwitchyard5.la
+%{_includedir}/sy6/*.h
+%{_libdir}/pkgconfig/switchyard6.pc
+%{_libdir}/libSwitchyard6.a
+%{_libdir}/libSwitchyard6.la
 
 %changelog
 * @RPM_DATESTAMP@ Fred Gleason <fredg@paravelsystems.com> - @VERSION@-@RPM_RELEASE@

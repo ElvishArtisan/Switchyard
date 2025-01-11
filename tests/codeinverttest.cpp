@@ -2,7 +2,7 @@
 //
 // Test the SyAString parser
 //
-// (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,7 +24,7 @@
 
 #include <QCoreApplication>
 
-#include <sy5/sygpiobundle.h>
+#include <sy6/sygpiobundle.h>
 
 #include "codeinverttest.h"
 

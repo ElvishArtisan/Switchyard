@@ -2,7 +2,7 @@ dnl configure.ac
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com dnl
+dnl   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com dnl
 dnl
 dnl    This program is free software; you can redistribute it and/or modify
 dnl    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,7 +19,7 @@ dnl    Foundation, Inc., 59 Temple Place, Suite 330,
 dnl    Boston, MA  02111-1307  USA
 dnl
 
-AC_INIT(switchyard5,m4_esyscmd(cat PACKAGE_VERSION))
+AC_INIT(switchyard6,m4_esyscmd(cat PACKAGE_VERSION))
 AM_INIT_AUTOMAKE
 AC_SUBST(RPM_RELEASE,1)
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
@@ -90,12 +90,19 @@ else
 fi
 
 #
-# Check for Qt5 (Mandatory)
+# Check for Qt6 (Mandatory)
 #
-PKG_CHECK_MODULES(QT5,Qt5Core Qt5Network,[],[AC_MSG_ERROR([*** Qt5 not found ***])])
-PKG_CHECK_MODULES(QT5GUI,Qt5Gui Qt5Widgets,[],[AC_MSG_ERROR([*** Qt5 GUI not found ***])])
-AC_CHECK_PROG(MOC_NAME,moc-qt5,[moc-qt5],[moc])
-AC_SUBST(QT_MOC,$MOC_NAME)
+#PKG_CHECK_MODULES(QT5,Qt5Core Qt5Network,[],[AC_MSG_ERROR([*** Qt5 not found ***])])
+#AC_SUBST(QT6_CFLAGS,"-DQT_NETWORK_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6"
+#AC_SUBST(QT6_LIBS,"-lQt6Network -lQt6Core"
+
+#PKG_CHECK_MODULES(QT5GUI,Qt5Gui Qt5Widgets,[],[AC_MSG_ERROR([*** Qt5 GUI not found ***])])
+#AC_SUBST(QT6GUI_CFLAGS,"-DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6"
+#AC_SUBST(QT6GUI_LIBS,"-lQt6Widgets -lQt6Gui -lQt6Core"
+
+#AC_CHECK_PROG(MOC_NAME,moc-qt6,[moc-qt6],[moc])
+#AC_SUBST(QT_MOC,$MOC_NAME)
+AC_SUBST(QT_MOC,/usr/lib/qt6/libexec/moc)
 
 #
 # Check for libsndfile (Needed for sycapture)
@@ -117,10 +124,10 @@ fi
 # Configure Linker Flags
 #
 if test $ar_gcc_distro = "apple" ; then
-  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard5")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard6")
   AC_SUBST(SWITCHYARDFLAGS,"-framework Qt5Core -framework QtNetwork")
 else
-  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard5 -lQt5Core -lQt5Network")
+  AC_SUBST(SWITCHYARDLIBS,"-lSwitchyard6 -lQt6Core -lQt6Network")
   AC_SUBST(SWITCHYARDFLAGS,"-pthread")
 fi
 
@@ -146,12 +153,12 @@ AC_CONFIG_FILES([\
     Makefile \
     debian/Makefile \
     debian/source/Makefile \
-    sy5/Makefile \
+    sy6/Makefile \
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \
-    switchyard5.pc \
-    switchyard5.spec \
+    switchyard6.pc \
+    switchyard6.spec \
     build_debs.sh \
     ])
 AC_OUTPUT()

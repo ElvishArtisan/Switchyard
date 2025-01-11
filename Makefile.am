@@ -1,6 +1,6 @@
-## automake.am
+## Makefile.am
 ##
-## Top level automake.am for Switchyard5
+## Top level automake.am for Switchyard6
 ##
 ## Use automake to process this into a Makefile.in
 ##
@@ -23,7 +23,7 @@
 
 SUBDIRS = conf\
           debian\
-          sy5\
+          sy6\
           tests
 
 ACLOCAL_AMFLAGS = -I m4
@@ -35,24 +35,24 @@ deb:	dist
 	./build_debs.sh
 
 rpm:	dist
-	cp switchyard5-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
-	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard5.spec
-	mv $(HOME)/rpmbuild/RPMS/$(ARCH)/switchyard5-*.rpm $(top_srcdir)/
-	mv $(HOME)/rpmbuild/SRPMS/switchyard5-*.src.rpm $(top_srcdir)/
-	rm $(HOME)/rpmbuild/SOURCES/switchyard5-$(VERSION).tar.gz
-	rm -rf $(HOME)/rpmbuild/BUILD/switchyard5-$(VERSION)
+	cp switchyard6-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
+	$(RPMBUILD) -ba --target $(ARCH)-$(VENDOR)-linux switchyard6.spec
+	mv $(HOME)/rpmbuild/RPMS/$(ARCH)/switchyard6-*.rpm $(top_srcdir)/
+	mv $(HOME)/rpmbuild/SRPMS/switchyard6-*.src.rpm $(top_srcdir)/
+	rm $(HOME)/rpmbuild/SOURCES/switchyard6-$(VERSION).tar.gz
+	rm -rf $(HOME)/rpmbuild/BUILD/switchyard6-$(VERSION)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = switchyard5.pc
+pkgconfig_DATA = switchyard6.pc
 
 EXTRA_DIST = autogen.sh\
              build_debs.sh.in\
              get_distro.sh\
              get_target.sh\
              PACKAGE_VERSION\
-             switchyard5.pc.in\
-             switchyard5.pro\
-             switchyard5.spec.in
+             switchyard6.pc.in\
+             switchyard6.pro\
+             switchyard6.spec.in
 
 CLEANFILES = *~\
              *.buildinfo\

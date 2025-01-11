@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for switchyard5
+# postrm script for switchyard6
 #
 # see: dh_installdeb(1)
 

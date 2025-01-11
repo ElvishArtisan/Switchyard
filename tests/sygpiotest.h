@@ -24,8 +24,8 @@
 
 #include <QObject>
 
-#include <sy5/sygpio_server.h>
-#include <sy5/syrouting.h>
+#include <sy6/sygpio_server.h>
+#include <sy6/syrouting.h>
 
 #define SYGPIOTEST_USAGE "--log [--iface-address=<ipv4-addr>\n"
 

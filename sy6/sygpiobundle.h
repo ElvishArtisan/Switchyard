@@ -1,8 +1,8 @@
-// syadv_packet.h
+// sygpiobundle.h
 //
-// Abstract a LiveWire Control Protocol packet.
+// Abstract a set of LiveWire GPIO signals
 //
-// (C) Copyright 2009 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2015-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,35 +19,26 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYADV_PACKET_H
-#define SYADV_PACKET_H
+#ifndef SYGPIOBUNDLE_H
+#define SYGPIOBUNDLE_H
 
-#include <stdint.h>
+#include <QString>
 
-#include <vector>
+#include <sy6/syconfig.h>
 
-#include <sy5/syadv_tag.h>
-
-class SyAdvPacket
+class SyGpioBundle
 {
  public:
-  SyAdvPacket();
-  ~SyAdvPacket();
-  uint32_t sequenceNumber() const;
-  void setSequenceNumber(uint32_t num);
-  unsigned tags() const;
-  SyTag *tag(unsigned n);
-  void addTag(const SyTag &tag);
-  bool readPacket(uint8_t *data,uint32_t size);
-  int writePacket(uint8_t *data,uint32_t maxsize);
-  QString dump() const;
-  SyAdvPacket &operator++();
-  SyAdvPacket operator++(int);
+  SyGpioBundle();
+  QString code() const;
+  void setCode(const QString &str);
+  bool state(int offset) const;
+  void setState(int offset,bool state);
+  static QString invertCode(const QString &code);
 
  private:
-  uint32_t lw_sequence_number;
-  std::vector<SyTag *> lw_tags;
+  char gpio_code[SWITCHYARD_GPIO_BUNDLE_SIZE+1];
 };
 
 
-#endif  // SYADV_PACKET_H
+#endif  // SYGPIOBUNDLE_H

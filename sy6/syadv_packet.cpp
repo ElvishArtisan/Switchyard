@@ -94,14 +94,14 @@ bool SyAdvPacket::readPacket(uint8_t *data,uint32_t size)
   for(uint32_t i=16;i<size;i++) {
     switch(istate) {
     case 0:
-      tag=data[i];
+      tag=QChar(data[i]);
       istate=1;
       break;
 
     case 1:
     case 2:
     case 3:
-      tag+=data[i];
+      tag+=QChar(data[i]);
       istate++;
       break;
 
@@ -277,8 +277,8 @@ int SyAdvPacket::writePacket(uint8_t *data,uint32_t maxsize)
 
     case SyTag::TagString:
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c",
-		    0xff&(lw_tags[i]->tagValue().toByteArray().size()>>8),
-		    0xff&lw_tags[i]->tagValue().toByteArray().size());
+		   (int)(0xff&(lw_tags[i]->tagValue().toByteArray().size()>>8)),
+		   (int)(0xff&lw_tags[i]->tagValue().toByteArray().size()));
       if(ptr>=maxsize) {
 	return -1;
       }      
@@ -302,8 +302,8 @@ int SyAdvPacket::writePacket(uint8_t *data,uint32_t maxsize)
 
     case SyTag::TagMeter:
       ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c",
-		    0xff&((lw_tags[i]->tagValue().toByteArray().size()/2)>>8),
-		    0xff&(lw_tags[i]->tagValue().toByteArray().size()/2));
+	      (int)(0xff&((lw_tags[i]->tagValue().toByteArray().size()/2)>>8)),
+	      (int)(0xff&(lw_tags[i]->tagValue().toByteArray().size()/2)));
       if(ptr>=maxsize) {
 	return -1;
       }      

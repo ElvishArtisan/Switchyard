@@ -2,7 +2,7 @@
 //
 // Network interface information
 //
-// (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -29,7 +29,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <sy5/syendpoint.h>
+#include <sy6/syendpoint.h>
 
 class SyInterfaces
 {

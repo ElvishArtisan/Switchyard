@@ -3,9 +3,9 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=${prefix}/include
 
-Name: Switchyard5
+Name: Switchyard6
 Description: AES67 Control and Conveience Library
 Version: @VERSION@
 Requires: Qt5Core Qt5Network Qt5Gui Qt5Widgets
-Libs: -L${libdir} -lSwitchyard5
+Libs: -L${libdir} -lSwitchyard6
 Cflags: -I${includedir} -I/usr/include

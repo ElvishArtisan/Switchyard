@@ -2,7 +2,7 @@
 //
 // Enumerate node resources via LWRP.
 //
-// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,9 +24,9 @@
 #include <QApplication>
 #include <QCoreApplication>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/symcastsocket.h>
-#include <sy5/syrouting.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/symcastsocket.h>
+#include <sy6/syrouting.h>
 
 #include "synodetest.h"
 

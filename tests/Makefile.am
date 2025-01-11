@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## Switchyard Control Daemon
 ##
-## (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -20,8 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) -std=c++11 -fPIC @QT5_CFLAGS@ @QT5GUI_CFLAGS@
-LIBS = -L$(top_srcdir)/sy5 @QT5_LIBS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) -std=c++17 -fPIC -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork
+LIBS = -L$(top_srcdir)/sy6 -lQt6Widgets -lQt6Gui -lQt6Core
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -88,7 +88,7 @@ dist_symetertest_SOURCES = playmeter.cpp playmeter.h\
 nodist_symetertest_SOURCES = moc_playmeter.cpp\
                              moc_statuslight.cpp\
                              moc_symetertest.cpp
-symetertest_LDADD = @SWITCHYARDLIBS@ @QT5GUI_LIBS@
+symetertest_LDADD = @SWITCHYARDLIBS@ -lQt6Widgets -lQt6Gui -lQt6Core -lQt6Network
 symetertest_LDFLAGS = @SWITCHYARDFLAGS@
 
 dist_synodetest_SOURCES = synodetest.cpp synodetest.h

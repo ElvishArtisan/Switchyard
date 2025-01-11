@@ -2,7 +2,7 @@
 //
 // Livewire Control Protocol Server
 //
-//   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -31,9 +31,9 @@
 #include <QTimer>
 #include <QTcpServer>
 
-#include <sy5/syastring.h>
-#include <sy5/sylwrp_clientconnection.h>
-#include <sy5/syrouting.h>
+#include <sy6/syastring.h>
+#include <sy6/sylwrp_clientconnection.h>
+#include <sy6/syrouting.h>
 
 class SyLwrpServer : public QObject
 {

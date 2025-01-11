@@ -1,8 +1,8 @@
-// sygpiobundle.h
+// sygpo.h
 //
-// Abstract a set of LiveWire GPIO signals
+// Abstract a LiveWire GPO slot
 //
-// (C) Copyright 2015-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2015-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,26 +19,35 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYGPIOBUNDLE_H
-#define SYGPIOBUNDLE_H
+#ifndef SYGPO_H
+#define SYGPO_H
 
+#include <QHostAddress>
 #include <QString>
 
-#include <sy5/syconfig.h>
+#include <sy6/sygpiobundle.h>
 
-class SyGpioBundle
+class SyGpo
 {
  public:
-  SyGpioBundle();
-  QString code() const;
-  void setCode(const QString &str);
-  bool state(int offset) const;
-  void setState(int offset,bool state);
-  static QString invertCode(const QString &code);
+  SyGpo();
+  ~SyGpo();
+  QString name() const;
+  void setName(const QString &str);
+  QHostAddress sourceAddress() const;
+  int sourceSlot() const;
+  void setSourceAddress(const QHostAddress &s_addr,int s_slot);
+  bool follow() const;
+  void setFollow(bool state);
+  SyGpioBundle *bundle() const;
 
  private:
-  char gpio_code[SWITCHYARD_GPIO_BUNDLE_SIZE+1];
+  QString gpo_name;
+  QHostAddress gpo_source_address;
+  int gpo_source_slot;
+  bool gpo_follow;
+  SyGpioBundle *gpo_bundle;
 };
 
 
-#endif  // SYGPIOBUNDLE_H
+#endif  // SYGPO_H

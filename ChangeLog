@@ -756,3 +756,5 @@
 	command.
 2024-09-27 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyGpioEvent::gpioTypeString()' static method.
+2025-01-11 Fred Gleason <fredg@paravelsystems.com>
+	* Rough port to Qt6.

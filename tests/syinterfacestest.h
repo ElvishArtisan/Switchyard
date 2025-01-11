@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-#include <sy5/syinterfaces.h>
+#include <sy6/syinterfaces.h>
 
 #define INTERFACESTEST_USAGE "\n"
 

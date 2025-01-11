@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Makefile for AoIP library routines
+## Makefile.am for AoIP library routines
 ##
-## (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -Wno-strict-aliasing -std=c++11 -fPIC -I$(top_srcdir) @QT5_CFLAGS@
+AM_CPPFLAGS = -Wall -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir) -DQT_NETWORK_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -30,8 +30,8 @@ moc_%.cpp:	%.h
 clean-local:	
 	rm -rf debug release
 
-lib_LTLIBRARIES = libSwitchyard5.la
-dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
+lib_LTLIBRARIES = libSwitchyard6.la
+dist_libSwitchyard6_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                  syadv_reader.cpp syadv_reader.h\
                                  syadv_server.cpp syadv_server.h\
                                  syadv_source.cpp syadv_source.h\
@@ -63,7 +63,7 @@ dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                  syrtp_server.cpp syrtp_server.h\
                                  sysource.cpp sysource.h
 
-nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
+nodist_libSwitchyard6_la_SOURCES = moc_syadv_server.cpp\
                                   moc_syclock.cpp\
                                   moc_syethmonitor.cpp\
                                   moc_sygpio_server.cpp\
@@ -73,7 +73,7 @@ nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_syrtp_server.cpp\
                                   moc_sysignalnotifier.cpp
 
-includedir = $(prefix)/include/sy5
+includedir = $(prefix)/include/sy6
 include_HEADERS = syadv_packet.h\
                   syadv_reader.h\
                   syadv_server.h\
@@ -103,7 +103,7 @@ include_HEADERS = syadv_packet.h\
                   sysignalnotifier.h\
                   sysource.h
 
-libSwitchyard5_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
+libSwitchyard6_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
 
 EXTRA_DIST = sy.pro
 

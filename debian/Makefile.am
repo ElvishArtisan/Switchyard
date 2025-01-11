@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for Switchyard debian/
+## Makefile.am for Switchyard debian/
 ##
-##   (C) Copyright 2021-2022 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as

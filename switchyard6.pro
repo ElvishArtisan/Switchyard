@@ -1,8 +1,8 @@
-# switchyard.pro
+# switchyard6.pro
 #
 # The op level QMake project file for Switchyard
 #
-# (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -21,5 +21,5 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS += sy5
+SUBDIRS += sy6
 SUBDIRS += tests
