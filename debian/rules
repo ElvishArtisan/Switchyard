@@ -30,6 +30,8 @@ binary:
 	mv debian/tmp/usr/include/sy6 debian/switchyard6-dev/usr/include/
 	mkdir -p debian/switchyard6-dev/usr/lib
 	mv debian/tmp/usr/lib/*.a debian/switchyard6-dev/usr/lib/
+	mv debian/tmp/usr/lib/*.la debian/switchyard6-dev/usr/lib/
+	mv debian/tmp/usr/lib/*.so debian/switchyard6-dev/usr/lib/
 	mkdir -p debian/switchyard6-dev/usr/share
 	mv debian/tmp/usr/lib/pkgconfig debian/switchyard6-dev/usr/share/
 

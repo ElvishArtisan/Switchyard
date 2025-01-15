@@ -769,3 +769,5 @@
 	macro.
 2025-01-15 Fred Gleason <fredg@paravelsystems.com>
 	* Replaced 'AC_PROG_LIBTOOL()' invocation with 'LT_INIT()'.
+2025-01-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed regressions that broke the 'make deb' target.
