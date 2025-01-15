@@ -39,7 +39,7 @@ fi
 # Basic Compiler Checks
 #
 AC_PROG_CXX
-AC_PROG_LIBTOOL
+LT_INIT
 AC_LANG(C++)
 
 #
