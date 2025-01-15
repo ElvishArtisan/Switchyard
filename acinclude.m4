@@ -136,21 +136,26 @@ AC_DEFUN([AQ_FIND_QT6],[AC_REQUIRE([AC_PROG_CXX])]
       if test -n "$QT6_MOC" ; then
         qt_moc=$QT6_MOC
       fi
-      for module in $2
-      do
-      :
-	qt_cppflags=$qt_cppflags" -DQT_"${module^^}"_LIB -I"$qt_Prefix"/"$qt_Headers"/Qt"$module
-	qt_libs=$qt_libs" -lQt6"$module
-      done
-      AC_ARG_VAR([$1][_CFLAGS],[C++ compiler flags for $1, overriding autodetected values])
-      AC_ARG_VAR([$1][_LIBS],[linker flags for $1, overriding autodetected values])
-      AC_ARG_VAR([$1][_MOC],[path to the moc(1) binary, overriding autodetected values])
-      AC_SUBST([$1][_CFLAGS],$qt_cppflags)
-      AC_SUBST([$1][_LIBS],$qt_libs)
-      AC_SUBST([$1][_MOC],$qt_moc)
-      AC_MSG_RESULT([found])
-      $3
-else
+      if test -x $qt_moc ; then
+        for module in $2
+        do
+        :
+ 	  qt_cppflags=$qt_cppflags" -DQT_"${module^^}"_LIB -I"$qt_Prefix"/"$qt_Headers"/Qt"$module
+	  qt_libs=$qt_libs" -lQt6"$module
+        done
+        AC_ARG_VAR([$1][_CFLAGS],[C++ compiler flags for $1, overriding autodetected values])
+        AC_ARG_VAR([$1][_LIBS],[linker flags for $1, overriding autodetected values])
+        AC_ARG_VAR([$1][_MOC],[path to the moc(1) binary, overriding autodetected values])
+        AC_SUBST([$1][_CFLAGS],$qt_cppflags)
+        AC_SUBST([$1][_LIBS],$qt_libs)
+        AC_SUBST([$1][_MOC],$qt_moc)
+        AC_MSG_RESULT([found])
+        $3
+      else
+        AC_MSG_RESULT([moc(1) not found])
+	$4
+      fi
+  else
       AC_MSG_RESULT([not found])
       $4
   fi

@@ -764,3 +764,6 @@
 	* Added an 'AQ_FIND_QT6()' macro to 'acinclude.m4'.
 2025-01-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'QT6_MOC' output variable to the 'AC_FIND_QT6()' macro.
+2025-01-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added a check for the existence of moc(1) to the 'AC_FIND_QT6()'
+	macro.
