@@ -21,7 +21,7 @@
 ## Use automake to process this into a Makefile.in
 
 AM_CPPFLAGS = -Wall -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir) @QT6_CFLAGS@
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h

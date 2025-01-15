@@ -60,12 +60,27 @@ dnl AQ_FIND_QT6(prefix,list-of-modules,action-if-found,action-if-not-found)
 dnl
 dnl Attempt to find a Qt6 installation.
 dnl
+dnl By default, this will look for a system-wide install, at
+dnl '/usr/lib/<machine>/qt6/qt6.conf', with <machine> being gcc(1)'s
+dnl idea of the machine's arch/os/distro --e.g. 'x86_64-linux-gnu'. This can
+dnl overridden by defining a 'QT6_PATH' environmental variable containing
+dnl the path to the configuration file of the desired Qt6 installation.
+dnl
+dnl If an installation is successfully detected, the following variables
+dnl are set:
+dnl
+dnl prefix_CFLAGS - Flags to pass to the C++ compiler
+dnl
+dnl prefix_LIBS - Linker arguments
+dnl
+dnl prefix_MOC - Path to the appropriate moc(1)
+dnl
 AC_DEFUN([AQ_FIND_QT6],[AC_REQUIRE([AC_PROG_CXX])]
   [
   AC_MSG_CHECKING([for ]$1)
 
   dnl
-  dnl Load the Qt configuration
+  dnl Load the Qt6 configuration
   dnl
   AC_ARG_VAR(QT6_PATH,[path to the location of the Qt6 installation's configuration (default: "/usr/lib/<machine>/qt6/qt6.conf")])
 
@@ -117,6 +132,10 @@ AC_DEFUN([AQ_FIND_QT6],[AC_REQUIRE([AC_PROG_CXX])]
       qt_libs="-L "$qt_Prefix$qt_Libraries
       qt_cppflags="-I"$qt_Prefix"/"$qt_Headers
       qt_libs="-L"$qt_Prefix"/"$qt_Libraries
+      qt_moc=$qt_Prefix"/"$qt_Binaries"/moc"
+      if test -n "$QT6_MOC" ; then
+        qt_moc=$QT6_MOC
+      fi
       for module in $2
       do
       :
@@ -125,8 +144,10 @@ AC_DEFUN([AQ_FIND_QT6],[AC_REQUIRE([AC_PROG_CXX])]
       done
       AC_ARG_VAR([$1][_CFLAGS],[C++ compiler flags for $1, overriding autodetected values])
       AC_ARG_VAR([$1][_LIBS],[linker flags for $1, overriding autodetected values])
+      AC_ARG_VAR([$1][_MOC],[path to the moc(1) binary, overriding autodetected values])
       AC_SUBST([$1][_CFLAGS],$qt_cppflags)
       AC_SUBST([$1][_LIBS],$qt_libs)
+      AC_SUBST([$1][_MOC],$qt_moc)
       AC_MSG_RESULT([found])
       $3
 else

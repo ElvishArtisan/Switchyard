@@ -94,7 +94,6 @@ fi
 #
 AQ_FIND_QT6(QT6,Core Network,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
 AQ_FIND_QT6(QT6GUI,Core Network Gui Widgets,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
-AC_SUBST(QT_MOC,/usr/lib/qt6/libexec/moc)
 
 #
 # Check for libsndfile (Needed for sycapture)

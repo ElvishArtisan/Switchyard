@@ -22,7 +22,7 @@
 
 AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -pthread -I$(top_srcdir) -std=c++17 -fPIC -DQT_WIDGETS_LIB @QT6GUI_CFLAGS@
 LIBS = -L$(top_srcdir)/sy6 -lQt6Widgets -lQt6Gui -lQt6Core
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h

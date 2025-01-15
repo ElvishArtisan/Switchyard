@@ -762,3 +762,5 @@
 	* Updated 'switchyard6.pc.in' for Qt6.
 2025-01-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'AQ_FIND_QT6()' macro to 'acinclude.m4'.
+2025-01-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'QT6_MOC' output variable to the 'AC_FIND_QT6()' macro.
