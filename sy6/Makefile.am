@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir) -DQT_NETWORK_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore
+AM_CPPFLAGS = -Wall -Wno-strict-aliasing -std=c++17 -fPIC -I$(top_srcdir) @QT6_CFLAGS@
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)

@@ -92,16 +92,8 @@ fi
 #
 # Check for Qt6 (Mandatory)
 #
-#PKG_CHECK_MODULES(QT5,Qt5Core Qt5Network,[],[AC_MSG_ERROR([*** Qt5 not found ***])])
-#AC_SUBST(QT6_CFLAGS,"-DQT_NETWORK_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6"
-#AC_SUBST(QT6_LIBS,"-lQt6Network -lQt6Core"
-
-#PKG_CHECK_MODULES(QT5GUI,Qt5Gui Qt5Widgets,[],[AC_MSG_ERROR([*** Qt5 GUI not found ***])])
-#AC_SUBST(QT6GUI_CFLAGS,"-DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6"
-#AC_SUBST(QT6GUI_LIBS,"-lQt6Widgets -lQt6Gui -lQt6Core"
-
-#AC_CHECK_PROG(MOC_NAME,moc-qt6,[moc-qt6],[moc])
-#AC_SUBST(QT_MOC,$MOC_NAME)
+AQ_FIND_QT6(QT6,Core Network,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
+AQ_FIND_QT6(QT6GUI,Core Network Gui Widgets,[],[AC_MSG_ERROR([*** Qt6 not found ***])])
 AC_SUBST(QT_MOC,/usr/lib/qt6/libexec/moc)
 
 #
