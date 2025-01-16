@@ -28,6 +28,13 @@ SUBDIRS = conf\
 
 ACLOCAL_AMFLAGS = -I m4
 
+install-exec-local:	
+	mkdir -p $(DESTDIR)@libdir@/pkgconfig
+	cp switchyard6.pc $(DESTDIR)/@libdir@/pkgconfig
+
+uninstall-local:	
+	rm -f $(DESTDIR)@libdir@/pkgconfig/switchyard6.pc
+
 maintainer-clean-local:	
 	rm -rf m4
 

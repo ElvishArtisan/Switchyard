@@ -6,6 +6,5 @@ includedir=${prefix}/include
 Name: Switchyard6
 Description: AES67 Control and Conveience Library
 Version: @VERSION@
-Requires: Qt6Core Qt6Network Qt6Gui Qt6Widgets
 Libs: -L${libdir} -lSwitchyard6
 Cflags: -I${includedir} -I/usr/include
