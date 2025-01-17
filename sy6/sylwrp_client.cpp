@@ -2,7 +2,7 @@
 //
 // LWRP client implementation
 //
-// (C) 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -38,7 +38,7 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(lwrp_socket,SIGNAL(error(QAbstractSocket::SocketError)),
+  connect(lwrp_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
 
   //
@@ -63,10 +63,10 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   // GPIO Timers
   //
   lwrp_prev_gpi_mapper=new QSignalMapper(this);
-  connect(lwrp_prev_gpi_mapper,SIGNAL(mapped(int)),
+  connect(lwrp_prev_gpi_mapper,SIGNAL(mappedInt(int)),
 	  this,SLOT(gpiResetData(int)));
   lwrp_prev_gpo_mapper=new QSignalMapper(this);
-  connect(lwrp_prev_gpo_mapper,SIGNAL(mapped(int)),
+  connect(lwrp_prev_gpo_mapper,SIGNAL(mappedInt(int)),
 	  this,SLOT(gpoResetData(int)));
 
   //

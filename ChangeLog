@@ -773,3 +773,6 @@
 	* Fixed regressions that broke the 'make deb' target.
 2025-01-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed regression in 'switchyard6.pc.in'.
+2025-01-17 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed 'no such signal' errors in the 'SyLwrpClient' and
+	'SyLwrpServer' classes.
