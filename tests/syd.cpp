@@ -117,7 +117,7 @@ MainObject::MainObject(QObject *parent)
   FILE *f=NULL;
   if(!debug) {
     if(daemon(0,0)!=0) {
-      fprintf(f,"syd: fork failed [%s]\n",strerror(errno));
+      fprintf(stderr,"syd: fork failed [%s]\n",strerror(errno));
       exit(1);
     }
     if((f=fopen(SYD_PID_FILE,"w"))!=NULL) {
