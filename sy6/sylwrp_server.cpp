@@ -40,9 +40,9 @@ SyLwrpServer::SyLwrpServer(SyRouting *routing)
   // Initialize LWRP Server
   //
   ctrl_read_mapper=new QSignalMapper(this);
-  connect(ctrl_read_mapper,SIGNAL(mapped(int)),this,SLOT(readData(int)));
+  connect(ctrl_read_mapper,SIGNAL(mappedInt(int)),this,SLOT(readData(int)));
   ctrl_closed_mapper=new QSignalMapper(this);
-  connect(ctrl_closed_mapper,SIGNAL(mapped(int)),this,SLOT(closedData(int)));
+  connect(ctrl_closed_mapper,SIGNAL(mappedInt(int)),this,SLOT(closedData(int)));
   ctrl_server=new QTcpServer(this);
   connect(ctrl_server,SIGNAL(newConnection()),this,SLOT(newConnectionData()));
   if (!ctrl_server->listen(QHostAddress::Any,SWITCHYARD_LWRP_PORT)){

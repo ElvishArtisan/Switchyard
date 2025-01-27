@@ -135,7 +135,7 @@ class SyLwrpClient :public QObject
  private slots:
   void connectedData();
   void disconnectedData();
-  void errorData(QAbstractSocket::SocketError err);
+  void errorOccurredData(QAbstractSocket::SocketError err);
   void timeoutData();
   void readyReadData();
   void connectionTimeoutData();

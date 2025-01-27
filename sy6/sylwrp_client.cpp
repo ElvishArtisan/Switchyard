@@ -38,8 +38,8 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(lwrp_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(lwrp_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 
   //
   // Connection Timer
@@ -63,10 +63,10 @@ SyLwrpClient::SyLwrpClient(unsigned id,QObject *parent)
   // GPIO Timers
   //
   lwrp_prev_gpi_mapper=new QSignalMapper(this);
-  connect(lwrp_prev_gpi_mapper,SIGNAL(mapped(int)),
+  connect(lwrp_prev_gpi_mapper,SIGNAL(mappedInt(int)),
 	  this,SLOT(gpiResetData(int)));
   lwrp_prev_gpo_mapper=new QSignalMapper(this);
-  connect(lwrp_prev_gpo_mapper,SIGNAL(mapped(int)),
+  connect(lwrp_prev_gpo_mapper,SIGNAL(mappedInt(int)),
 	  this,SLOT(gpoResetData(int)));
 
   //
@@ -627,7 +627,7 @@ void SyLwrpClient::disconnectedData()
 }
 
 
-void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
+void SyLwrpClient::errorOccurredData(QAbstractSocket::SocketError err)
 {
   if(lwrp_connection_error!=err) {
     emit connectionError(lwrp_id,err);
@@ -649,7 +649,7 @@ void SyLwrpClient::errorData(QAbstractSocket::SocketError err)
 
 void SyLwrpClient::timeoutData()
 {
-  errorData(QAbstractSocket::SocketTimeoutError);
+  errorOccurredData(QAbstractSocket::SocketTimeoutError);
 }
 
 
@@ -741,8 +741,8 @@ void SyLwrpClient::watchdogRetryData()
   lwrp_socket=new QTcpSocket(this);
   connect(lwrp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(lwrp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(lwrp_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(lwrp_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
   if(lwrp_connected) {
     lwrp_connected=false;
     emit connected(lwrp_id,false);

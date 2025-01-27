@@ -2,7 +2,7 @@ This is the installation file for the Switchyard package.
 
 Mandatory Prerequisites
 -----------------------
-Qt v5.9.7 or later.
+Qt v6.2.4 or later.
 Cross-platform development toolkit. Available at https://www.qt.io/.
 
 Optional Prerequisites
@@ -26,3 +26,21 @@ built and where things get installed. Do './configure --help' to get a list.
 
 For examples of how to use the library, see the programs in the 'test/'
 subdirectory.
+
+Distro-Specific Notes
+---------------------
+1) Ubuntu 22.02 LTS
+
+Required build packages: libsndfile1-dev qt6-base-dev docbook5-xml libxml2-utils docbook-xsl-ns xsltproc fop make g++ autoconf automake debhelper autoconf-archive gnupg pbuilder ubuntu-dev-tools apt-file
+
+Configure script invocation: ./configure --prefix=/usr
+
+Environmental variables:
+  DOCBOOK_STYLESHEETS=/usr/share/xml/docbook/stylesheet/docbook-xsl-ns
+  DEBUILD_MAKE_ARGS=<optional-gcc-flags>
+
+Due to a bug in the Ubuntu 'qt6-base-dev-tools', it may be necessary to
+define the following environmental variable to allow Qt's moc(1) utility
+to be found by the build system:
+
+  QT6_MOC=/usr/lib/qt6/libexec/moc

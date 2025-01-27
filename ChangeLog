@@ -773,3 +773,7 @@
 	* Fixed regressions that broke the 'make deb' target.
 2025-01-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed regression in 'switchyard6.pc.in'.
+2025-01-27 Fred Gleason <fredg@paravelsystems.com>
+	Fixed 'no such slot' errors in 'sy6/sylwrp_client.cpp',
+	'sy6/sylwrp_client.h' and 'sy6/sylwrp_server.cpp'.
+	* Documented required build packages in 'INSTALL'.
