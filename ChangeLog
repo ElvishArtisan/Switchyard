@@ -779,3 +779,6 @@
 	* Fixed 'no such signal' errors in the 'SyLwrpClient' and
 	'SyLwrpServer' classes.
 	* Documented required build packages in 'INSTALL'.
+2025-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the library ABI version to 21:0:0.
+	* Incremented the package version to 0.25.0.
