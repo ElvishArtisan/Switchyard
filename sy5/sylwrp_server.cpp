@@ -122,7 +122,7 @@ void SyLwrpServer::newConnectionData()
   connect(ctrl_client_connections[id]->socket(),SIGNAL(readyRead()),
 	  ctrl_read_mapper,SLOT(map()));
   ctrl_closed_mapper->setMapping (ctrl_client_connections[id]->socket(),id);
-  connect(ctrl_client_connections[id]->socket(),SIGNAL(connectionClosed()),
+  connect(ctrl_client_connections[id]->socket(),SIGNAL(disconnected()),
 	  ctrl_closed_mapper,SLOT(map()));
 }
 
