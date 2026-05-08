@@ -759,3 +759,5 @@
 2026-05-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in 'sy5/sylwrp_server.cpp' that threw a
 	'no such slot' error.
+2026-05-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'ClockType=' and 'ClockDevice=' directives to routing.db(5).

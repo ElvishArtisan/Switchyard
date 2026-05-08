@@ -168,6 +168,30 @@ void SyRouting::setClkAddress(const QHostAddress &addr)
 }
 
 
+SyRouting::ClockType SyRouting::clockType() const
+{
+  return sy_clock_type;
+}
+
+
+void SyRouting::setClockType(SyRouting::ClockType type)
+{
+  sy_clock_type=type;
+}
+
+
+QString SyRouting::clockDevice() const
+{
+  return sy_clock_device;
+}
+
+
+void SyRouting::setClockDevice(const QString &dev)
+{
+  sy_clock_device=dev;
+}
+
+
 int SyRouting::srcNumber(int slot) const
 {
   return 0xFFFF&srcAddress(slot).toIPv4Address();
@@ -470,6 +494,17 @@ void SyRouting::load()
 			      SWITCHYARD_SETTINGS_ORGANIZATION,
 			      SWITCHYARD_SETTINGS_APPLICATION);
   setNicAddress(QHostAddress(s->value("NicAddress").toString()));
+  QString clktype=s->value("ClockType").toString();
+  if(clktype.toLower()=="local") {
+    setClockType(SyRouting::Local);
+  }
+  if(clktype.toLower()=="livewire") {
+    setClockType(SyRouting::Livewire);
+  }
+  if(clktype.toLower()=="ptp") {
+    setClockType(SyRouting::Ptp);
+  }
+  setClockDevice(s->value("ClockDevice").toString());
   for(unsigned i=0;i<srcSlots();i++) {
     QString key=QString::asprintf("Slot%u",i+1);
     setSrcAddress(i,s->value(key+"/SourceAddress").toString());
@@ -502,6 +537,17 @@ void SyRouting::load()
   }
 
   setNicAddress(p->addressValue("Global","NicAddress",default_nic));
+  QString clktype=p->stringValue("Global","ClockType","Local");
+  if(clktype.toLower()=="local") {
+    setClockType(SyRouting::Local);
+  }
+  if(clktype.toLower()=="livewire") {
+    setClockType(SyRouting::Livewire);
+  }
+  if(clktype.toLower()=="ptp") {
+    setClockType(SyRouting::Ptp);
+  }
+  setClockDevice(p->stringValue("Global","ClockDevice","Local"));
   for(unsigned i=0;i<srcSlots();i++) {
     section=QString::asprintf("Slot%u",i+1);
     setSrcAddress(i,p->addressValue(section,"SourceAddress",""));
@@ -535,6 +581,8 @@ void SyRouting::save() const
 			      SWITCHYARD_SETTINGS_ORGANIZATION,
 			      SWITCHYARD_SETTINGS_APPLICATION);
   s->setValue("NicAddress",nicAddress().toString());
+  s->setValue("ClockType",SyRouting::clockTypeString(sy_clock_type));
+  s->setValue("ClockDevice",sy_clock_device);
   for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
     QString key=QString::asprintf("Slot%u",i+1);
     if(i<(int)srcSlots()) {
@@ -566,6 +614,9 @@ void SyRouting::save() const
 
   fprintf(f,"[Global]\n");
   fprintf(f,"NicAddress=%s\n",nicAddress().toString().toUtf8().constData());
+  fprintf(f,"ClockType=%s\n",
+	  SyRouting::clockTypeString(sy_clock_type).toUtf8().constData());
+  fprintf(f,"ClockDevice=%s\n",sy_clock_device.toUtf8().constData());
   fprintf(f,"\n");
   for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
     fprintf(f,"[Slot%u]\n",i+1);
@@ -680,6 +731,27 @@ QString SyRouting::socketErrorString(const QString &msg)
   return ret;
 }
 
+
+ QString SyRouting::clockTypeString(SyRouting::ClockType type)
+{
+  QString ret="unknown";
+
+  switch(type) {
+  case SyRouting::Local:
+    ret="local";
+    break;
+
+  case SyRouting::Livewire:
+    ret="livewire";
+    break;
+
+  case SyRouting::Ptp:
+    ret="ptp";
+    break;
+  }
+
+  return ret;
+}
 
 void SyRouting::LoadInterfaces()
 {

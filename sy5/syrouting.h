@@ -2,7 +2,7 @@
 //
 // AoIP stream routing configuration
 //
-// (C) 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2014-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -37,6 +37,7 @@ class SyRouting
  public:
   enum GpoMode {GpoFollowSource=0,GpoSnake=1};
   enum Realm {Stereo=0,Backfeed=1,Surround=2};
+  enum ClockType {Local=0,Livewire=1,Ptp=2};
   SyRouting(unsigned d_slots,unsigned s_slots,
 	    unsigned gpis=0,unsigned gpos=0);
   unsigned dstSlots() const;
@@ -50,6 +51,10 @@ class SyRouting
   void setNicNetmask(const QHostAddress &addr);
   QHostAddress clkAddress() const;
   void setClkAddress(const QHostAddress &addr);
+  ClockType clockType() const;
+  void setClockType(ClockType type);
+  QString clockDevice() const;
+  void setClockDevice(const QString &dev);
   int srcNumber(int slot) const;
   QHostAddress srcAddress(int slot) const;
   void setSrcAddress(int slot,const QHostAddress &addr);
@@ -108,6 +113,7 @@ class SyRouting
   static QString sourceString(const QHostAddress &s_addr,int s_slot);
   static QString dumpAddress(uint32_t addr);
   static QString socketErrorString(const QString &msg);
+  static QString clockTypeString(ClockType type);
 
  private:
   void LoadInterfaces();
@@ -123,6 +129,8 @@ class SyRouting
   std::vector<QString> sy_nic_devices;
   int sy_subscription_socket;
   int sy_rtp_send_socket;
+  ClockType sy_clock_type;
+  QString sy_clock_device;
 };
 
 
