@@ -782,3 +782,6 @@
 2025-01-31 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the library ABI version to 21:0:0.
 	* Incremented the package version to 0.25.0.
+2026-05-08 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in 'sy6/sylwrp_server.cpp' that threw a
+        'no such slot' error.
