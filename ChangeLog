@@ -761,3 +761,7 @@
 	'no such slot' error.
 2026-05-08 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'ClockType=' and 'ClockDevice=' directives to routing.db(5).
+2026-05-23 Fred Gleason <fredg@paravelsystems.com>
+	* Hacked 'debian/rules' by moving the 'build' target rules into
+	the 'binary' target to work around a regression in
+	dpkg-buildpackage(1) v1.22.22.
