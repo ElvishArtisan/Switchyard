@@ -2,7 +2,7 @@
 //
 // Livewire Advertising Protocol Server
 //
-// (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -47,8 +47,13 @@ class SyAdvServer : public QObject
 	      QObject *parent=0);
   ~SyAdvServer();
 
+signals:
+  void advertismentReceived(const QHostAddress &addr,const SyAdvPacket &advert);
+  void reservationReceived(const QHostAddress &addr,const SyAdvPacket &reserv);
+
  private slots:
-  void readData();
+  void readReserveData();
+  void readAdvertData();
   void expireData();
   void sendAdvert0Data();
   void sendAdvert1Data();
@@ -68,6 +73,7 @@ class SyAdvServer : public QObject
   void ScheduleSourceSave();
   void Initialize(bool read_only);
   SyMcastSocket *ctrl_advert_socket;
+  QUdpSocket *ctrl_reserve_socket;
   QTimer *ctrl_advert_timer0;
   QTimer *ctrl_advert_timer1;
   QTimer *ctrl_advert_timer2;

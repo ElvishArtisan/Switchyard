@@ -2,7 +2,7 @@
 //
 // Livewire Advertising Protocol Server
 //
-// (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -61,7 +61,7 @@ SyAdvServer::SyAdvServer(SyRouting *r,bool read_only,QObject *parent)
     ctrl_advert_socket->bind(r->nicAddress(),SWITCHYARD_ADVERTS_PORT);
   }
   ctrl_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
-  connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readData()));
+  connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readAdvertData()));
 
   Initialize(read_only);
 }
@@ -92,7 +92,7 @@ SyAdvServer::SyAdvServer(SyRouting *r,SyEthMonitor *ethmon,bool read_only,
   if(adv_eth_monitor->isRunning()) {
     ctrl_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
   }
-  connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readData()));
+  connect(ctrl_advert_socket,SIGNAL(readyRead()),this,SLOT(readAdvertData()));
 
   Initialize(read_only);
 }
@@ -122,7 +122,62 @@ SyAdvServer::~SyAdvServer()
 }
 
 
-void SyAdvServer::readData()
+void SyAdvServer::readReserveData()
+{
+  uint8_t data[1500];
+  QHostAddress addr;
+  uint16_t port;
+  int n;
+  SyAdvPacket p;
+  int srcnum=0;
+  uint64_t add_reserve_id=0;
+  uint64_t del_reserve_id=0;
+
+  while((n=ctrl_reserve_socket->
+	 readDatagram((char *)data,1500,&addr,&port))>0) {
+    if(p.readPacket(data,n)) {
+      srcnum=0;
+      add_reserve_id=0;
+      del_reserve_id=0;
+      for(unsigned i=0;i<p.tags();i++) {
+	if(p.tag(i)->tagName()=="PSID") {
+	  srcnum=p.tag(i)->tagValue().toInt();
+	}
+	if(p.tag(i)->tagName()=="BUSY") {
+	  add_reserve_id=p.tag(i)->tagValue().toULongLong();
+	}
+	if(p.tag(i)->tagName()=="FFFE") {
+	  del_reserve_id=p.tag(i)->tagValue().toULongLong();
+	}
+      }
+      if(srcnum>0) {
+	if(add_reserve_id>0) {
+	  // Set reservation
+	  for(unsigned i=0;i<adv_routing->srcSlots();i++) {
+	    if(adv_routing->srcEnabled(i)&&(adv_routing->srcNumber(i)==srcnum)) {
+	      ctrl_sources.at(i)->setReservationId(add_reserve_id);
+	      SendSourceUpdate(SyAdvServer::Type0);
+	    }
+	  }
+	}
+	if(del_reserve_id>0) {
+	  // Clear reservation
+	  for(unsigned i=0;i<adv_routing->srcSlots();i++) {
+	    if(adv_routing->srcEnabled(i)&&(adv_routing->srcNumber(i)==srcnum)) {
+	      ctrl_sources.at(i)->setReservationId(del_reserve_id);
+	      ctrl_sources.at(i)->setReservationDeleting(true);
+	      SendSourceUpdate(SyAdvServer::Type0);
+	    }
+	  }
+	}
+      }
+      emit reservationReceived(addr,p);
+    }
+  }
+}
+
+
+void SyAdvServer::readAdvertData()
 {
   uint8_t data[1500];
   QHostAddress addr;
@@ -136,12 +191,6 @@ void SyAdvServer::readData()
 
   while((n=ctrl_advert_socket->readDatagram((char *)data,1500,&addr,&port))>0) {
     p.readPacket(data,n);
-    /*
-    printf("************************************************************\n");
-    printf("processing from %s: %s\n",
-	   addr.toString().toUtf8().constData(),
-	   p.dump().toUtf8().constData());
-    */
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
 	hwid=(SyAdvSource::HardwareType)p.tag(i)->tagValue().toUInt();
@@ -149,10 +198,6 @@ void SyAdvServer::readData()
       if(p.tag(i)->tagName()=="ATRN") {  // Node Name
 	nodename=p.tag(i)->tagValue().toString();
       }
-      /*
-      printf("  examining[%u]: %s\n",i,
-	     p.tag(i)->tagName().toUtf8().constData());
-      */
       if((slot=TagIsSource(p.tag(i)))>=0) {
 	src=GetSource(addr,slot);
 	src->setHardwareType(hwid);
@@ -186,6 +231,7 @@ void SyAdvServer::readData()
 	}
       }
     }
+    emit advertismentReceived(addr,p);
   }
 }
 
@@ -408,9 +454,27 @@ void SyAdvServer::GenerateAdvertPacket0(SyAdvPacket *p) const
       tag.setTagName("PSID");
       tag.setTagValue(SyTag::TagType1,adv_routing->srcAddress(i).toIPv4Address()&0xFFFF);
       p->addTag(tag);
-      tag.setTagName("BUSY");
-      tag.setTagValue(SyTag::TagType9,0);
-      p->addTag(tag);
+      if(ctrl_sources.at(i)->reservationDeleting()) {
+	tag.setTagName("BUSY");
+	tag.setTagValue(SyTag::TagType9,0);
+	p->addTag(tag);
+	tag.setTagName("FFFE");
+	tag.setTagValue(SyTag::TagType9,(long long unsigned)ctrl_sources.at(i)->reservationId());
+	p->addTag(tag);
+	ctrl_sources.at(i)->setReservationId(0);
+	ctrl_sources.at(i)->setReservationDeleting(false);
+      }
+      else {
+	tag.setTagName("BUSY");
+	tag.setTagValue(SyTag::TagType9,(long long unsigned)ctrl_sources.at(i)->reservationId());
+	p->addTag(tag);
+	tag.setTagName("FFFF");
+	tag.setTagValue(SyTag::TagType9,0);
+	p->addTag(tag);
+	tag.setTagName("FFFE");
+	tag.setTagValue(SyTag::TagType9,0);
+	p->addTag(tag);
+      }
     }
   }
 }
@@ -630,6 +694,18 @@ void SyAdvServer::ScheduleSourceSave()
 
 void SyAdvServer::Initialize(bool read_only)
 {
+
+  //
+  // Initialize Reservation Socket
+  //
+  ctrl_reserve_socket=new QUdpSocket(this);
+  if(!ctrl_reserve_socket->bind(QHostAddress::Any,SWITCHYARD_RESERVE_PORT)) {
+    SySyslog(LOG_WARNING,
+	     QString::asprintf("failed to bind port %u for reservations",
+			       SWITCHYARD_RESERVE_PORT));
+  }
+  connect(ctrl_reserve_socket,SIGNAL(readyRead()),this,SLOT(readReserveData()));
+
   //
   // Start Advertising
   //

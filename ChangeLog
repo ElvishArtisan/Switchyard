@@ -765,3 +765,15 @@
 	* Hacked 'debian/rules' by moving the 'build' target rules into
 	the 'binary' target to work around a regression in
 	dpkg-buildpackage(1) v1.22.22.
+2026-06-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added a SWITCHYARD_RESERVE_PORT define to 'sy5/syconfig.h'.
+	* Added 'SyAdvSource::reservationId()',
+	'SyAdvSource::setReservationId()', 'SyAdvSource::reservationDeleting()'
+	and 'SyAdvSource::setReservationDeleting()'. methods.
+	* Fixed bugs in the 'SyAdvPacket::readPacket()' and
+	'SyAdvPacket::writePacket()' methods so as to properly read and
+	write subframes of the 'BUSY' tag.
+	* Added 'SyAdvServer::advertismentReceived()' and
+	'SyAdvServer::reservationReceived()' signals.
+	* Added code to 'sy5/syadv_server.cpp' to properly manage slot
+	reservations.

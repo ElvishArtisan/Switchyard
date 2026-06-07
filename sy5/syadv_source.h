@@ -2,7 +2,7 @@
 //
 // Container class for info about a Livewire source
 //
-// (C) Copyright 2010 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2010-2016 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -50,6 +50,10 @@ class SyAdvSource
   void setHardwareType(HardwareType type);
   StreamType streamType() const;
   void setStreamType(StreamType type);
+  uint64_t reservationId() const;
+  void setReservationId(uint64_t reserve_id);
+  bool reservationDeleting() const;
+  void setReservationDeleting(bool state);
   int lastTouched() const;
   int lastTouched(const QDateTime &datetime) const;
   void touch();
@@ -67,6 +71,8 @@ class SyAdvSource
   QHostAddress src_stream_address;
   HardwareType src_hardware_type;
   StreamType src_stream_type;
+  uint64_t src_reservation_id;
+  bool src_reservation_deleting;
   QDateTime src_datetime;
   bool src_is_changed;
 };

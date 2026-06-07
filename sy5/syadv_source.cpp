@@ -2,7 +2,7 @@
 //
 // Container class for info about a Livewire source
 //
-// (C) Copyright 2010-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2010-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -27,6 +27,8 @@ SyAdvSource::SyAdvSource()
   src_source_number=0;
   src_hardware_type=TypeUnknown;
   src_stream_type=StreamUnknown;
+  src_reservation_id=0;
+  src_reservation_deleting=false;
   src_is_changed=false;
 }
 
@@ -151,6 +153,30 @@ void SyAdvSource::setStreamType(StreamType type)
     src_stream_type=type;
     src_is_changed=true;
   }
+}
+
+
+uint64_t SyAdvSource::reservationId() const
+{
+  return src_reservation_id;
+}
+
+
+void SyAdvSource::setReservationId(uint64_t reserve_id)
+{
+  src_reservation_id=reserve_id;
+}
+
+
+bool SyAdvSource::reservationDeleting() const
+{
+  return src_reservation_deleting;
+}
+
+
+void SyAdvSource::setReservationDeleting(bool state)
+{
+  src_reservation_deleting=state;
 }
 
 

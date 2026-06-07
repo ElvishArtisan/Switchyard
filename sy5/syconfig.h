@@ -2,7 +2,7 @@
 //
 // Configuration values for AoIP routines
 //
-// (C) Copyright 2014 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2014-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,6 +30,7 @@
 #define SWITCHYARD_LWRP_WATCHDOG_INTERVAL_MAX 10000.0
 #define SWITCHYARD_LWRP_WATCHDOG_RETRY 10000
 #define SWITCHYARD_ADVERTS_ADDRESS "239.192.255.3"
+#define SWITCHYARD_RESERVE_PORT 4000
 #define SWITCHYARD_ADVERTS_PORT 4001
 #define SWITCHYARD_CLOCK_ADDRESS "239.192.255.2"
 #define SWITCHYARD_CLOCK_PORT 7000

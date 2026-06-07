@@ -2,7 +2,7 @@
 //
 // Abstract a LiveWire Control Protocol packet.
 //
-// (C) Copyright 2009-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2009-2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -94,14 +94,29 @@ bool SyAdvPacket::readPacket(uint8_t *data,uint32_t size)
   for(uint32_t i=16;i<size;i++) {
     switch(istate) {
     case 0:
-      tag=data[i];
+      if((0xFF&data[i])==0xFF) {
+	tag="F";
+      }
+      else {
+	tag=data[i];
+      }
       istate=1;
       break;
 
     case 1:
     case 2:
     case 3:
-      tag+=data[i];
+      if((0xFF&data[i])==0xFF) {
+	tag+="F";
+      }
+      else {
+	if((0xFF&data[i])==0xFE) {
+	  tag+="E";
+	}
+	else {
+	  tag+=data[i];
+	}
+      }
       istate++;
       break;
 
@@ -223,9 +238,23 @@ int SyAdvPacket::writePacket(uint8_t *data,uint32_t maxsize)
   //
   unsigned ptr=16;
   for(unsigned i=0;i<lw_tags.size();i++) {
-    ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%s%c",
-		  lw_tags[i]->tagName().toUtf8().constData(),
-		  lw_tags[i]->tagType());
+    if(lw_tags[i]->tagName()=="FFFF") {
+      ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c%c%c%c",
+		    0xff,0xff,0xff,0xff,
+		    lw_tags[i]->tagType());
+    }
+    else {
+      if(lw_tags[i]->tagName()=="FFFE") {
+	ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%c%c%c%c%c",
+		      0xff,0xff,0xff,0xfe,
+		      lw_tags[i]->tagType());
+      }
+      else {
+	ptr+=snprintf((char *)data+ptr,maxsize-ptr,"%s%c",
+		      lw_tags[i]->tagName().toUtf8().constData(),
+		      lw_tags[i]->tagType());
+      }
+    }
     if(ptr>=maxsize) {
       return -1;
     }
@@ -267,7 +296,7 @@ int SyAdvPacket::writePacket(uint8_t *data,uint32_t maxsize)
 		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>40)),
 		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>32)),
 		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>24)),
-		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>17)),
+		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>16)),
 		    (int)(0xff&(lw_tags[i]->tagValue().toULongLong()>>8)),
 		    (int)lw_tags[i]->tagValue().toULongLong());
       if(ptr>=maxsize) {
