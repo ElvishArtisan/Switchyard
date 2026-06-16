@@ -777,3 +777,5 @@
 	'SyAdvServer::reservationReceived()' signals.
 	* Added code to 'sy5/syadv_server.cpp' to properly manage slot
 	reservations.
+2026-06-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added sy5advpeek(1).

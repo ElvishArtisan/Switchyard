@@ -147,6 +147,7 @@ AC_CONFIG_FILES([\
     debian/Makefile \
     debian/source/Makefile \
     sy5/Makefile \
+    sy5advpeek/Makefile \
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \

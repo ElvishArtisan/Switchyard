@@ -357,11 +357,12 @@ int SyAdvPacket::writePacket(uint8_t *data,uint32_t maxsize)
 QString SyAdvPacket::dump() const
 {
   QString str;
+  long long unsigned bigint;
 
-  str+="LWCP Packet\n";
-  str+=QString::asprintf(" Seq No: %u\n",sequenceNumber());
+  str+=QString::asprintf("Seq No: %u\n",sequenceNumber());
   for(unsigned i=0;i<lw_tags.size();i++) {
-    str+=SyTag::normalizeName(lw_tags[i]->tagName())+": ";
+    QString comment="";
+    str+="  "+SyTag::normalizeName(lw_tags[i]->tagName())+": ";
     switch(lw_tags[i]->tagType()) {
     case SyTag::TagType0:
     case SyTag::TagType7:
@@ -384,15 +385,16 @@ QString SyAdvPacket::dump() const
       break;
 
     case SyTag::TagType9:
+      bigint=lw_tags[i]->tagValue().toULongLong();
       str+=QString::asprintf("%02X %02X %02X %02X %02X %02X %02X %02X",
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>56)),
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>48)),
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>40)),
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>32)),
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>24)),
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>16)),
-		(unsigned)(0xff&(lw_tags[i]->tagValue().toULongLong()>>8)),
-		(unsigned)(0xff&lw_tags[i]->tagValue().toULongLong()));
+		(unsigned)(0xff&(bigint>>56)),
+		(unsigned)(0xff&(bigint>>48)),
+		(unsigned)(0xff&(bigint>>40)),
+		(unsigned)(0xff&(bigint>>32)),
+		(unsigned)(0xff&(bigint>>24)),
+		(unsigned)(0xff&(bigint>>16)),
+		(unsigned)(0xff&(bigint>>8)),
+		(unsigned)(0xff&bigint));
       break;
 
     case SyTag::TagString:
@@ -414,9 +416,21 @@ QString SyAdvPacket::dump() const
     default:
       break;
     }
+    /*
+    if(lw_tags[i]->tagName()=="BSID") {
+      str+=" ["+QHostAddress(lw_tags[i]->tagValue().toUInt()).toString()+"]";
+    }
+    if(lw_tags[i]->tagName()=="FSID") {
+      str+=" ["+QHostAddress(lw_tags[i]->tagValue().toUInt()).toString()+"]";
+    }
+    if(lw_tags[i]->tagName()=="PSID") {
+      str+=QString::asprintf(" [%u]",
+			     lw_tags[i]->tagValue().toUInt());
+    }
+    */
     str+="\n";
   }
-  return str;
+  return str.left(str.length()-1);
 }
 
 

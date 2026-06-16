@@ -1,6 +1,6 @@
-## automake.am
+## Makefile.am
 ##
-## Top level automake.am for Switchyard5
+## Top level Makefile.am for Switchyard5
 ##
 ## Use automake to process this into a Makefile.in
 ##
@@ -24,6 +24,7 @@
 SUBDIRS = conf\
           debian\
           sy5\
+          sy5advpeek\
           tests
 
 ACLOCAL_AMFLAGS = -I m4
