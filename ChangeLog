@@ -783,3 +783,5 @@
 	* Fixed regressions that broke the build under Qt 5.9.
 2026-06-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added sy5advpeek(1) to the 'switchyard5-devel' RPM package.
+2026-06-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added sy5advpeek(1) to the 'switchyard5-dev' DEB package.
