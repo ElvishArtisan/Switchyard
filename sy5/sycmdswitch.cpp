@@ -46,7 +46,7 @@ SyCmdSwitch::SyCmdSwitch(const QString &modname,const QString &modver,
 	     usage.toUtf8().constData());
       exit(0);
     }
-    QStringList f0=value.split("=",Qt::KeepEmptyParts);
+    QStringList f0=value.split("=",QString::KeepEmptyParts);
     if(f0.size()>=2) {
       if(f0.at(0).left(1)=="-") {
 	switch_keys.push_back(f0.at(0));

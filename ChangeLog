@@ -779,3 +779,5 @@
 	reservations.
 2026-06-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added sy5advpeek(1).
+2026-06-16 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed regressions that broke the build under Qt 5.9.
