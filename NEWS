@@ -1,6 +1,28 @@
 The NEWS file for the Switchyard package.
 
 -------------------------------------------------------------------------------
+v0.26.0 - 17 June 2026
+
+Changes:
+   Stream Reservations. Added code to 'Sy5AdvServer' to properly manage
+   stream reservations on Axia control surfaces.
+
+   ABI Changes. Added the following:
+      SyGpioEvent::gpioTypeString() method
+      SyAdvSource::reservationId() method
+      SyAdvSource::setReservationId() method
+      SyAdvSource::reservationDeleting() method
+      SyAdvSource::setReservationDeleting() method
+      SyAdvServer::advertismentReceived() signal
+      SyAdvServer::reservationReceived() signal
+      SyRouting::clockType() const method
+      SyRouting::setClockType(ClockType type) method
+      SyRouting::clockDevice() const method
+      SyRouting::setClockDevice(const QString &dev) method
+
+   Debugging Tools. Added a sy5advpeek(1) utility.
+
+-------------------------------------------------------------------------------
 v0.23.0 - 12 December 2022
 
 Changes:
