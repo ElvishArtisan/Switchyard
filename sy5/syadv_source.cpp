@@ -19,6 +19,7 @@
 //    Boston, MA  02111-1307  USA
 //
 
+#include "syrouting.h"
 #include "syadv_source.h"
 
 SyAdvSource::SyAdvSource()
@@ -42,9 +43,9 @@ QHostAddress SyAdvSource::nodeAddress() const
 void SyAdvSource::setNodeAddress(const QHostAddress &addr)
 {
   if(addr!=src_node_address) {
-    src_node_address=addr;
+    src_node_address=SyRouting::normalizeIPv4Address(addr);
     if(nodeName().isEmpty()) {
-      setNodeName(addr.toString());
+      setNodeName(src_node_address.toString());
     }
     src_is_changed=true;
   }

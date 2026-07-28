@@ -222,7 +222,8 @@ void SyAdvServer::readAdvertData()
     if(!nodename.isEmpty()) {
       for(unsigned i=0;i<ctrl_sources.size();i++) {
 	if((src=ctrl_sources[i])!=NULL) {
-	  if(addr==src->nodeAddress()) {
+	  if(src->nodeAddress().
+	     isEqual(addr,QHostAddress::ConvertV4MappedToIPv4)) {
 	    src->setNodeName(nodename);
 	    if(src->isChanged()) {
 	      ScheduleSourceSave();
@@ -648,7 +649,9 @@ SyAdvSource *SyAdvServer::GetSource(const QHostAddress &node_addr,
 
   for(unsigned i=0;i<ctrl_sources.size();i++) {
     if(ctrl_sources[i]!=NULL) {
-      if((ctrl_sources[i]->nodeAddress()==node_addr)&&
+      //      if((ctrl_sources[i]->nodeAddress()==node_addr)&&
+      if(ctrl_sources[i]->nodeAddress().
+	 isEqual(node_addr,QHostAddress::ConvertV4MappedToIPv4)&&
 	 (ctrl_sources[i]->slot()==slot)) {
 	return ctrl_sources[i];
       }

@@ -888,3 +888,14 @@ void SyRouting::LoadInterfaces()
   }
   */
 }
+
+
+QHostAddress SyRouting::normalizeIPv4Address(const QHostAddress &addr)
+{
+  QHostAddress ret;
+
+  ret.setAddress(addr.toIPv4Address());
+
+  return ret;
+}
+

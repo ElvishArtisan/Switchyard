@@ -114,6 +114,7 @@ class SyRouting
   static QString dumpAddress(uint32_t addr);
   static QString socketErrorString(const QString &msg);
   static QString clockTypeString(ClockType type);
+  static QHostAddress normalizeIPv4Address(const QHostAddress &addr);
 
  private:
   void LoadInterfaces();
