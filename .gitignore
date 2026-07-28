@@ -37,6 +37,7 @@ moc_*
 rc.syd
 debian/changelog
 debian/control
+sy5advpeek/sy5advpeek
 tests/codeinverttest
 tests/signalnotifiertest
 tests/syastringtest
