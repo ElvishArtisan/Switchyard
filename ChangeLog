@@ -792,3 +792,10 @@
 	* Added a 'SyRouting::normalizeIPv4Address()' method.
 	* Fixed a bug in 'SyAdvServer' that could cause node addresses to be
 	displayed in combined IPv4/IPv6 notation.
+2026-08-10 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'SyAdvSource::HardwareType' enumeration.
+	* Removed the 'SyAdvSource::hardwareType()' and
+	'SyAdvSource::setHardwareType()' methods.
+	* Added 'SyAdvSource::hardwareId()' and
+	'SyAdvSource::setHardwareId()' methods.
+	* Removed the 'SWITCHYARD_HWID' define from 'syconfig.h'.

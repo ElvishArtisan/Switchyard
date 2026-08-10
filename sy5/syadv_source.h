@@ -29,8 +29,6 @@
 class SyAdvSource
 {
  public:
-  enum HardwareType {TypeUnknown=0,TypeAnalogNode=0x1404,TypeMicNode=0x1403,
-		     TypeMixEngine=0x1406,TypeElement=0x1407};
   enum StreamType {StreamUnknown=0,StreamFast=1,StreamMedium=2,StreamSlow=3,
 		   StreamSurround=4};
   SyAdvSource();
@@ -46,8 +44,8 @@ class SyAdvSource
   void setStreamAddress(const QHostAddress &addr);
   QString sourceName() const;
   void setSourceName(const QString &str);
-  HardwareType hardwareType() const;
-  void setHardwareType(HardwareType type);
+  uint16_t hardwareId() const;
+  void setHardwareId(uint16_t hwid);
   StreamType streamType() const;
   void setStreamType(StreamType type);
   uint64_t reservationId() const;
@@ -60,7 +58,6 @@ class SyAdvSource
   void touch(const QDateTime &datetime);
   bool isChanged() const;
   void setSaved();
-  static QString hardwareString(HardwareType type);
 
  private:
   QHostAddress src_node_address;
@@ -69,7 +66,7 @@ class SyAdvSource
   unsigned src_slot;
   unsigned src_source_number;
   QHostAddress src_stream_address;
-  HardwareType src_hardware_type;
+  uint16_t src_hardware_id;
   StreamType src_stream_type;
   uint64_t src_reservation_id;
   bool src_reservation_deleting;

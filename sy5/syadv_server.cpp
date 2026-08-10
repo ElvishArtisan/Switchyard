@@ -186,21 +186,21 @@ void SyAdvServer::readAdvertData()
   SyAdvPacket p;
   SyAdvSource *src=NULL;
   int slot;
-  SyAdvSource::HardwareType hwid=SyAdvSource::TypeUnknown;
+  uint16_t hwid=0;
   QString nodename;
 
   while((n=ctrl_advert_socket->readDatagram((char *)data,1500,&addr,&port))>0) {
     p.readPacket(data,n);
     for(unsigned i=0;i<p.tags();i++) {
       if(p.tag(i)->tagName()=="HWID") {
-	hwid=(SyAdvSource::HardwareType)p.tag(i)->tagValue().toUInt();
+	hwid=p.tag(i)->tagValue().toUInt();
       }
       if(p.tag(i)->tagName()=="ATRN") {  // Node Name
 	nodename=p.tag(i)->tagValue().toString();
       }
       if((slot=TagIsSource(p.tag(i)))>=0) {
 	src=GetSource(addr,slot);
-	src->setHardwareType(hwid);
+	src->setHardwareId(hwid);
 	while((++i<p.tags())&&(TagIsSource(p.tag(i))<0)) {
 	  if(p.tag(i)->tagName()=="PSID") {  // Source Number
 	    src->setSourceNumber(p.tag(i)->tagValue().toUInt());
@@ -440,7 +440,8 @@ void SyAdvServer::GenerateAdvertPacket0(SyAdvPacket *p) const
   tag.setTagValue(SyTag::TagType0,1);
   p->addTag(tag);
   tag.setTagName("HWID");
-  tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
+  tag.setTagValue(SyTag::TagType8,0xFFFF&adv_routing->nicAddress().
+		  toIPv4Address());
   p->addTag(tag);
   for(unsigned i=0;i<adv_routing->srcSlots();i++) {
     if((!adv_routing->srcAddress(i).isNull())&&
@@ -507,7 +508,8 @@ void SyAdvServer::GenerateAdvertPacket1(SyAdvPacket *p) const
   tag.setTagValue(SyTag::TagType1,0x0A);
   p->addTag(tag);
   tag.setTagName("HWID");
-  tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
+  tag.setTagValue(SyTag::TagType8,0xFFFF&adv_routing->nicAddress().
+		  toIPv4Address());
   p->addTag(tag);
   tag.setTagName("INIP");
   tag.setTagValue(SyTag::TagType1,adv_routing->nicAddress());
@@ -561,7 +563,8 @@ bool SyAdvServer::GenerateAdvertPacket2(SyAdvPacket *p,unsigned base_slot) const
   tag.setTagValue(SyTag::TagType1,0x0A);
   p->addTag(tag);
   tag.setTagName("HWID");
-  tag.setTagValue(SyTag::TagType8,SWITCHYARD_HWID);
+  tag.setTagValue(SyTag::TagType8,0xFFFF&adv_routing->nicAddress().
+		  toIPv4Address());
   p->addTag(tag);
   tag.setTagName("INIP");
   tag.setTagValue(SyTag::TagType1,adv_routing->nicAddress());

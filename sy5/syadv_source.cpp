@@ -26,7 +26,7 @@ SyAdvSource::SyAdvSource()
 {
   src_slot=0;
   src_source_number=0;
-  src_hardware_type=TypeUnknown;
+  src_hardware_id=0;
   src_stream_type=StreamUnknown;
   src_reservation_id=0;
   src_reservation_deleting=false;
@@ -127,16 +127,16 @@ void SyAdvSource::setSourceName(const QString &str)
 }
 
 
-SyAdvSource::HardwareType SyAdvSource::hardwareType() const
+uint16_t SyAdvSource::hardwareId() const
 {
-  return src_hardware_type;
+  return src_hardware_id;
 }
 
 
-void SyAdvSource::setHardwareType(HardwareType type)
+void SyAdvSource::setHardwareId(uint16_t hwid)
 {
-  if(type!=src_hardware_type) {
-    src_hardware_type=type;
+  if(hwid!=src_hardware_id) {
+    src_hardware_id=hwid;
     src_is_changed=true;
   }
 }
@@ -214,31 +214,4 @@ bool SyAdvSource::isChanged() const
 void SyAdvSource::setSaved()
 {
   src_is_changed=false;
-}
-
-
-QString SyAdvSource::hardwareString(HardwareType type)
-{
-  QString ret=QString::asprintf("Unknown (0x%04X)",type);
-  switch(type) {
-  case SyAdvSource::TypeAnalogNode:
-    ret="Analog Node";
-    break;
-
-  case SyAdvSource::TypeMicNode:
-    ret="Mic Node";
-    break;
-
-  case SyAdvSource::TypeMixEngine:
-    ret="Mix Engine";
-    break;
-
-  case SyAdvSource::TypeElement:
-    ret="Element";
-    break;
-
-  case SyAdvSource::TypeUnknown:
-    break;
-  }
-  return ret;
 }
