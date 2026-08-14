@@ -804,3 +804,5 @@
 	* Incremented the package version to 0.27.0.
 2026-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code from 'sy5/sycmdswitch.cpp'.
+2026-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyMcastSocket::receiveDatagram()' method.

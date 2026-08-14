@@ -34,6 +34,8 @@
 #include <sys/socket.h>
 #endif  // WIN32
 
+#include <QNetworkDatagram>
+
 #include "sysyslog.h"
 #include "symcastsocket.h"
 
@@ -81,7 +83,8 @@ bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
   bool ret=true;
 
   if(mcast_recv_socket!=NULL) {
-    if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
+    if(!mcast_recv_socket->bind(QHostAddress::AnyIPv4,port,
+				SYMCASTSOCKET_BIND_MODE)) {
       SySyslog(LOG_ERR,
 	       QString::asprintf("unable to bind port %u for reading [%s]",
 				 port,strerror(errno)));
@@ -105,14 +108,14 @@ bool SyMcastSocket::bind(const QHostAddress &addr,uint16_t port)
 bool SyMcastSocket::bind(uint16_t port)
 {
   bool ret=true;
-
   if(mcast_send_socket!=NULL) {
     SySyslog(LOG_ERR,
      "you must provide an interface address when binding a socket for writing");
     ret=false;
   }
   if(mcast_recv_socket!=NULL) {
-    if(!mcast_recv_socket->bind(port,SYMCASTSOCKET_BIND_MODE)) {
+    if(!mcast_recv_socket->bind(QHostAddress::AnyIPv4,port,
+				SYMCASTSOCKET_BIND_MODE)) {
       SySyslog(LOG_ERR,
 	       QString::asprintf("unable to bind port %u for reading [%s]",
 				 port,strerror(errno)));
@@ -131,6 +134,12 @@ qint64 SyMcastSocket::readDatagram(char *data,qint64 len,
     exit(256);
   }
   return mcast_recv_socket->readDatagram(data,len,addr,port);
+}
+
+
+QNetworkDatagram SyMcastSocket::receiveDatagram(qint64 size)
+{
+  return mcast_recv_socket->receiveDatagram(size);
 }
 
 

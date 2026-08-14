@@ -41,6 +41,7 @@ class SyMcastSocket : public QObject
   bool bind(uint16_t port);
   qint64 readDatagram(char *data,qint64 len,
 		       QHostAddress *addr=NULL,quint16 *port=NULL);
+  QNetworkDatagram receiveDatagram(qint64 size=-1);
   qint64 writeDatagram(const char *data,qint64 len,
 			const QHostAddress &addr,quint16 port);
   qint64 writeDatagram(const QByteArray &datagram,
