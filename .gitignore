@@ -46,6 +46,7 @@ tests/syd
 tests/syethmonitortest
 tests/sygpiotest
 tests/syinterfacestest
+tests/sylologger
 tests/symetertest
 tests/synodetest
 tests/syplay

@@ -37,6 +37,7 @@ noinst_PROGRAMS = codeinverttest\
                   syethmonitortest\
                   sygpiotest\
                   syinterfacestest\
+                  sylologger\
                   symetertest\
                   synodetest\
                   syplay\
@@ -81,6 +82,11 @@ dist_sygpiotest_SOURCES = sygpiotest.cpp sygpiotest.h
 nodist_sygpiotest_SOURCES = moc_sygpiotest.cpp
 sygpiotest_LDADD = @SWITCHYARDLIBS@
 sygpiotest_LDFLAGS = @SWITCHYARDFLAGS@
+
+dist_sylologger_SOURCES = sylologger.cpp sylologger.h
+nodist_sylologger_SOURCES = moc_sylologger.cpp
+sylologger_LDADD = @SWITCHYARDLIBS@ @libsndfile_LIBS@
+sylologger_LDFLAGS = @SWITCHYARDFLAGS@ @libsndfile_CFLAGS@
 
 dist_symetertest_SOURCES = playmeter.cpp playmeter.h\
                            statuslight.cpp statuslight.h\

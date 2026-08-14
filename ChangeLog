@@ -814,3 +814,5 @@
 	'SWITCHYARD_WN_METER_PORT' and 'SWITCHYARD_WN_BDCST_ADV_PORT'
 	defines in 'sy5/stconfig.h'.
 	* Added 'SyLoMessage' and 'SyLoServer' classes.
+2026-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added sylologger(1) in 'tests/'.
