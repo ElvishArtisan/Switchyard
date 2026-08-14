@@ -806,3 +806,11 @@
 	* Removed dead code from 'sy5/sycmdswitch.cpp'.
 2026-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SyMcastSocket::receiveDatagram()' method.
+2026-08-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'SWITCHYARD_WN_RTP_PORT','SWITCHYARD_WN_CLOCK_ADDRESS',
+	'SWITCHYARD_WN_CLOCK_PORT', 'SWITCHYARD_WN_BLADE_ADDRESS',
+	'SWITCHYARD_WN_E2E_PORT', 'SWITCHYARD_WN_LO_PORT',
+	'SWITCHYARD_WN_HEARTBEAT_PORT', 'SWITCHYARD_WN_METER_ADDRESS',
+	'SWITCHYARD_WN_METER_PORT' and 'SWITCHYARD_WN_BDCST_ADV_PORT'
+	defines in 'sy5/stconfig.h'.
+	* Added 'SyLoMessage' and 'SyLoServer' classes.
