@@ -29,8 +29,6 @@
 
 SyCmdSwitch::SyCmdSwitch(const QString &modname,const QString &modver,
 			 const QString &usage)
-//SyCmdSwitch::SyCmdSwitch(int argc,char *argv[],const char *modname,
-//			 const char *modver,const char *usage)
 {
   QStringList args=qApp->arguments();
 
