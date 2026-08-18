@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## Makefile for AoIP library routines
 ##
-## (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2014-2026 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -41,6 +41,8 @@ dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                  sycmdswitch.cpp sycmdswitch.h\
                                  syconfig.h\
                                  sydestination.cpp sydestination.h\
+                                 sye2e_message.cpp sye2e_message.h\
+                                 sye2e_server.cpp sye2e_server.h\
                                  syendpoint.cpp syendpoint.h\
                                  syethmonitor.cpp syethmonitor.h\
                                  sygpo.cpp sygpo.h\
@@ -55,6 +57,9 @@ dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                  sylwrp_clientconnection.h\
                                  sylwrp_server.cpp sylwrp_server.h\
                                  symcastsocket.cpp symcastsocket.h\
+                                 symessage.cpp symessage.h\
+                                 symeter_message.cpp symeter_message.h\
+                                 symeter_server.cpp symeter_server.h\
                                  synode.cpp synode.h\
                                  syprofile.cpp syprofile.h\
                                  sysignalnotifier.cpp sysignalnotifier.h\
@@ -67,12 +72,14 @@ dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
 
 nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_syclock.cpp\
+                                  moc_sye2e_server.cpp\
                                   moc_syethmonitor.cpp\
                                   moc_sygpio_server.cpp\
                                   moc_sylo_server.cpp\
                                   moc_sylwrp_client.cpp\
                                   moc_sylwrp_server.cpp\
                                   moc_symcastsocket.cpp\
+                                  moc_symeter_server.cpp\
                                   moc_syrtp_server.cpp\
                                   moc_sysignalnotifier.cpp
 
@@ -88,6 +95,7 @@ include_HEADERS = syadv_packet.h\
                   sycmdswitch.h\
                   syconfig.h\
                   sydestination.h\
+                  sye2e_server.h\
                   syethmonitor.h\
                   sygpiobundle.h\
                   sygpo.h\
@@ -98,6 +106,8 @@ include_HEADERS = syadv_packet.h\
                   sylwrp_clientconnection.h\
                   sylwrp_server.h\
                   symcastsocket.h\
+                  symessage.h\
+                  symeter_message.h\
                   synode.h\
                   syprofile.h\
                   syringbuffer.h\

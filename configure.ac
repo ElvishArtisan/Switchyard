@@ -39,8 +39,8 @@ fi
 # Basic Compiler Checks
 #
 AC_PROG_CXX
-AC_PROG_LIBTOOL
 AC_LANG(C++)
+LT_INIT
 
 #
 # Determine Library API Versioning
@@ -148,6 +148,7 @@ AC_CONFIG_FILES([\
     debian/source/Makefile \
     sy5/Makefile \
     sy5advpeek/Makefile \
+    sy5wnlogger/Makefile \
     conf/Makefile \
     tests/Makefile \
     tests/rc.syd \

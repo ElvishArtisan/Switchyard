@@ -1,8 +1,8 @@
-// sylologger.h
+// symeter_server.h
 //
-// Print WheatNet LO log messages
+// WheatNet METER Logging Server
 //
-// (C) 2026 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2026 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,25 +19,29 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYLOLOGGER_H
-#define SYLOLOGGER_H
+#ifndef SYMETER_SERVER_H
+#define SYMETER_SERVER_H
 
-#include <sy5/sylo_server.h>
+#include <sy5/symeter_message.h>
+#include <sy5/symcastsocket.h>
 
-#define SYLOLOGGER_USAGE "\n"
-
-class MainObject : public QObject
+class SyMeterServer : public QObject
 {
   Q_OBJECT;
  public:
-  MainObject(QObject *parent=0);
+  SyMeterServer(QObject *parent=0);
+  ~SyMeterServer();
+  bool initialize(QString *err_msg);
+
+ signals:
+  void messageReceived(SyMeterMessage *msg);
 
  private slots:
-  void messageReceivedData(const SyLoMessage &msg);
+  void readyReadData();
 
  private:
-  SyLoServer *d_lo_server;
+  SyMcastSocket *d_server_socket;
 };
 
 
-#endif  // SYLOLOGGER_H
+#endif  // SYMETER_SERVER_H

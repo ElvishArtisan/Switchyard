@@ -27,11 +27,14 @@
 #include <QNetworkDatagram>
 #include <QString>
 
-class SyLoMessage
+#include <sy5/symessage.h>
+
+class SyLoMessage : public SyMessage
 {
  public:
   SyLoMessage(const QNetworkDatagram &dgram);
   SyLoMessage();
+  virtual ~SyLoMessage()=default;
   int bladeId() const;
   void setBladeId(int bid);
   QString bladeName() const;
@@ -40,16 +43,13 @@ class SyLoMessage
   void setTimestamp(const QDateTime &dt);
   QString text() const;
   void setText(const QString &str);
-  QHostAddress hostAddress() const;
-  void setHostAddress(const QHostAddress &addr);
-  QString dump() const;
+  QString dump();
 
  private:
   int d_blade_id;
   QString d_blade_name;
   QDateTime d_timestamp;
   QString d_text;
-  QHostAddress d_host_address;
 };
 
 

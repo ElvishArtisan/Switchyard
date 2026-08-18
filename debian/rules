@@ -25,7 +25,8 @@ binary:
 # switchyard5-dev
 #
 	mkdir -p debian/switchyard5-dev/usr/bin
-	mv debian/tmp/usr/bin/sy5advpeek debian/switchyard5-dev/usr/bin
+	mv debian/tmp/usr/bin/sy5advpeek debian/switchyard5-dev/usr/bin/
+	mv debian/tmp/usr/bin/sy5wnlog debian/switchyard5-dev/usr/bin/
 	mkdir -p debian/switchyard5-dev/usr/include
 	mv debian/tmp/usr/include/sy5 debian/switchyard5-dev/usr/include/
 	mkdir -p debian/switchyard5-dev/usr/lib

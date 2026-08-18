@@ -25,6 +25,7 @@ SUBDIRS = conf\
           debian\
           sy5\
           sy5advpeek\
+          sy5wnlogger\
           tests
 
 ACLOCAL_AMFLAGS = -I m4

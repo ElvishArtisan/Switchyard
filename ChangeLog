@@ -816,3 +816,17 @@
 	* Added 'SyLoMessage' and 'SyLoServer' classes.
 2026-08-14 Fred Gleason <fredg@paravelsystems.com>
 	* Added sylologger(1) in 'tests/'.
+2026-08-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SyMessage' class in 'sy5/symessage.cpp' and
+	'sy5/symessage.h'.
+	* Added a 'SyE2eMessage' class in 'sy5/sye2e_message.cpp' and
+	'sy5/sye2e_message.h'.
+	* Added a SyE2eServer' class in 'sy5/sye2e_server.cpp' and
+	'sy5/sye2e_server.h'.
+	* Added a 'SyLoMessage' class in 'sy5/sylo_message.cpp' and
+	'sy5/sylo_message.h'.
+	* Added a 'SyMeterMessage' class in 'sy5/symeter_message.cpp' and
+	'sy5/symeter_message.h'.
+	* sylologger(1) to sy2wnlogger(1).
+	* Added 'SWITCHYARD_MUTE_DEPTH' and 'SWITCHYARD_WN_MIN_METER_LEVEL'
+	defines in 'sy5/syconfig.h'.

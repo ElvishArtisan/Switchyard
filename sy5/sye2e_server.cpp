@@ -1,6 +1,6 @@
-// sylo_server.cpp
+// sye2e_server.cpp
 //
-// WheatNet LO Logging Server
+// WheatNet E2E Logging Server
 //
 // (C) Copyright 2026 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -20,9 +20,9 @@
 //
 
 #include "syconfig.h"
-#include "sylo_server.h"
+#include "sye2e_server.h"
 
-SyLoServer::SyLoServer(QObject *parent)
+SyE2eServer::SyE2eServer(QObject *parent)
   : QObject(parent)
 {
   d_server_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
@@ -30,17 +30,17 @@ SyLoServer::SyLoServer(QObject *parent)
 }
 
 
-SyLoServer::~SyLoServer()
+SyE2eServer::~SyE2eServer()
 {
   delete d_server_socket;
 }
 
 
-bool SyLoServer::initialize(QString *err_msg)
+bool SyE2eServer::initialize(QString *err_msg)
 {
-  if(d_server_socket->bind(SWITCHYARD_WN_LO_PORT)){
+  if(d_server_socket->bind(SWITCHYARD_WN_E2E_PORT)){
     *err_msg=tr("failed to bind port")+
-      QString::asprintf(" %u",SWITCHYARD_WN_LO_PORT);
+      QString::asprintf(" %u",SWITCHYARD_WN_E2E_PORT);
     return false;
   }
   if(!d_server_socket->subscribe(SWITCHYARD_WN_BLADE_ADDRESS)) {
@@ -52,9 +52,9 @@ bool SyLoServer::initialize(QString *err_msg)
 }
 
 
-void SyLoServer::readyReadData()
+void SyE2eServer::readyReadData()
 {
-  SyLoMessage *msg=new SyLoMessage(d_server_socket->receiveDatagram());
+  SyE2eMessage *msg=new SyE2eMessage(d_server_socket->receiveDatagram());
   emit messageReceived(msg);
   delete msg;
 }

@@ -1,6 +1,6 @@
-// sylo_server.cpp
+// symeter_server.cpp
 //
-// WheatNet LO Logging Server
+// WheatNet METER Logging Server
 //
 // (C) Copyright 2026 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -20,9 +20,9 @@
 //
 
 #include "syconfig.h"
-#include "sylo_server.h"
+#include "symeter_server.h"
 
-SyLoServer::SyLoServer(QObject *parent)
+SyMeterServer::SyMeterServer(QObject *parent)
   : QObject(parent)
 {
   d_server_socket=new SyMcastSocket(SyMcastSocket::ReadWrite,this);
@@ -30,31 +30,31 @@ SyLoServer::SyLoServer(QObject *parent)
 }
 
 
-SyLoServer::~SyLoServer()
+SyMeterServer::~SyMeterServer()
 {
   delete d_server_socket;
 }
 
 
-bool SyLoServer::initialize(QString *err_msg)
+bool SyMeterServer::initialize(QString *err_msg)
 {
-  if(d_server_socket->bind(SWITCHYARD_WN_LO_PORT)){
+  if(d_server_socket->bind(SWITCHYARD_WN_METER_PORT)){
     *err_msg=tr("failed to bind port")+
-      QString::asprintf(" %u",SWITCHYARD_WN_LO_PORT);
+      QString::asprintf(" %u",SWITCHYARD_WN_METER_PORT);
     return false;
   }
-  if(!d_server_socket->subscribe(SWITCHYARD_WN_BLADE_ADDRESS)) {
+  if(!d_server_socket->subscribe(SWITCHYARD_WN_METER_ADDRESS)) {
     *err_msg=tr("failed to subscribe to multicast group")+" "+
-      SWITCHYARD_WN_BLADE_ADDRESS;
+      SWITCHYARD_WN_METER_ADDRESS;
     return false;
   }
   return true;
 }
 
 
-void SyLoServer::readyReadData()
+void SyMeterServer::readyReadData()
 {
-  SyLoMessage *msg=new SyLoMessage(d_server_socket->receiveDatagram());
+  SyMeterMessage *msg=new SyMeterMessage(d_server_socket->receiveDatagram());
   emit messageReceived(msg);
   delete msg;
 }

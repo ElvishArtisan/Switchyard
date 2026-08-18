@@ -1,6 +1,6 @@
-// sylo_server.h
+// symessage.h
 //
-// WheatNet LO Logging Server
+// Abstract base class for messages.
 //
 // (C) Copyright 2026 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,29 +19,30 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYLO_SERVER_H
-#define SYLO_SERVER_H
+#ifndef SYMESSAGE_H
+#define SYMESSAGE_H
 
-#include <sy5/sylo_message.h>
-#include <sy5/symcastsocket.h>
+#include <QByteArray>
+#include <QHostAddress>
+#include <QNetworkDatagram>
 
-class SyLoServer : public QObject
+class SyMessage
 {
-  Q_OBJECT;
  public:
-  SyLoServer(QObject *parent=0);
-  ~SyLoServer();
-  bool initialize(QString *err_msg);
-
- signals:
-  void messageReceived(SyLoMessage *msg);
-
- private slots:
-  void readyReadData();
+  SyMessage(const QNetworkDatagram &dgram);
+  SyMessage();
+  QByteArray body() const;
+  QHostAddress hostAddress() const;
+  void setHostAddress(const QHostAddress &addr);
+  virtual QString dump()=0;
+  virtual QString dumpBody();
+  QString toAscii();
+  static QString toAscii(const QByteArray &data);
 
  private:
-  SyMcastSocket *d_server_socket;
+  QByteArray d_body;
+  QHostAddress d_host_address;
 };
 
 
-#endif  // SYLO_SERVER_H
+#endif  // SYMESSAGE_H

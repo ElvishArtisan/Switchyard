@@ -1,4 +1,4 @@
-// sylologger.cpp
+// sy5wnlogger.h
 //
 // Print WheatNet LO log messages
 //
@@ -19,40 +19,36 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#include <QCoreApplication>
+#ifndef SY5WNLOGGER_H
+#define SY5WNLOGGER_H
 
-#include <sy5/sycmdswitch.h>
+#include <sy5/sye2e_server.h>
+#include <sy5/sylo_server.h>
+#include <sy5/symeter_server.h>
 
-#include "sylologger.h"
+#define SY5WNLOGGER_USAGE "--proto=lo|e2e|meter [--dump-body] [--host-address=<ipv4-addr ...]\n"
 
-MainObject::MainObject(QObject *parent)
-  : QObject()
+class MainObject : public QObject
 {
-  QString err_msg;
-  new SyCmdSwitch("sylologger",VERSION,SYLOLOGGER_USAGE);
+  Q_OBJECT;
+ public:
+  enum Proto {ProtoLo=0,ProtoE2e=1,ProtoMeter=2,ProtoLast=3};
+  MainObject(QObject *parent=0);
 
-  d_lo_server=new SyLoServer(this);
-  connect(d_lo_server,SIGNAL(messageReceived(const SyLoMessage &)),
-	  this,SLOT(messageReceivedData(const SyLoMessage &)));
+ private slots:
+  void messageReceivedData(SyE2eMessage *msg);
+  void messageReceivedData(SyLoMessage *msg);
+  void messageReceivedData(SyMeterMessage *msg);
 
-  if(!d_lo_server->initialize(&err_msg)) {
-    fprintf(stderr,"sylologger: %s\n",err_msg.toUtf8().constData());
-    exit(1);
-  }
-}
+ private:
+  SyE2eServer *d_e2e_server;
+  SyLoServer *d_lo_server;
+  SyMeterServer *d_meter_server;
+  Proto d_proto;
+  bool d_dump_body;
+  QStringList d_opcodes_seen;
+  QList<QHostAddress> d_host_addresses;
+};
 
 
-void MainObject::messageReceivedData(const SyLoMessage &msg)
-{
-  printf("%s",msg.dump().toUtf8().constData());
-}
-
-
-int main(int argc,char *argv[])
-{
-  QCoreApplication a(argc,argv);
-
-  new MainObject();
-  
-  return a.exec();
-}
+#endif  // SY5WNLOGGER_H

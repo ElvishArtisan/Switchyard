@@ -24,10 +24,10 @@
 #include "sylo_message.h"
 
 SyLoMessage::SyLoMessage(const QNetworkDatagram &dgram)
+  : SyMessage(dgram)
 {
   QDateTime now=QDateTime::currentDateTime();
   
-  d_host_address=dgram.senderAddress();
   d_blade_id=QString(dgram.data().mid(8,3)).toInt();
   d_blade_name=QString::fromUtf8(dgram.data().mid(13,8)).trimmed();
   d_text=QString::fromUtf8(dgram.data().right(dgram.data().size()-49));
@@ -37,10 +37,13 @@ SyLoMessage::SyLoMessage(const QNetworkDatagram &dgram)
 
 
 SyLoMessage::SyLoMessage()
+  : SyMessage()
 {
+  /*
   d_timestamp=QDateTime::currentDateTime();
   d_blade_id=0;
   d_blade_name="??";
+  */
 }
 
 
@@ -92,25 +95,13 @@ void SyLoMessage::setText(const QString &str)
 }
 
 
-QHostAddress SyLoMessage::hostAddress() const
-{
-  return d_host_address;
-}
-
-
-void SyLoMessage::setHostAddress(const QHostAddress &addr)
-{
-  d_host_address=addr;
-}
-
-
-QString SyLoMessage::dump() const
+QString SyLoMessage::dump()
 {
   QString ret="";
 
   ret+=d_timestamp.toString("MMM dd hh:mm:ss")+" ";
   //  ret+=QObject::tr("From blade")+QString::asprintf( " %d ",d_blade_id);
-  ret+=d_blade_name+"["+d_host_address.toString()+"]: ";
+  ret+=d_blade_name+"["+hostAddress().toString()+"]: ";
   ret+=d_text;
   
   return ret;

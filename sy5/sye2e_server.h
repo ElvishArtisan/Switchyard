@@ -1,6 +1,6 @@
-// sylo_server.h
+// sye2e_server.h
 //
-// WheatNet LO Logging Server
+// WheatNet E2E Logging Server
 //
 // (C) Copyright 2026 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,22 +19,22 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef SYLO_SERVER_H
-#define SYLO_SERVER_H
+#ifndef SYE2E_SERVER_H
+#define SYE2E_SERVER_H
 
-#include <sy5/sylo_message.h>
+#include <sy5/sye2e_message.h>
 #include <sy5/symcastsocket.h>
 
-class SyLoServer : public QObject
+class SyE2eServer : public QObject
 {
   Q_OBJECT;
  public:
-  SyLoServer(QObject *parent=0);
-  ~SyLoServer();
+  SyE2eServer(QObject *parent=0);
+  ~SyE2eServer();
   bool initialize(QString *err_msg);
 
  signals:
-  void messageReceived(SyLoMessage *msg);
+  void messageReceived(SyE2eMessage *msg);
 
  private slots:
   void readyReadData();
@@ -44,4 +44,4 @@ class SyLoServer : public QObject
 };
 
 
-#endif  // SYLO_SERVER_H
+#endif  // SYE2E_SERVER_H
