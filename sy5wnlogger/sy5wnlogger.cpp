@@ -31,6 +31,7 @@ MainObject::MainObject(QObject *parent)
   QString err_msg;
   QString proto;
   d_e2e_server=NULL;
+  d_howdy_server=NULL;
   d_lo_server=NULL;
   d_proto=MainObject::ProtoLast;
   d_dump_body=false;
@@ -53,11 +54,14 @@ MainObject::MainObject(QObject *parent)
     }
     if(cmd->key(i)=="--proto") {
       proto=cmd->value(i);
-      if(proto=="lo") {
-	d_proto=MainObject::ProtoLo;
-      }
       if(proto=="e2e") {
 	d_proto=MainObject::ProtoE2e;
+      }
+      if(proto=="howdy") {
+	d_proto=MainObject::ProtoHowdy;
+      }
+      if(proto=="lo") {
+	d_proto=MainObject::ProtoLo;
       }
       if(proto=="meter") {
 	d_proto=MainObject::ProtoMeter;
@@ -82,21 +86,31 @@ MainObject::MainObject(QObject *parent)
   }
 
   switch(d_proto) {
-  case MainObject::ProtoLo:
-    d_lo_server=new SyLoServer(this);
-    connect(d_lo_server,SIGNAL(messageReceived(SyLoMessage *)),
-	    this,SLOT(messageReceivedData(SyLoMessage *)));
-    if(!d_lo_server->initialize(&err_msg)) {
-      fprintf(stderr,"sy5wnlogger: %s\n",err_msg.toUtf8().constData());
-      exit(1);
-    }
-    break;
-
   case MainObject::ProtoE2e:
     d_e2e_server=new SyE2eServer(this);
     connect(d_e2e_server,SIGNAL(messageReceived(SyE2eMessage *)),
 	    this,SLOT(messageReceivedData(SyE2eMessage *)));
     if(!d_e2e_server->initialize(&err_msg)) {
+      fprintf(stderr,"sy5wnlogger: %s\n",err_msg.toUtf8().constData());
+      exit(1);
+    }
+    break;
+
+  case MainObject::ProtoHowdy:
+    d_howdy_server=new SyHowdyServer(this);
+    connect(d_howdy_server,SIGNAL(messageReceived(SyHowdyMessage *)),
+	    this,SLOT(messageReceivedData(SyHowdyMessage *)));
+    if(!d_howdy_server->initialize(&err_msg)) {
+      fprintf(stderr,"sy5wnlogger: %s\n",err_msg.toUtf8().constData());
+      exit(1);
+    }
+    break;
+
+  case MainObject::ProtoLo:
+    d_lo_server=new SyLoServer(this);
+    connect(d_lo_server,SIGNAL(messageReceived(SyLoMessage *)),
+	    this,SLOT(messageReceivedData(SyLoMessage *)));
+    if(!d_lo_server->initialize(&err_msg)) {
       fprintf(stderr,"sy5wnlogger: %s\n",err_msg.toUtf8().constData());
       exit(1);
     }
@@ -131,6 +145,12 @@ void MainObject::messageReceivedData(SyE2eMessage *msg)
     printf("%d unique codes seen\n",d_opcodes_seen.size());
   }
   */
+}
+
+
+void MainObject::messageReceivedData(SyHowdyMessage *msg)
+{
+  printf("%s",msg->dump().toUtf8().constData());
 }
 
 

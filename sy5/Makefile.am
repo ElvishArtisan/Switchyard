@@ -48,6 +48,8 @@ dist_libSwitchyard5_la_SOURCES = syadv_packet.cpp syadv_packet.h\
                                  sygpo.cpp sygpo.h\
                                  sygpiobundle.cpp sygpiobundle.h\
                                  sygpio_server.cpp sygpio_server.h\
+                                 syhowdy_message.cpp syhowdy_message.h\
+                                 syhowdy_server.cpp syhowdy_server.h\
                                  syinterfaces.cpp syinterfaces.h\
                                  sylo_message.cpp sylo_message.h\
                                  sylo_server.cpp sylo_server.h\
@@ -75,6 +77,7 @@ nodist_libSwitchyard5_la_SOURCES = moc_syadv_server.cpp\
                                   moc_sye2e_server.cpp\
                                   moc_syethmonitor.cpp\
                                   moc_sygpio_server.cpp\
+                                  moc_syhowdy_server.cpp\
                                   moc_sylo_server.cpp\
                                   moc_sylwrp_client.cpp\
                                   moc_sylwrp_server.cpp\
@@ -100,6 +103,8 @@ include_HEADERS = syadv_packet.h\
                   sygpiobundle.h\
                   sygpo.h\
                   sygpio_server.h\
+                  syhowdy_message.h\
+                  syhowdy_server.h\
                   syinterfaces.h\
                   sylo_server.h\
                   sylwrp_client.h\

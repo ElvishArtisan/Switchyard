@@ -830,3 +830,5 @@
 	* sylologger(1) to sy2wnlogger(1).
 	* Added 'SWITCHYARD_MUTE_DEPTH' and 'SWITCHYARD_WN_MIN_METER_LEVEL'
 	defines in 'sy5/syconfig.h'.
+2026-08-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for 'howdy' protocol to sy2wnlogger(1).
