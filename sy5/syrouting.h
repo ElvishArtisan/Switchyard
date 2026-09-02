@@ -51,6 +51,8 @@ class SyRouting
   void setNicNetmask(const QHostAddress &addr);
   QHostAddress clkAddress() const;
   void setClkAddress(const QHostAddress &addr);
+  uint16_t rtpPort() const;
+  void setRtpPort(uint16_t port);
   ClockType clockType() const;
   void setClockType(ClockType type);
   QString clockDevice() const;
@@ -99,6 +101,7 @@ class SyRouting
   uint32_t nic_addr;
   uint32_t nic_mask;
   uint32_t clk_addr;
+  uint16_t rtp_port;
   uint32_t src_slots;
   uint32_t dst_slots;
   uint32_t src_addr[SWITCHYARD_MAX_SLOTS];

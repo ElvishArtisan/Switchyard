@@ -168,6 +168,18 @@ void SyRouting::setClkAddress(const QHostAddress &addr)
 }
 
 
+uint16_t SyRouting::rtpPort() const
+{
+  return rtp_port;
+}
+
+
+void SyRouting::setRtpPort(uint16_t port)
+{
+  rtp_port=port;
+}
+
+
 SyRouting::ClockType SyRouting::clockType() const
 {
   return sy_clock_type;
@@ -495,6 +507,7 @@ void SyRouting::load()
 			      SWITCHYARD_SETTINGS_APPLICATION);
   setNicAddress(QHostAddress(s->value("NicAddress").toString()));
   QString clktype=s->value("ClockType").toString();
+  rtp_port=0xFFFF&s->value("RtpPost").toUInt();
   if(clktype.toLower()=="local") {
     setClockType(SyRouting::Local);
   }
@@ -537,6 +550,7 @@ void SyRouting::load()
   }
 
   setNicAddress(p->addressValue("Global","NicAddress",default_nic));
+  rtp_port=0xFFFF&p->intValue("Global","RtpPort",SWITCHYARD_RTP_PORT);
   QString clktype=p->stringValue("Global","ClockType","Local");
   if(clktype.toLower()=="local") {
     setClockType(SyRouting::Local);
@@ -581,6 +595,7 @@ void SyRouting::save() const
 			      SWITCHYARD_SETTINGS_ORGANIZATION,
 			      SWITCHYARD_SETTINGS_APPLICATION);
   s->setValue("NicAddress",nicAddress().toString());
+  s->setValue("RtpPort",QString::asprintf("%u",rtp_port));
   s->setValue("ClockType",SyRouting::clockTypeString(sy_clock_type));
   s->setValue("ClockDevice",sy_clock_device);
   for(int i=0;i<SWITCHYARD_MAX_SLOTS;i++) {
@@ -614,6 +629,7 @@ void SyRouting::save() const
 
   fprintf(f,"[Global]\n");
   fprintf(f,"NicAddress=%s\n",nicAddress().toString().toUtf8().constData());
+  fprintf(f,"RtpPort=%u\n",0xFFFF&rtp_port);
   fprintf(f,"ClockType=%s\n",
 	  SyRouting::clockTypeString(sy_clock_type).toUtf8().constData());
   fprintf(f,"ClockDevice=%s\n",sy_clock_device.toUtf8().constData());

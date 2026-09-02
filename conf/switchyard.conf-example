@@ -1,5 +1,6 @@
 [Global]
 NicAddress=192.168.10.30
+RtpPort=5004
 
 [Slot1]
 SourceAddress=239.192.0.1
