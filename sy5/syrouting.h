@@ -38,6 +38,8 @@ class SyRouting
   enum GpoMode {GpoFollowSource=0,GpoSnake=1};
   enum Realm {Stereo=0,Backfeed=1,Surround=2};
   enum ClockType {Local=0,Livewire=1,Ptp=2};
+  enum AoipType {UnknownType=0,LivewireType=1,WheatnetType=2,Aes67Type=3,
+    LastType=4};
   SyRouting(unsigned d_slots,unsigned s_slots,
 	    unsigned gpis=0,unsigned gpos=0);
   unsigned dstSlots() const;
@@ -53,6 +55,8 @@ class SyRouting
   void setClkAddress(const QHostAddress &addr);
   uint16_t rtpPort() const;
   void setRtpPort(uint16_t port);
+  AoipType aoipType() const;
+  void setAoipType(AoipType type);
   ClockType clockType() const;
   void setClockType(ClockType type);
   QString clockDevice() const;
@@ -102,6 +106,7 @@ class SyRouting
   uint32_t nic_mask;
   uint32_t clk_addr;
   uint16_t rtp_port;
+  AoipType aoip_type;
   uint32_t src_slots;
   uint32_t dst_slots;
   uint32_t src_addr[SWITCHYARD_MAX_SLOTS];
@@ -118,6 +123,8 @@ class SyRouting
   static QString socketErrorString(const QString &msg);
   static QString clockTypeString(ClockType type);
   static QHostAddress normalizeIPv4Address(const QHostAddress &addr);
+  static QString aoipTypeString(AoipType type);
+  static AoipType typeFromString(const QString &str);
 
  private:
   void LoadInterfaces();

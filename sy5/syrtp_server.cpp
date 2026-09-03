@@ -69,7 +69,7 @@ void *__RtpServer_ThreadCallback(void *p)
   setsockopt(read_sock,IPPROTO_IP,IP_PKTINFO,&sockopt,sizeof(sockopt));
   memset(&sa,0,sizeof(sa));
   sa.sin_family=AF_INET;
-  sa.sin_port=htons(SWITCHYARD_RTP_PORT);
+  sa.sin_port=htons(cb_data->routing->rtpPort());
   sa.sin_addr.s_addr=htonl(INADDR_ANY);
   if(bind(read_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
     SySyslog(LOG_ERR,QString::asprintf("unable to bind RTP socket [%s]",
@@ -87,7 +87,7 @@ void *__RtpServer_ThreadCallback(void *p)
   setsockopt(write_sock,IPPROTO_IP,IP_PKTINFO,&sockopt,sizeof(sockopt));
   memset(&sa,0,sizeof(sa));
   sa.sin_family=AF_INET;
-  sa.sin_port=htons(SWITCHYARD_RTP_PORT);
+  sa.sin_port=htons(cb_data->routing->rtpPort());
   sa.sin_addr.s_addr=cb_data->routing->nic_addr;
   if(bind(write_sock,(struct sockaddr *)&sa,sizeof(sa))<0) {
     SySyslog(LOG_ERR,QString::asprintf("unable to bind RTP socket [%s]",
@@ -101,7 +101,7 @@ void *__RtpServer_ThreadCallback(void *p)
   //
   memset(&play_sa,0,sizeof(play_sa));
   play_sa.sin_family=AF_INET;
-  play_sa.sin_port=htons(SWITCHYARD_RTP_PORT);
+  play_sa.sin_port=htons(cb_data->routing->rtpPort());
 
   //
   // Initialize Stream Router

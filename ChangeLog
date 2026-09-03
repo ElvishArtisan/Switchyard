@@ -806,3 +806,8 @@
 	* Added an 'RtpPort=' directive to the '[Global]' section of
 	routing.db(5).
 	* Added 'SyRouting::rtpPort()' and 'SyRouting::setRtpPort()' methods.
+2026-09-03 Fred Gleason <fredg@paravelsystems.com>
+	* Modified 'SyRtpServer' to use the value of 'SyRouting::rtpPort()'
+	for stream reception.
+	* Added 'SyRouting::aoipTypeString()' and 'SyRouting::typeFromString()'
+	static methods.

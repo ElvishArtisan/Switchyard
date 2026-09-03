@@ -180,6 +180,18 @@ void SyRouting::setRtpPort(uint16_t port)
 }
 
 
+SyRouting::AoipType SyRouting::aoipType() const
+{
+  return aoip_type;
+}
+
+
+void SyRouting::setAoipType(SyRouting::AoipType type)
+{
+  aoip_type=type;
+}
+
+
 SyRouting::ClockType SyRouting::clockType() const
 {
   return sy_clock_type;
@@ -508,6 +520,7 @@ void SyRouting::load()
   setNicAddress(QHostAddress(s->value("NicAddress").toString()));
   QString clktype=s->value("ClockType").toString();
   rtp_port=0xFFFF&s->value("RtpPost").toUInt();
+  aoip_type=SyRouting::aoipTypeFromString(s->value("AoipType").toString());
   if(clktype.toLower()=="local") {
     setClockType(SyRouting::Local);
   }
@@ -551,6 +564,8 @@ void SyRouting::load()
 
   setNicAddress(p->addressValue("Global","NicAddress",default_nic));
   rtp_port=0xFFFF&p->intValue("Global","RtpPort",SWITCHYARD_RTP_PORT);
+  aoip_type=
+    SyRouting::typeFromString(p->stringValue("Global","AoipType","livewire"));
   QString clktype=p->stringValue("Global","ClockType","Local");
   if(clktype.toLower()=="local") {
     setClockType(SyRouting::Local);
@@ -668,7 +683,7 @@ void SyRouting::writeRtpData(unsigned src_slot,const char *data,int len) const
 
   memset(&sa,0,sizeof(sa));
   sa.sin_family=AF_INET;
-  sa.sin_port=htons(SWITCHYARD_RTP_PORT);
+  sa.sin_port=htons(rtpPort());
   sa.sin_addr.s_addr=src_addr[src_slot];
   sendto(rtpSendSocket(),data,len,0,(struct sockaddr *)(&sa),sizeof(sa));
 }
@@ -768,6 +783,47 @@ QString SyRouting::socketErrorString(const QString &msg)
 
   return ret;
 }
+
+
+QString SyRouting::aoipTypeString(SyRouting::AoipType type)
+{
+  QString ret="unknown";
+
+  switch(type) {
+  case SyRouting::LivewireType:
+    ret="livewire";
+    break;
+
+  case SyRouting::WheatnetType:
+    ret="wheatnet";
+    break;
+
+  case SyRouting::Aes67Type:
+    ret="aes67";
+    break;
+
+  case SyRouting::UnknownType:
+  case SyRouting::LastType:
+    break;
+  }
+
+  return ret;
+}
+
+
+SyRouting::AoipType SyRouting::typeFromString(const QString &str)
+{
+  SyRouting::AoipType ret=SyRouting::UnknownType;
+
+  for(int i=0;i<SyRouting::LastType;i++) {
+    SyRouting::AoipType type=(SyRouting::AoipType)i;
+    if(SyRouting::aoipTypeString(type)==str.toLower()) {
+      ret=type;
+    }
+  }
+  return ret;
+}
+
 
 void SyRouting::LoadInterfaces()
 {
