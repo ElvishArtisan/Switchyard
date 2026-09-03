@@ -811,3 +811,5 @@
 	for stream reception.
 	* Added 'SyRouting::aoipTypeString()' and 'SyRouting::typeFromString()'
 	static methods.
+2026-09-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added the 'AoipType=' directive to the 'SyRouting::save()' method.
